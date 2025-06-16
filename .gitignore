@@ -10,6 +10,12 @@
 *.userosscache
 *.sln.docstates
 
+# Files built by 
+/sch/*.b#*
+/sch/*.pro
+/sch/*.s#*
+
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -26,13 +32,12 @@ x86/
 [Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
-[Aa][Rr][Mm]64[Ee][Cc]/
 bld/
 [Bb]in/
 [Oo]bj/
-[Oo]ut/
 [Ll]og/
 [Ll]ogs/
+__vm/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -84,8 +89,6 @@ StyleCopReport.xml
 *.pgc
 *.pgd
 *.rsp
-# but not Directory.Build.rsp, as it configures directory-level build defaults
-!Directory.Build.rsp
 *.sbr
 *.tlb
 *.tli
@@ -101,6 +104,9 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+*.vcxproj
+*.filters
+*.user
 
 # Chutzpah Test files
 _Chutzpah*
@@ -157,7 +163,6 @@ coverage*.info
 
 # NCrunch
 _NCrunch_*
-.NCrunch_*
 .*crunch*.local.xml
 nCrunchTemp_*
 
@@ -357,9 +362,6 @@ ASALocalRun/
 # MSBuild Binary and Structured Log
 *.binlog
 
-# AWS SAM Build and Temporary Artifacts folder
-.aws-sam
-
 # NVidia Nsight GPU debugger configuration file
 *.nvuser
 
@@ -404,3 +406,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+*.heic
+.vscode/settings.json
+
+[Ss]ound/
+src/board.txt
