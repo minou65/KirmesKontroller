@@ -1,30 +1,14 @@
 
+#include "SoundControl.h"
+#include "pinmapping.h"
 #include <Arduino.h>
-#include <FS.h>
-#include <SPI.h>
-#include <SD_MMC.h>
-#include <Audio.h>
+
 #include "src/neotimer.h"
 #include "src/version.h"
-#include "src/MotorController.h"
-
-#define FILE_ON_SD "/File1.mp3"
-
-#define SD_CS         10 
-#define SPI_MOSI      11
-#define SPI_MISO      13
-#define SPI_SCK       12
-#define I2S_DOUT       7
-#define I2S_BCLK       5
-#define I2S_LRCLK      6
-#define LED_BUILTIN   47
+#include "src/MotorControl.h"
 
 
-#define Input1         3
-#define Input2         4
 
-Audio audio;
-File  root;
 
 MotorControl motor1(8, 0, 5000, 8); // Pin 8, PWM Channel 0, Frequency 5000Hz, Resolution 8 bits
 
