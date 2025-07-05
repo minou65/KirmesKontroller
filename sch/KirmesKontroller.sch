@@ -18378,13 +18378,13 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <part name="+3V4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+3V3" device=""/>
 <part name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="0207/10" package3d_urn="urn:adsk.eagle:package:23491/2" value="1k5"/>
 <part name="IC3" library="_eigene" deviceset="ULN2803" device="DIL18" value="ULN2803"/>
-<part name="X2" library="con-wago255" library_urn="urn:adsk.eagle:library:198" deviceset="233-508" device="" package3d_urn="urn:adsk.eagle:package:10938/1" value="DG240 2,54-8"/>
+<part name="X3" library="con-wago255" library_urn="urn:adsk.eagle:library:198" deviceset="233-508" device="" package3d_urn="urn:adsk.eagle:package:10938/1" value="DG240 2,54-8"/>
 <part name="X4" library="con-wago255" library_urn="urn:adsk.eagle:library:198" deviceset="233-508" device="" package3d_urn="urn:adsk.eagle:package:10938/1" value="DG240 2,54-8"/>
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="V+" device=""/>
 <part name="P+4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
-<part name="X5" library="con-wago255" library_urn="urn:adsk.eagle:library:198" deviceset="233-202" device="" package3d_urn="urn:adsk.eagle:package:10884/1" value="DG240 2,54-2"/>
-<part name="X6" library="con-wago255" library_urn="urn:adsk.eagle:library:198" deviceset="233-202" device="" package3d_urn="urn:adsk.eagle:package:10884/1" value="DG240 2,54-2"/>
+<part name="X2" library="con-wago255" library_urn="urn:adsk.eagle:library:198" deviceset="233-202" device="" package3d_urn="urn:adsk.eagle:package:10884/1" value="DG240 2,54-2"/>
+<part name="X1" library="con-wago255" library_urn="urn:adsk.eagle:library:198" deviceset="233-202" device="" package3d_urn="urn:adsk.eagle:package:10884/1" value="DG240 2,54-2"/>
 <part name="J1" library="jumper" library_urn="urn:adsk.eagle:library:252" deviceset="JP2E" device="" package3d_urn="urn:adsk.eagle:package:15452/1" value="MPE 087-1-003"/>
 <part name="P+6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="V+" device=""/>
 <part name="P+7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
@@ -18462,7 +18462,7 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <attribute name="NAME" x="208.28" y="78.74" size="1.27" layer="95"/>
 <attribute name="VALUE" x="205.74" y="43.18" size="1.27" layer="96"/>
 </instance>
-<instance part="X2" gate="G$1" x="248.92" y="83.82" smashed="yes" rot="R90">
+<instance part="X3" gate="G$1" x="248.92" y="83.82" smashed="yes" rot="R90">
 <attribute name="NAME" x="238.76" y="78.74" size="1.778" layer="95" rot="R90"/>
 <attribute name="VALUE" x="241.3" y="85.09" size="1.778" layer="96"/>
 </instance>
@@ -18479,11 +18479,11 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <instance part="P+4" gate="1" x="142.24" y="241.3" smashed="yes">
 <attribute name="VALUE" x="139.7" y="236.22" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="X5" gate="G$1" x="30.48" y="124.46" smashed="yes" rot="MR0">
+<instance part="X2" gate="G$1" x="30.48" y="124.46" smashed="yes" rot="MR0">
 <attribute name="NAME" x="35.56" y="127" size="1.778" layer="95" rot="MR0"/>
 <attribute name="VALUE" x="29.21" y="127" size="1.778" layer="96" rot="MR270"/>
 </instance>
-<instance part="X6" gate="G$1" x="25.4" y="243.84" smashed="yes" rot="MR0">
+<instance part="X1" gate="G$1" x="25.4" y="243.84" smashed="yes" rot="MR0">
 <attribute name="NAME" x="30.48" y="246.38" size="1.778" layer="95" rot="MR0"/>
 <attribute name="VALUE" x="24.13" y="246.38" size="1.778" layer="96" rot="MR270"/>
 </instance>
@@ -18653,14 +18653,14 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <pinref part="B1" gate="1" pin="AC2"/>
 <wire x1="63.5" y1="231.14" x2="63.5" y2="228.6" width="0.1524" layer="91"/>
 <wire x1="63.5" y1="228.6" x2="33.02" y2="228.6" width="0.1524" layer="91"/>
-<pinref part="X6" gate="G$1" pin="-2"/>
+<pinref part="X1" gate="G$1" pin="-2"/>
 <wire x1="33.02" y1="241.3" x2="33.02" y2="228.6" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$9" class="0">
 <segment>
 <pinref part="R2" gate="G$1" pin="1"/>
-<pinref part="X5" gate="G$1" pin="-1"/>
+<pinref part="X2" gate="G$1" pin="-1"/>
 <wire x1="38.1" y1="124.46" x2="66.04" y2="124.46" width="0.1524" layer="91"/>
 </segment>
 </net>
@@ -18676,7 +18676,7 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <pinref part="OK1" gate="A" pin="C"/>
 <wire x1="88.9" y1="116.84" x2="38.1" y2="116.84" width="0.1524" layer="91"/>
 <wire x1="38.1" y1="116.84" x2="38.1" y2="121.92" width="0.1524" layer="91"/>
-<pinref part="X5" gate="G$1" pin="-2"/>
+<pinref part="X2" gate="G$1" pin="-2"/>
 </segment>
 </net>
 <net name="GPIO2" class="0">
@@ -18860,7 +18860,7 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <net name="N$23" class="0">
 <segment>
 <pinref part="IC3" gate="G$1" pin="OUT8"/>
-<pinref part="X2" gate="G$1" pin="-8"/>
+<pinref part="X3" gate="G$1" pin="-8"/>
 <wire x1="231.14" y1="53.34" x2="259.08" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="259.08" y1="53.34" x2="259.08" y2="76.2" width="0.1524" layer="91"/>
 </segment>
@@ -18909,7 +18909,7 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 </net>
 <net name="N$15" class="0">
 <segment>
-<pinref part="X6" gate="G$1" pin="-1"/>
+<pinref part="X1" gate="G$1" pin="-1"/>
 <pinref part="F1" gate="1" pin="1"/>
 <wire x1="33.02" y1="243.84" x2="40.64" y2="243.84" width="0.1524" layer="91"/>
 </segment>
@@ -18917,7 +18917,7 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <net name="N$2" class="0">
 <segment>
 <pinref part="IC3" gate="G$1" pin="OUT1"/>
-<pinref part="X2" gate="G$1" pin="-1"/>
+<pinref part="X3" gate="G$1" pin="-1"/>
 <wire x1="231.14" y1="71.12" x2="241.3" y2="71.12" width="0.1524" layer="91"/>
 <wire x1="241.3" y1="71.12" x2="241.3" y2="76.2" width="0.1524" layer="91"/>
 </segment>
@@ -18925,7 +18925,7 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <net name="N$4" class="0">
 <segment>
 <pinref part="IC3" gate="G$1" pin="OUT7"/>
-<pinref part="X2" gate="G$1" pin="-7"/>
+<pinref part="X3" gate="G$1" pin="-7"/>
 <wire x1="231.14" y1="55.88" x2="256.54" y2="55.88" width="0.1524" layer="91"/>
 <wire x1="256.54" y1="55.88" x2="256.54" y2="76.2" width="0.1524" layer="91"/>
 </segment>
@@ -18933,7 +18933,7 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <net name="N$7" class="0">
 <segment>
 <pinref part="IC3" gate="G$1" pin="OUT6"/>
-<pinref part="X2" gate="G$1" pin="-6"/>
+<pinref part="X3" gate="G$1" pin="-6"/>
 <wire x1="231.14" y1="58.42" x2="254" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="254" y1="58.42" x2="254" y2="76.2" width="0.1524" layer="91"/>
 </segment>
@@ -18941,7 +18941,7 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <net name="N$8" class="0">
 <segment>
 <pinref part="IC3" gate="G$1" pin="OUT5"/>
-<pinref part="X2" gate="G$1" pin="-5"/>
+<pinref part="X3" gate="G$1" pin="-5"/>
 <wire x1="231.14" y1="60.96" x2="251.46" y2="60.96" width="0.1524" layer="91"/>
 <wire x1="251.46" y1="60.96" x2="251.46" y2="76.2" width="0.1524" layer="91"/>
 </segment>
@@ -18949,7 +18949,7 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <net name="N$12" class="0">
 <segment>
 <pinref part="IC3" gate="G$1" pin="OUT4"/>
-<pinref part="X2" gate="G$1" pin="-4"/>
+<pinref part="X3" gate="G$1" pin="-4"/>
 <wire x1="231.14" y1="63.5" x2="248.92" y2="63.5" width="0.1524" layer="91"/>
 <wire x1="248.92" y1="63.5" x2="248.92" y2="76.2" width="0.1524" layer="91"/>
 </segment>
@@ -18957,7 +18957,7 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <net name="N$13" class="0">
 <segment>
 <pinref part="IC3" gate="G$1" pin="OUT3"/>
-<pinref part="X2" gate="G$1" pin="-3"/>
+<pinref part="X3" gate="G$1" pin="-3"/>
 <wire x1="231.14" y1="66.04" x2="246.38" y2="66.04" width="0.1524" layer="91"/>
 <wire x1="246.38" y1="66.04" x2="246.38" y2="76.2" width="0.1524" layer="91"/>
 </segment>
@@ -18965,7 +18965,7 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <net name="N$14" class="0">
 <segment>
 <pinref part="IC3" gate="G$1" pin="OUT2"/>
-<pinref part="X2" gate="G$1" pin="-2"/>
+<pinref part="X3" gate="G$1" pin="-2"/>
 <wire x1="231.14" y1="68.58" x2="243.84" y2="68.58" width="0.1524" layer="91"/>
 <wire x1="243.84" y1="68.58" x2="243.84" y2="76.2" width="0.1524" layer="91"/>
 </segment>
