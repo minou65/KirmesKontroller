@@ -13,7 +13,9 @@
 #define I2S_BCLK       5  // BCLK (bit clock)
 #define I2S_LRCLK      6  // LRCLK (frame clock)
 
-#define SD_CS         10 // SCS (SPI bus control, chip select, this control line is not needed for SD_MMC-lib and available for other usage when solder bridge SD_CS is open [default closed])
+#define SD_CS         10 // SCS (SPI bus control, chip select, this control line is 
+						 // not needed for SD_MMC-lib and available for other usage 
+						 // when solder bridge SD_CS is open [default closed])
 #define SPI_MOSI      11 // MOSI (SPI bus data communication, SD_MMC calls it CMD)
 #define SPI_MISO      13 // SCK (SPI bus clock signal)
 #define SPI_SCK       12 // MISO (SPI bus data communication, SD_MMC calls it D0)
