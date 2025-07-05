@@ -1,7 +1,46 @@
 # Kirmes kontroller
 
+## Controller
+[YB-ESP32-S3-AMP](https://github.com/yellobyte/YB-ESP32-S3-AMP)
+
 ## Librarys
  - [DFRobot DFPlayerMini](https://github.com/DFRobot/DFRobotDFPlayerMini)
+
+# Pin mapping
+
+```c++
+#define I2S_DOUT       7  // DIN (digital audio signal)
+#define I2S_BCLK       5  // BCLK (bit clock)
+#define I2S_LRCLK      6  // LRCLK (frame clock)
+
+#define SD_CS         10 // SCS (SPI bus control, chip select, this control line is not needed for SD_MMC-lib and available for other usage when solder bridge SD_CS is open [default closed])
+#define SPI_MOSI      11 // MOSI (SPI bus data communication, SD_MMC calls it CMD)
+#define SPI_MISO      13 // SCK (SPI bus clock signal)
+#define SPI_SCK       12 // MISO (SPI bus data communication, SD_MMC calls it D0)
+
+#define LED_BUILTIN   47
+
+```
+
+```
+static uint8_t ChannelToGPIOMapping[16] = {
+	GPIO_NUM_17, // O11
+	GPIO_NUM_16, // O12
+	GPIO_NUM_15, // O13
+	GPIO_NUM_14, // O14
+	GPIO_NUM_10, // O15
+	GPIO_NUM_9,  // O16
+	GPIO_NUM_8,  // O17
+	GPIO_NUM_4,  // O18
+
+	GPIO_NUM_42, // JP1
+	GPIO_NUM_41, // JP2
+	GPIO_NUM_40, // JP3
+
+	GPIO_NUM_47, // Input 1 (JP4/2)
+	GPIO_NUM_48, // Input 2 (JP4/3)
+};
+```
 
 ## Settings
 ```cpp
