@@ -19,13 +19,13 @@ static uint8_t ChannelToGPIOMapping[16] = {
 	8,  // O17
 	4,  // O18
 
-	42, // JP1
-	41, // JP2
-	40, // JP3
+	2, // O21
+	42, // O22
+	41, // O23
 };
 
-#define Input1         47
-#define Input2         48
+#define INPUT1        48
+#define INPUT2        47
 
 #define SD_CS         10 
 #define SPI_MOSI      11
@@ -35,6 +35,9 @@ static uint8_t ChannelToGPIOMapping[16] = {
 #define I2S_BCLK       5
 #define I2S_LRCLK      6
 #define LED_BUILTIN   47
+
+#define DCC_INPUT     40
+#define WIFI_RESET    39
 
 #endif
 
