@@ -29,9 +29,15 @@ public:
     void setVolume(uint8_t Volume);
     void setBalance(int8_t Balance);
 
+    void setLoopMode(bool loop);
+
+    void setMono(bool mono);
+
 private:
     int _bclk, _lrclk, _dout;
     bool _isPlaying;
+	bool _loopMode;
+	char _lastPlayedFile[50]; // Store the last played file name
     Audio _audio;
 };
 
