@@ -8,20 +8,20 @@
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="yes" active="no"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="no"/>
-<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="no"/>
-<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="no"/>
-<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="no"/>
-<layer number="20" name="Dimension" color="24" fill="1" visible="yes" active="no"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="no"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="no"/>
-<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="no"/>
-<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="no"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="no"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="no"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="no"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="no"/>
+<layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="no"/>
+<layer number="20" name="Dimension" color="24" fill="1" visible="no" active="no"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="no"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="no"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="no"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="no"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="no" active="no"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="no" active="no"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="no" active="no"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="no" active="no"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="no"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="no"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="no"/>
@@ -30,8 +30,8 @@
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="no"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="no"/>
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="no"/>
-<layer number="37" name="tTest" color="7" fill="1" visible="yes" active="no"/>
-<layer number="38" name="bTest" color="7" fill="1" visible="yes" active="no"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="no" active="no"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="no" active="no"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="no"/>
 <layer number="40" name="bKeepout" color="1" fill="11" visible="no" active="no"/>
 <layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="no"/>
@@ -39,21 +39,21 @@
 <layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="no"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="no"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="no" active="no"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="no"/>
-<layer number="47" name="Measures" color="7" fill="1" visible="yes" active="no"/>
-<layer number="48" name="Document" color="7" fill="1" visible="yes" active="no"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="no"/>
-<layer number="50" name="dxf" color="7" fill="1" visible="yes" active="no"/>
-<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="no"/>
-<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="no"/>
-<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="yes" active="no"/>
-<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="yes" active="no"/>
-<layer number="56" name="wert" color="7" fill="1" visible="yes" active="no"/>
-<layer number="57" name="tCAD" color="7" fill="1" visible="yes" active="no"/>
-<layer number="58" name="bCAD" color="7" fill="1" visible="yes" active="no"/>
-<layer number="59" name="Invisible" color="7" fill="1" visible="yes" active="no"/>
-<layer number="60" name="bCarbon" color="7" fill="1" visible="yes" active="no"/>
-<layer number="61" name="stand" color="7" fill="1" visible="yes" active="no"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="no" active="no"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="no" active="no"/>
+<layer number="48" name="Document" color="7" fill="1" visible="no" active="no"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="no" active="no"/>
+<layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="no" active="no"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="no" active="no"/>
+<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
+<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
+<layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
+<layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
+<layer number="58" name="bCAD" color="7" fill="1" visible="no" active="no"/>
+<layer number="59" name="Invisible" color="7" fill="1" visible="no" active="no"/>
+<layer number="60" name="bCarbon" color="7" fill="1" visible="no" active="no"/>
+<layer number="61" name="stand" color="7" fill="1" visible="no" active="no"/>
 <layer number="88" name="SimResults" color="9" fill="1" visible="yes" active="yes"/>
 <layer number="89" name="SimProbes" color="9" fill="1" visible="yes" active="yes"/>
 <layer number="90" name="Modules" color="5" fill="1" visible="yes" active="yes"/>
@@ -18429,6 +18429,101 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 </deviceset>
 </devicesets>
 </library>
+<library name="diode" urn="urn:adsk.eagle:library:210">
+<description>&lt;b&gt;Diodes&lt;/b&gt;&lt;p&gt;
+Based on the following sources:
+&lt;ul&gt;
+&lt;li&gt;Motorola : www.onsemi.com
+&lt;li&gt;Fairchild : www.fairchildsemi.com
+&lt;li&gt;Philips : www.semiconductors.com
+&lt;li&gt;Vishay : www.vishay.de
+&lt;/ul&gt;
+&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
+<packages>
+<package name="DO35-10" urn="urn:adsk.eagle:footprint:43092/1" library_version="8">
+<description>&lt;B&gt;DIODE&lt;/B&gt;&lt;p&gt;
+diameter 2 mm, horizontal, grid 10.16 mm</description>
+<wire x1="5.08" y1="0" x2="4.191" y2="0" width="0.508" layer="51"/>
+<wire x1="-5.08" y1="0" x2="-4.191" y2="0" width="0.508" layer="51"/>
+<wire x1="-0.635" y1="0" x2="0" y2="0" width="0.1524" layer="21"/>
+<wire x1="1.016" y1="0.635" x2="1.016" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="1.016" y1="-0.635" x2="0" y2="0" width="0.1524" layer="21"/>
+<wire x1="0" y1="0" x2="1.524" y2="0" width="0.1524" layer="21"/>
+<wire x1="0" y1="0" x2="1.016" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="0" y1="0.635" x2="0" y2="0" width="0.1524" layer="21"/>
+<wire x1="0" y1="0" x2="0" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="2.032" y1="1.016" x2="2.286" y2="0.762" width="0.1524" layer="21" curve="-90"/>
+<wire x1="-2.286" y1="0.762" x2="-2.032" y2="1.016" width="0.1524" layer="21" curve="-90"/>
+<wire x1="-2.286" y1="-0.762" x2="-2.032" y2="-1.016" width="0.1524" layer="21" curve="90"/>
+<wire x1="2.032" y1="-1.016" x2="2.286" y2="-0.762" width="0.1524" layer="21" curve="90"/>
+<wire x1="2.286" y1="-0.762" x2="2.286" y2="0.762" width="0.1524" layer="21"/>
+<wire x1="-2.286" y1="0.762" x2="-2.286" y2="-0.762" width="0.1524" layer="21"/>
+<wire x1="-2.032" y1="1.016" x2="2.032" y2="1.016" width="0.1524" layer="21"/>
+<wire x1="-2.032" y1="-1.016" x2="2.032" y2="-1.016" width="0.1524" layer="21"/>
+<pad name="C" x="-5.08" y="0" drill="0.8128" shape="long"/>
+<pad name="A" x="5.08" y="0" drill="0.8128" shape="long"/>
+<text x="-2.159" y="1.27" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-2.159" y="-2.667" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+<rectangle x1="-1.905" y1="-1.016" x2="-1.397" y2="1.016" layer="21"/>
+<rectangle x1="2.286" y1="-0.254" x2="4.191" y2="0.254" layer="21"/>
+<rectangle x1="-4.191" y1="-0.254" x2="-2.286" y2="0.254" layer="21"/>
+</package>
+</packages>
+<packages3d>
+<package3d name="DO35-10" urn="urn:adsk.eagle:package:43344/2" type="model" library_version="8">
+<description>DIODE
+diameter 2 mm, horizontal, grid 10.16 mm</description>
+<packageinstances>
+<packageinstance name="DO35-10"/>
+</packageinstances>
+</package3d>
+</packages3d>
+<symbols>
+<symbol name="SCHOTTKY" urn="urn:adsk.eagle:symbol:43101/2" library_version="8">
+<wire x1="-1.27" y1="-1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="-1.27" y2="1.27" width="0.254" layer="94"/>
+<wire x1="1.905" y1="1.27" x2="1.27" y2="1.27" width="0.254" layer="94"/>
+<wire x1="1.27" y1="1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="-1.27" y1="1.27" x2="-1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="-1.27" y1="0" x2="-1.27" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="1.27" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="1.905" y1="1.27" x2="1.905" y2="1.016" width="0.254" layer="94"/>
+<wire x1="1.27" y1="-1.27" x2="0.635" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="0.635" y1="-1.016" x2="0.635" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="-1.27" y1="0" x2="-2.54" y2="0" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="2.54" y2="0" width="0.254" layer="94"/>
+<text x="-2.286" y="1.905" size="1.778" layer="95">&gt;NAME</text>
+<text x="-2.286" y="-3.429" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="A" x="-2.54" y="0" visible="off" length="point" direction="pas"/>
+<pin name="C" x="2.54" y="0" visible="off" length="point" direction="pas" rot="R180"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="BAT42" urn="urn:adsk.eagle:component:43501/4" prefix="D" library_version="8">
+<description>&lt;B&gt;DIODE&lt;/B&gt;&lt;p&gt;
+ barrier diode</description>
+<gates>
+<gate name="1" symbol="SCHOTTKY" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="DO35-10">
+<connects>
+<connect gate="1" pin="A" pad="A"/>
+<connect gate="1" pin="C" pad="C"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:43344/2"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="POPULARITY" value="0" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -18484,6 +18579,13 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <part name="GND5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="X8" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="22-23-2031" device="" package3d_urn="urn:adsk.eagle:package:8078634/1"/>
 <part name="X3" library="con-wago255" library_urn="urn:adsk.eagle:library:198" deviceset="233-508" device="" package3d_urn="urn:adsk.eagle:package:10938/1" value="DG240 2,54-8"/>
+<part name="R6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="0207/10" package3d_urn="urn:adsk.eagle:package:23491/2" value="330R"/>
+<part name="R7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="0207/10" package3d_urn="urn:adsk.eagle:package:23491/2" value="330R"/>
+<part name="D2" library="diode" library_urn="urn:adsk.eagle:library:210" deviceset="BAT42" device="" package3d_urn="urn:adsk.eagle:package:43344/2"/>
+<part name="D1" library="diode" library_urn="urn:adsk.eagle:library:210" deviceset="BAT42" device="" package3d_urn="urn:adsk.eagle:package:43344/2"/>
+<part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="050-024X044" package3d_urn="urn:adsk.eagle:package:23643/1" value="100n"/>
+<part name="GND8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -18610,70 +18712,96 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <instance part="+3V2" gate="G$1" x="213.36" y="236.22" smashed="yes" rot="R90">
 <attribute name="VALUE" x="213.36" y="238.76" size="1.778" layer="96" rot="R180"/>
 </instance>
-<instance part="P+5" gate="1" x="325.12" y="231.14" smashed="yes">
-<attribute name="VALUE" x="322.58" y="226.06" size="1.778" layer="96" rot="R90"/>
+<instance part="P+5" gate="1" x="320.04" y="251.46" smashed="yes">
+<attribute name="VALUE" x="317.5" y="246.38" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="C3" gate="G$1" x="327.66" y="215.9" smashed="yes" rot="R90">
-<attribute name="NAME" x="327.279" y="217.424" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="332.359" y="217.424" size="1.778" layer="96" rot="R90"/>
+<instance part="C3" gate="G$1" x="322.58" y="236.22" smashed="yes" rot="R90">
+<attribute name="NAME" x="322.199" y="237.744" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="327.279" y="237.744" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="C4" gate="G$1" x="327.66" y="165.1" smashed="yes" rot="R90">
-<attribute name="NAME" x="327.279" y="166.624" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="332.359" y="166.624" size="1.778" layer="96" rot="R90"/>
+<instance part="C4" gate="G$1" x="322.58" y="185.42" smashed="yes" rot="R90">
+<attribute name="NAME" x="322.199" y="186.944" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="327.279" y="186.944" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="X5" gate="-1" x="355.6" y="213.36" smashed="yes">
-<attribute name="NAME" x="358.14" y="212.598" size="1.524" layer="95"/>
+<instance part="X5" gate="-1" x="350.52" y="233.68" smashed="yes">
+<attribute name="NAME" x="353.06" y="232.918" size="1.524" layer="95"/>
 </instance>
-<instance part="X5" gate="-2" x="355.6" y="210.82" smashed="yes">
-<attribute name="NAME" x="358.14" y="210.058" size="1.524" layer="95"/>
+<instance part="X5" gate="-2" x="350.52" y="231.14" smashed="yes">
+<attribute name="NAME" x="353.06" y="230.378" size="1.524" layer="95"/>
 </instance>
-<instance part="X5" gate="-3" x="355.6" y="208.28" smashed="yes">
-<attribute name="NAME" x="358.14" y="207.518" size="1.524" layer="95"/>
+<instance part="X5" gate="-3" x="350.52" y="228.6" smashed="yes">
+<attribute name="NAME" x="353.06" y="227.838" size="1.524" layer="95"/>
 </instance>
-<instance part="X6" gate="-1" x="355.6" y="195.58" smashed="yes">
-<attribute name="NAME" x="358.14" y="194.818" size="1.524" layer="95"/>
+<instance part="X6" gate="-1" x="350.52" y="215.9" smashed="yes">
+<attribute name="NAME" x="353.06" y="215.138" size="1.524" layer="95"/>
 </instance>
-<instance part="X6" gate="-2" x="355.6" y="193.04" smashed="yes">
-<attribute name="NAME" x="358.14" y="192.278" size="1.524" layer="95"/>
+<instance part="X6" gate="-2" x="350.52" y="213.36" smashed="yes">
+<attribute name="NAME" x="353.06" y="212.598" size="1.524" layer="95"/>
 </instance>
-<instance part="X6" gate="-3" x="355.6" y="190.5" smashed="yes">
-<attribute name="NAME" x="358.14" y="189.738" size="1.524" layer="95"/>
+<instance part="X6" gate="-3" x="350.52" y="210.82" smashed="yes">
+<attribute name="NAME" x="353.06" y="210.058" size="1.524" layer="95"/>
 </instance>
-<instance part="X7" gate="-1" x="355.6" y="175.26" smashed="yes">
-<attribute name="NAME" x="358.14" y="174.498" size="1.524" layer="95"/>
+<instance part="X7" gate="-1" x="350.52" y="195.58" smashed="yes">
+<attribute name="NAME" x="353.06" y="194.818" size="1.524" layer="95"/>
 </instance>
-<instance part="X7" gate="-2" x="355.6" y="172.72" smashed="yes">
-<attribute name="NAME" x="358.14" y="171.958" size="1.524" layer="95"/>
+<instance part="X7" gate="-2" x="350.52" y="193.04" smashed="yes">
+<attribute name="NAME" x="353.06" y="192.278" size="1.524" layer="95"/>
 </instance>
-<instance part="X7" gate="-3" x="355.6" y="170.18" smashed="yes">
-<attribute name="NAME" x="358.14" y="169.418" size="1.524" layer="95"/>
+<instance part="X7" gate="-3" x="350.52" y="190.5" smashed="yes">
+<attribute name="NAME" x="353.06" y="189.738" size="1.524" layer="95"/>
 </instance>
-<instance part="R4" gate="G$1" x="320.04" y="142.24" smashed="yes" rot="R90">
-<attribute name="NAME" x="318.5414" y="138.43" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="323.342" y="138.43" size="1.778" layer="96" rot="R90"/>
+<instance part="R4" gate="G$1" x="314.96" y="162.56" smashed="yes" rot="R90">
+<attribute name="NAME" x="313.4614" y="158.75" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="318.262" y="158.75" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="R5" gate="G$1" x="327.66" y="142.24" smashed="yes" rot="R90">
-<attribute name="NAME" x="326.1614" y="138.43" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="330.962" y="138.43" size="1.778" layer="96" rot="R90"/>
+<instance part="R5" gate="G$1" x="322.58" y="162.56" smashed="yes" rot="R90">
+<attribute name="NAME" x="321.0814" y="158.75" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="325.882" y="158.75" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="+3V3" gate="G$1" x="320.04" y="154.94" smashed="yes">
-<attribute name="VALUE" x="317.5" y="149.86" size="1.778" layer="96" rot="R90"/>
+<instance part="+3V3" gate="G$1" x="314.96" y="175.26" smashed="yes">
+<attribute name="VALUE" x="312.42" y="170.18" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="GND5" gate="1" x="347.98" y="152.4" smashed="yes" rot="R90">
-<attribute name="VALUE" x="350.52" y="149.86" size="1.778" layer="96" rot="R90"/>
+<instance part="GND5" gate="1" x="342.9" y="172.72" smashed="yes" rot="R90">
+<attribute name="VALUE" x="345.44" y="170.18" size="1.778" layer="96" rot="R90"/>
 </instance>
-<instance part="X8" gate="-1" x="353.06" y="134.62" smashed="yes">
-<attribute name="NAME" x="355.6" y="133.858" size="1.524" layer="95"/>
+<instance part="X8" gate="-1" x="347.98" y="154.94" smashed="yes">
+<attribute name="NAME" x="350.52" y="154.178" size="1.524" layer="95"/>
 </instance>
-<instance part="X8" gate="-2" x="353.06" y="132.08" smashed="yes">
-<attribute name="NAME" x="355.6" y="131.318" size="1.524" layer="95"/>
+<instance part="X8" gate="-2" x="347.98" y="152.4" smashed="yes">
+<attribute name="NAME" x="350.52" y="151.638" size="1.524" layer="95"/>
 </instance>
-<instance part="X8" gate="-3" x="353.06" y="129.54" smashed="yes">
-<attribute name="NAME" x="355.6" y="128.778" size="1.524" layer="95"/>
+<instance part="X8" gate="-3" x="347.98" y="149.86" smashed="yes">
+<attribute name="NAME" x="350.52" y="149.098" size="1.524" layer="95"/>
 </instance>
 <instance part="X3" gate="G$1" x="294.64" y="99.06" smashed="yes" rot="R90">
 <attribute name="NAME" x="284.48" y="93.98" size="1.778" layer="95" rot="R90"/>
 <attribute name="VALUE" x="287.02" y="100.33" size="1.778" layer="96"/>
+</instance>
+<instance part="R6" gate="G$1" x="302.26" y="154.94" smashed="yes">
+<attribute name="NAME" x="298.45" y="156.4386" size="1.778" layer="95"/>
+<attribute name="VALUE" x="298.45" y="151.638" size="1.778" layer="96"/>
+</instance>
+<instance part="R7" gate="G$1" x="302.26" y="147.32" smashed="yes">
+<attribute name="NAME" x="298.45" y="148.8186" size="1.778" layer="95"/>
+<attribute name="VALUE" x="298.45" y="144.018" size="1.778" layer="96"/>
+</instance>
+<instance part="D2" gate="1" x="289.56" y="139.7" smashed="yes" rot="R90">
+<attribute name="NAME" x="287.655" y="137.414" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="292.989" y="137.414" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="D1" gate="1" x="281.94" y="139.7" smashed="yes" rot="R90">
+<attribute name="NAME" x="280.035" y="137.414" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="285.369" y="137.414" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="GND7" gate="1" x="281.94" y="121.92" smashed="yes">
+<attribute name="VALUE" x="279.4" y="119.38" size="1.778" layer="96"/>
+</instance>
+<instance part="C5" gate="G$1" x="223.52" y="187.96" smashed="yes">
+<attribute name="NAME" x="225.044" y="188.341" size="1.778" layer="95"/>
+<attribute name="VALUE" x="225.044" y="183.261" size="1.778" layer="96"/>
+</instance>
+<instance part="GND8" gate="1" x="223.52" y="180.34" smashed="yes">
+<attribute name="VALUE" x="220.98" y="177.8" size="1.778" layer="96"/>
 </instance>
 </instances>
 <busses>
@@ -18726,31 +18854,45 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <wire x1="256.54" y1="190.5" x2="271.78" y2="190.5" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="335.28" y1="215.9" x2="335.28" y2="208.28" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="236.22" x2="330.2" y2="228.6" width="0.1524" layer="91"/>
 <pinref part="C4" gate="G$1" pin="2"/>
-<wire x1="335.28" y1="208.28" x2="335.28" y2="190.5" width="0.1524" layer="91"/>
-<wire x1="335.28" y1="190.5" x2="335.28" y2="170.18" width="0.1524" layer="91"/>
-<wire x1="335.28" y1="170.18" x2="335.28" y2="165.1" width="0.1524" layer="91"/>
-<wire x1="332.74" y1="165.1" x2="335.28" y2="165.1" width="0.1524" layer="91"/>
-<junction x="335.28" y="165.1"/>
+<wire x1="330.2" y1="228.6" x2="330.2" y2="210.82" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="210.82" x2="330.2" y2="190.5" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="190.5" x2="330.2" y2="185.42" width="0.1524" layer="91"/>
+<wire x1="327.66" y1="185.42" x2="330.2" y2="185.42" width="0.1524" layer="91"/>
+<junction x="330.2" y="185.42"/>
 <pinref part="C3" gate="G$1" pin="2"/>
-<wire x1="335.28" y1="215.9" x2="332.74" y2="215.9" width="0.1524" layer="91"/>
-<wire x1="335.28" y1="165.1" x2="335.28" y2="152.4" width="0.1524" layer="91"/>
-<wire x1="335.28" y1="152.4" x2="335.28" y2="129.54" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="236.22" x2="327.66" y2="236.22" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="185.42" x2="330.2" y2="172.72" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="172.72" x2="330.2" y2="149.86" width="0.1524" layer="91"/>
 <pinref part="X7" gate="-3" pin="S"/>
-<wire x1="353.06" y1="170.18" x2="335.28" y2="170.18" width="0.1524" layer="91"/>
-<junction x="335.28" y="170.18"/>
+<wire x1="347.98" y1="190.5" x2="330.2" y2="190.5" width="0.1524" layer="91"/>
+<junction x="330.2" y="190.5"/>
 <pinref part="X6" gate="-3" pin="S"/>
-<wire x1="353.06" y1="190.5" x2="335.28" y2="190.5" width="0.1524" layer="91"/>
-<junction x="335.28" y="190.5"/>
+<wire x1="347.98" y1="210.82" x2="330.2" y2="210.82" width="0.1524" layer="91"/>
+<junction x="330.2" y="210.82"/>
 <pinref part="X5" gate="-3" pin="S"/>
-<wire x1="353.06" y1="208.28" x2="335.28" y2="208.28" width="0.1524" layer="91"/>
-<junction x="335.28" y="208.28"/>
+<wire x1="347.98" y1="228.6" x2="330.2" y2="228.6" width="0.1524" layer="91"/>
+<junction x="330.2" y="228.6"/>
 <pinref part="GND5" gate="1" pin="GND"/>
-<wire x1="345.44" y1="152.4" x2="335.28" y2="152.4" width="0.1524" layer="91"/>
-<junction x="335.28" y="152.4"/>
+<wire x1="340.36" y1="172.72" x2="330.2" y2="172.72" width="0.1524" layer="91"/>
+<junction x="330.2" y="172.72"/>
 <pinref part="X8" gate="-3" pin="S"/>
-<wire x1="335.28" y1="129.54" x2="350.52" y2="129.54" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="149.86" x2="345.44" y2="149.86" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="D1" gate="1" pin="A"/>
+<wire x1="281.94" y1="137.16" x2="281.94" y2="132.08" width="0.1524" layer="91"/>
+<pinref part="D2" gate="1" pin="A"/>
+<wire x1="281.94" y1="132.08" x2="281.94" y2="124.46" width="0.1524" layer="91"/>
+<wire x1="281.94" y1="132.08" x2="289.56" y2="132.08" width="0.1524" layer="91"/>
+<wire x1="289.56" y1="132.08" x2="289.56" y2="137.16" width="0.1524" layer="91"/>
+<junction x="281.94" y="132.08"/>
+<pinref part="GND7" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="C5" gate="G$1" pin="2"/>
+<pinref part="GND8" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -18780,10 +18922,10 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <segment>
 <pinref part="+3V3" gate="G$1" pin="+3V3"/>
 <pinref part="R4" gate="G$1" pin="2"/>
-<wire x1="320.04" y1="152.4" x2="320.04" y2="147.32" width="0.1524" layer="91"/>
+<wire x1="314.96" y1="172.72" x2="314.96" y2="167.64" width="0.1524" layer="91"/>
 <pinref part="R5" gate="G$1" pin="2"/>
-<wire x1="320.04" y1="147.32" x2="327.66" y2="147.32" width="0.1524" layer="91"/>
-<junction x="320.04" y="147.32"/>
+<wire x1="314.96" y1="167.64" x2="322.58" y2="167.64" width="0.1524" layer="91"/>
+<junction x="314.96" y="167.64"/>
 </segment>
 </net>
 <net name="N$5" class="0">
@@ -18974,26 +19116,27 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <wire x1="228.6" y1="203.2" x2="223.52" y2="203.2" width="0.1524" layer="91"/>
 <wire x1="223.52" y1="203.2" x2="223.52" y2="190.5" width="0.1524" layer="91"/>
 <junction x="223.52" y="190.5"/>
+<pinref part="C5" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="P+5" gate="1" pin="+5V"/>
-<wire x1="325.12" y1="215.9" x2="325.12" y2="228.6" width="0.1524" layer="91"/>
-<wire x1="325.12" y1="215.9" x2="325.12" y2="210.82" width="0.1524" layer="91"/>
+<wire x1="320.04" y1="236.22" x2="320.04" y2="248.92" width="0.1524" layer="91"/>
+<wire x1="320.04" y1="236.22" x2="320.04" y2="231.14" width="0.1524" layer="91"/>
 <pinref part="C3" gate="G$1" pin="1"/>
-<junction x="325.12" y="215.9"/>
+<junction x="320.04" y="236.22"/>
 <pinref part="C4" gate="G$1" pin="1"/>
 <pinref part="X7" gate="-2" pin="S"/>
-<wire x1="325.12" y1="210.82" x2="325.12" y2="193.04" width="0.1524" layer="91"/>
-<wire x1="325.12" y1="193.04" x2="325.12" y2="172.72" width="0.1524" layer="91"/>
-<wire x1="325.12" y1="172.72" x2="325.12" y2="165.1" width="0.1524" layer="91"/>
-<wire x1="353.06" y1="172.72" x2="325.12" y2="172.72" width="0.1524" layer="91"/>
-<junction x="325.12" y="172.72"/>
+<wire x1="320.04" y1="231.14" x2="320.04" y2="213.36" width="0.1524" layer="91"/>
+<wire x1="320.04" y1="213.36" x2="320.04" y2="193.04" width="0.1524" layer="91"/>
+<wire x1="320.04" y1="193.04" x2="320.04" y2="185.42" width="0.1524" layer="91"/>
+<wire x1="347.98" y1="193.04" x2="320.04" y2="193.04" width="0.1524" layer="91"/>
+<junction x="320.04" y="193.04"/>
 <pinref part="X6" gate="-2" pin="S"/>
-<wire x1="353.06" y1="193.04" x2="325.12" y2="193.04" width="0.1524" layer="91"/>
-<junction x="325.12" y="193.04"/>
+<wire x1="347.98" y1="213.36" x2="320.04" y2="213.36" width="0.1524" layer="91"/>
+<junction x="320.04" y="213.36"/>
 <pinref part="X5" gate="-2" pin="S"/>
-<wire x1="353.06" y1="210.82" x2="325.12" y2="210.82" width="0.1524" layer="91"/>
-<junction x="325.12" y="210.82"/>
+<wire x1="347.98" y1="231.14" x2="320.04" y2="231.14" width="0.1524" layer="91"/>
+<junction x="320.04" y="231.14"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -19042,8 +19185,8 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 </net>
 <net name="O21" class="0">
 <segment>
-<wire x1="353.06" y1="213.36" x2="342.9" y2="213.36" width="0.1524" layer="91"/>
-<label x="342.9" y="213.36" size="1.778" layer="95"/>
+<wire x1="347.98" y1="233.68" x2="337.82" y2="233.68" width="0.1524" layer="91"/>
+<label x="337.82" y="233.68" size="1.778" layer="95"/>
 <pinref part="X5" gate="-1" pin="S"/>
 </segment>
 <segment>
@@ -19054,8 +19197,8 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 </net>
 <net name="O22" class="0">
 <segment>
-<wire x1="353.06" y1="195.58" x2="342.9" y2="195.58" width="0.1524" layer="91"/>
-<label x="342.9" y="195.58" size="1.778" layer="95"/>
+<wire x1="347.98" y1="215.9" x2="337.82" y2="215.9" width="0.1524" layer="91"/>
+<label x="337.82" y="215.9" size="1.778" layer="95"/>
 <pinref part="X6" gate="-1" pin="S"/>
 </segment>
 <segment>
@@ -19066,8 +19209,8 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 </net>
 <net name="O23" class="0">
 <segment>
-<wire x1="353.06" y1="175.26" x2="342.9" y2="175.26" width="0.1524" layer="91"/>
-<label x="342.9" y="175.26" size="1.778" layer="95"/>
+<wire x1="347.98" y1="195.58" x2="337.82" y2="195.58" width="0.1524" layer="91"/>
+<label x="337.82" y="195.58" size="1.778" layer="95"/>
 <pinref part="X7" gate="-1" pin="S"/>
 </segment>
 <segment>
@@ -19078,34 +19221,34 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 </net>
 <net name="INPUT2" class="0">
 <segment>
-<label x="309.88" y="132.08" size="1.778" layer="95"/>
-<pinref part="R4" gate="G$1" pin="1"/>
-<wire x1="320.04" y1="132.08" x2="309.88" y2="132.08" width="0.1524" layer="91"/>
-<wire x1="320.04" y1="137.16" x2="320.04" y2="132.08" width="0.1524" layer="91"/>
-<pinref part="X8" gate="-2" pin="S"/>
-<wire x1="320.04" y1="132.08" x2="350.52" y2="132.08" width="0.1524" layer="91"/>
-<junction x="320.04" y="132.08"/>
-</segment>
-<segment>
 <pinref part="IC2" gate="G$1" pin="IO48"/>
 <wire x1="256.54" y1="205.74" x2="271.78" y2="205.74" width="0.1524" layer="91"/>
 <label x="266.7" y="205.74" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="R7" gate="G$1" pin="1"/>
+<wire x1="297.18" y1="147.32" x2="289.56" y2="147.32" width="0.1524" layer="91"/>
+<label x="259.08" y="147.32" size="1.778" layer="95"/>
+<pinref part="D2" gate="1" pin="C"/>
+<wire x1="289.56" y1="147.32" x2="259.08" y2="147.32" width="0.1524" layer="91"/>
+<wire x1="289.56" y1="142.24" x2="289.56" y2="147.32" width="0.1524" layer="91"/>
+<junction x="289.56" y="147.32"/>
+</segment>
 </net>
 <net name="INPUT1" class="0">
-<segment>
-<label x="309.88" y="134.62" size="1.778" layer="95"/>
-<pinref part="R5" gate="G$1" pin="1"/>
-<wire x1="327.66" y1="134.62" x2="309.88" y2="134.62" width="0.1524" layer="91"/>
-<wire x1="327.66" y1="137.16" x2="327.66" y2="134.62" width="0.1524" layer="91"/>
-<pinref part="X8" gate="-1" pin="S"/>
-<wire x1="327.66" y1="134.62" x2="350.52" y2="134.62" width="0.1524" layer="91"/>
-<junction x="327.66" y="134.62"/>
-</segment>
 <segment>
 <pinref part="IC2" gate="G$1" pin="IO47"/>
 <wire x1="256.54" y1="203.2" x2="271.78" y2="203.2" width="0.1524" layer="91"/>
 <label x="266.7" y="203.2" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="R6" gate="G$1" pin="1"/>
+<wire x1="297.18" y1="154.94" x2="281.94" y2="154.94" width="0.1524" layer="91"/>
+<label x="259.08" y="154.94" size="1.778" layer="95"/>
+<pinref part="D1" gate="1" pin="C"/>
+<wire x1="281.94" y1="154.94" x2="259.08" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="281.94" y1="142.24" x2="281.94" y2="154.94" width="0.1524" layer="91"/>
+<junction x="281.94" y="154.94"/>
 </segment>
 </net>
 <net name="X3_B-8" class="0">
@@ -19231,6 +19374,29 @@ Source: &lt;a href="https://github.com/yellobyte/ESP32-DevBoards-Getting-Started
 <pinref part="IC2" gate="G$1" pin="IO39"/>
 <wire x1="256.54" y1="215.9" x2="271.78" y2="215.9" width="0.1524" layer="91"/>
 <label x="264.16" y="215.9" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="N$1" class="0">
+<segment>
+<pinref part="X8" gate="-1" pin="S"/>
+<pinref part="R6" gate="G$1" pin="2"/>
+<wire x1="345.44" y1="154.94" x2="322.58" y2="154.94" width="0.1524" layer="91"/>
+<pinref part="R5" gate="G$1" pin="1"/>
+<wire x1="322.58" y1="154.94" x2="307.34" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="322.58" y1="157.48" x2="322.58" y2="154.94" width="0.1524" layer="91"/>
+<junction x="322.58" y="154.94"/>
+</segment>
+</net>
+<net name="N$2" class="0">
+<segment>
+<pinref part="X8" gate="-2" pin="S"/>
+<wire x1="345.44" y1="152.4" x2="314.96" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="314.96" y1="152.4" x2="314.96" y2="147.32" width="0.1524" layer="91"/>
+<pinref part="R7" gate="G$1" pin="2"/>
+<wire x1="314.96" y1="147.32" x2="307.34" y2="147.32" width="0.1524" layer="91"/>
+<pinref part="R4" gate="G$1" pin="1"/>
+<wire x1="314.96" y1="157.48" x2="314.96" y2="152.4" width="0.1524" layer="91"/>
+<junction x="314.96" y="152.4"/>
 </segment>
 </net>
 </nets>
