@@ -1,3 +1,9 @@
+#if defined(ARDUINO) && ARDUINO >= 100
+#include <Arduino.h>
+#else
+#include "WProgram.h"
+#endif
+
 #include "LEDControl.h"
 #include "pinmapping.h"
 
@@ -34,8 +40,7 @@ LED::LED(const uint8_t Channel) :
 	Serial.print("    Channel: "); Serial.println(_Channel);
 	Serial.print("    GPIO   : "); Serial.println(_GPIO);
 
-	ledcSetup(_Channel, _PWMFrequency, _PWMResolution);
-	ledcAttachPin(_GPIO, _Channel);
+	ledcAttachChannel(_Channel, _GPIO, _PWMFrequency, _PWMResolution);
 
 	off();
 }
@@ -47,7 +52,7 @@ LED::LED(const uint8_t Channel, uint8_t Brightness) :
 }
 
 LED::~LED() {
-	ledcDetachPin(_GPIO);
+	ledcDetach(_GPIO);
 }
 
 void LED::process() {}
