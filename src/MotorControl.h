@@ -4,7 +4,7 @@
 #define _MOTORCONTROL_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
+#include <Arduino.h>
 #else
 	#include "WProgram.h"
 #endif
@@ -12,23 +12,13 @@
 #include "accessories.h"
 #include "LEDControl.h"
 
-class Motoraccessories : public accessories {
-public:
-	Motoraccessories() = default;
-	Motoraccessories(uint16_t BaseAddress, byte BaseChannel);
-	Motoraccessories(uint16_t BaseAddress, byte BaseChannel, byte Mode);
-	~Motoraccessories();
-	AccessoryType getType() const override;
-	virtual void SetMaxBrightness(uint16_t MaxBrightness);
-};
-
-class Motor : public LED{
+class MotorControl : public LED {
 
 public:
-    Motor(const uint8_t Channel);
-    Motor(const uint8_t Channel, uint8_t Speed);
-    Motor(int pin, int Channel, int Frequency, int Resolution);
-    ~Motor();
+    MotorControl(const uint8_t Channel);
+    MotorControl(const uint8_t Channel, uint8_t Speed);
+    MotorControl(const uint8_t Channel, const uint16_t Frequency, const uint8_t Resolution);
+    ~MotorControl();
 
     void process();
 
@@ -45,6 +35,26 @@ private:
     int _maxSpeed;
     bool _isOn = false;
 };
+
+class Motor : public accessories {
+public:
+    Motor() = default;
+    Motor(uint16_t BaseAddress, byte BaseChannel);
+    Motor(uint16_t BaseAddress, byte BaseChannel, byte Mode);
+	~Motor();
+	AccessoryType getType() const override;
+	virtual void SetMaxSpeed(uint8_t Speed);
+
+    void on();
+	void off();
+	void process();
+
+private:
+	MotorControl _motor;
+
+};
+
+
 
 
 #endif
