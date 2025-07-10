@@ -1,96 +1,98 @@
-
-#include "SoundControl.h"
-#include "pinmapping.h"
 #include <Arduino.h>
 
 #include "src/neotimer.h"
 #include "src/version.h"
 #include "src/MotorControl.h"
+#include "src/SoundControl.h"
+#include "src/pinmapping.h"
+#include "src/Vector.h"
+#include "src/accessories.h"
+
+
+Neotimer InputTimer1(30000);
+Neotimer InputTimer2(30000);
+Sound sound;
 
 
 
+// Liste mit allen Decoderobjekten (Apps)
+Vector<accessories*> decoder;
 
-MotorControl motor1(8, 0, 5000, 8); // Pin 8, PWM Channel 0, Frequency 5000Hz, Resolution 8 bits
+void kDecoderInit(void) {
+	uint8_t channel_ = 0;
 
-Neotimer playTimer1(30000);
+	// Decoderobjekte in decoder löschen
+	decoder.Erase(0, decoder.Size());
+	decoder.Clear();
+	Vector<accessories*>().Swap(decoder);
 
-bool isPlaying1 = false;
+	// Initialize the decoder here if needed
+	
+	sound.begin();
+	accessories* newAccessory = nullptr;
 
-// Callback-Funktion für das Ende der Datei
-void audio_eof_mp3(const char* info) {
-	Serial.print("eof: ");
-	Serial.println(info);
-	// Datei erneut abspielen (Endlosschleife)
-	if (isPlaying1) {
-		audio.connecttoFS(SD_MMC, FILE_ON_SD); // Endlosschleife, solange Timer läuft
-	}
-}
+	uint8_t Mode_ = 203; // Default Mode for Motor accessory
+	uint16_t Address_ = 0;
 
-void audio_info(const char* info) {
-	Serial.print("info: ");
-	Serial.println(info);
-}
-void audio_id3data(const char* info) {
-	Serial.print("id3: ");
-	Serial.println(info);
-}
+	newAccessory = new Motor(Address_, Mode_); // Create a new Motor accessory
 
-void audio_left(void* parameter) {
-	// Callback-Funktion für den linken Audiokanal
-	Serial.println("Left channel callback");
-
-	audio.setVolume(8); // 0...21(max)
-	audio.setBalance(-16); // -16...16 (left to right)
-
-	if (!audio.connecttoFS(SD_MMC, FILE_ON_SD)) {
-		Serial.println("Failed to play file");
+	if (newAccessory != nullptr) {
+		Serial.print(F("    Mode: ")); Serial.println("Motor");
+		decoder.PushBack(newAccessory);
 	}
 
-	//vTaskDelete(NULL); // task finishes when all files were played
+	Serial.println("kDecoder Initialized");
 }
 
 void setup() {
-	pinMode(LED_BUILTIN, OUTPUT);
-	digitalWrite(LED_BUILTIN, LOW);
-
-	pinMode(Input1, INPUT_PULLUP);
-	pinMode(Input2, INPUT_PULLUP);
-
 	Serial.begin(115200);
 	while (!Serial) {
 		delay(10);
 	}
-	SD_MMC.setPins(SPI_SCK, SPI_MOSI, SPI_MISO);
-	if (!SD_MMC.begin("/sdcard", true)) {
-		Serial.println("Card Mount Failed");
-		return;
-	}
 
-	audio.setPinout(I2S_BCLK, I2S_LRCLK, I2S_DOUT);
+	Serial.println("Starting with Firmware " + String(VERSION));
+
+	pinMode(LED_BUILTIN, OUTPUT);
+	digitalWrite(LED_BUILTIN, LOW);
+
+	pinMode(INPUT1, INPUT_PULLUP);
+	pinMode(INPUT2, INPUT_PULLUP);
+
+	kDecoderInit(); // Initialize the decoder
 
 }
 
 void loop() {
-	audio.loop();
-	if (digitalRead(Input1) == LOW && !isPlaying1) {
-		Serial.println("Input1 pressed");
-		isPlaying1 = true;
-		playTimer1.start();
-		audio_left(NULL); // Start the left channel audio task
-		motor1.startMotor(); // Start the motor
+	sound.process(); // Process audio tasks
 
-		//xTaskCreate(audio_left, "leftTask", 8192, NULL, 1, NULL);
+	for (int i_ = 0; i_ < decoder.Size(); i_++) {
+		decoder[i_]->process();
+	}
 
-	}
-	if (isPlaying1 && playTimer1.done()) {
-		// stop the audio and reset the flag
-		isPlaying1 = false;
-		audio.stopSong();
-		motor1.stopMotor();
-	}
-	if (digitalRead(Input2) == LOW) {
-		Serial.println("Input2 pressed");
+	if (digitalRead(INPUT1) == LOW && !sound.isPlaying()) {
 
+		sound.play("/File1.mp3"); // Sound abspielen
+
+		for (int i_ = 0; i_ < decoder.Size(); ++i_) {
+			if (decoder[i_]->getType() == AccessoryType::Motor) {
+				Motor* motor_ = (Motor*)decoder[i_];
+				motor_->on();
+			}
+		}
+
+		InputTimer1.start();
 	}
+
+	if (InputTimer1.done()) {
+		for (int i_ = 0; i_ < decoder.Size(); ++i_) {
+			if (decoder[i_]->getType() == AccessoryType::Motor) {
+				Motor* motor_ = (Motor*)decoder[i_];
+				motor_->off();
+			}
+		}
+		sound.stop(); // Sound stoppen
+		InputTimer1.stop();
+	}
+	
 	vTaskDelay(1);
 }
