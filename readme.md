@@ -52,6 +52,11 @@ static uint8_t ChannelToGPIOMapping[16] = {
 #define SOUND_VOLUME 10 // Volume level (0-30)
 #define PLAY_DURATION 60000 // 60 seconds in milliseconds
 ```
+## Schema
+![alt text](img/schema.png)
+
+## Board
+![alt text](img/board.png)
 
 ## Kirmes sounds
 https://www.pond5.com/de/search?kw=karussell-unterhaltung-park-kirmes&media=sfx
