@@ -52,6 +52,32 @@ bool DecoderGroupIsActive(uint8_t DecoderGroup) {
 }
 
 void kDecoderReset() {
+	OutputGroup* outputgroup_ = &OutputGroup1;
+	while (outputgroup_ != nullptr) {
+		outputgroup_->DesignationParam.applyDefaultValue();
+		outputgroup_->ModeParam.applyDefaultValue();
+		outputgroup_->NumberParam.applyDefaultValue();
+		outputgroup_->AddressParam.applyDefaultValue();
+		outputgroup_->TimeOnParam.applyDefaultValue();
+		outputgroup_->TimeOffParam.applyDefaultValue();
+		outputgroup_->TimeOnFadeParam.applyDefaultValue();
+		outputgroup_->TimeOffFadeParam.applyDefaultValue();
+		outputgroup_->setActive(false);
+
+		outputgroup_ = (OutputGroup*)outputgroup_->getNext();
+	}
+
+	ServoGroup* servogroup_ = &ServoGroup1;
+	while (servogroup_ != nullptr) {
+		servogroup_->DesignationParam.applyDefaultValue();
+		servogroup_->AddressParam.applyDefaultValue();
+		servogroup_->TravelTimeParam.applyDefaultValue();
+		servogroup_->Limit1Param.applyDefaultValue();
+		servogroup_->Limit2Param.applyDefaultValue();
+		servogroup_->setActive(false);
+
+		servogroup_ = (ServoGroup*)servogroup_->getNext();
+	}
 }
 
 void kDecoderInit(void) {
@@ -89,7 +115,7 @@ void kDecoderInit(void) {
 			sound_.volume = soundGroup.getVolume();
 			sound_.balance = soundGroup.getBalance();
 			sound_.mono = soundGroup.isMono();
-			sound_.maxPlayTime = outputgroup_->getActiveDuration()
+			sound_.maxPlayTime = outputgroup_->getActiveDuration();
 
 			Serial.print(F("Values for channel ")); Serial.print(channel_); Serial.println(F(" preserved"));
 			Serial.print(F("    Channels used: ")); Serial.println(Count_);
