@@ -15,10 +15,15 @@ SPIClass* spi_onboardSD = new SPIClass(FSPI);
 Audio     audio;
 File      root;
 
+bool isPlaying = false;
+bool isLoopMode = false;
+
 void audio_eof_mp3(const char* info) {
     Serial.print("eof: ");
     Serial.println(info);
-    // Datei erneut abspielen (Endlosschleife)
+    if (isLoopMode) {
+        playSound(info);
+    }
 }
 
 void audio_info(const char* info) {
@@ -36,7 +41,7 @@ void audio_error(const char* info) {
     Serial.println(info);
 }
 
-void setupSpund() {
+void setupSound() {
 	Serial.println("Setting up sound system...");
     spi_onboardSD->begin();
 
@@ -58,5 +63,52 @@ void loopSound() {
     vTaskDelay(1);
 }
 
+void playSound(const char* filename) {
+    if (audio.connecttoFS(SD, filename)) {
+        isPlaying = true;
+    }
+    else {
+        Serial.println("Failed to play file");
+        isPlaying = false;
+    }
+}
+
+void playSoundLoop(const char* filename) {
+    isLoopMode = true;
+    playSound(filename);
+}
+
+
+void stopSound() {
+    audio.stopSong();
+    isPlaying = false;
+    isLoopMode = false;
+}
+
+void setSoundVolume(int volume) {
+    if (volume > 21)
+        volume = 21;
+    audio.setVolume(volume);
+}
+
+void setSoundBalance(int8_t balance) {
+    if (balance < -16)
+        balance = -16;
+    if (balance > 16)
+        balance = 16;
+    audio.setBalance(balance);
+}
+
+void setSoundMono(bool mono) {
+    audio.forceMono(mono);
+}
+
+bool isplayingSound() {
+    return isPlaying;
+}
+
+bool isLoopModeSound() {
+    return isLoopMode;
+}
 
 
