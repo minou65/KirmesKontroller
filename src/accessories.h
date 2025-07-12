@@ -41,6 +41,7 @@ protected:
 	byte Mode;
 
 	SoundSettings _sound;
+	uint8_t _Input;
 
 public:
 	accessories() = default;
