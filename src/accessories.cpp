@@ -4,12 +4,13 @@
 accessories::accessories(uint16_t BaseAddress_, byte BaseChannel_) :
 	BaseAddress(BaseAddress_),
 	BaseChannel(BaseChannel_),
-	IsActive(false) {
+	IsActive(false),
+	_Input(-1),
+	_sound({ "", 15, 0, false, 0 }) {
 }
 
 accessories::accessories(uint16_t BaseAddress_, byte BaseChannel_, byte Mode_):
-	BaseAddress(BaseAddress_),
-	BaseChannel(BaseChannel_),
+	accessories(BaseAddress_, BaseChannel_),
 	Mode(Mode_) {
 }
 
