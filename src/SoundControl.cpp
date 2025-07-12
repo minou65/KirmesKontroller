@@ -8,12 +8,12 @@
 
 
 #include <FS.h>
+#include <SD.h>
 #include <SPI.h>
-#include <SD_MMC.h>
-#include <Audio.h>
 
-#include <SD_MMC.h>
-
+SPIClass* spi_onboardSD = new SPIClass(FSPI);
+Audio     audio;
+File      root;
 
 void audio_eof_mp3(const char* info) {
     Serial.print("eof: ");
@@ -36,77 +36,27 @@ void audio_error(const char* info) {
     Serial.println(info);
 }
 
-Sound::Sound(int bclk, int lrclk, int dout) : 
-    _bclk(bclk), 
-    _lrclk(lrclk), 
-    _dout(dout), 
-    _isPlaying(false),
-    _loopMode(false) {
-}
+void setupSpund() {
+	Serial.println("Setting up sound system...");
+    spi_onboardSD->begin();
 
-Sound::Sound() {
-    Sound(I2S_BCLK, I2S_LRCLK, I2S_DOUT);
-}
-
-bool Sound::begin() {
-    SD_MMC.setPins(SPI_SCK, SPI_MOSI, SPI_MISO);
-    if (!SD_MMC.begin("/sdcard", true)) {
-        Serial.println("Card Mount Failed");
-        return false;
+    if (!SD.begin(SS, *spi_onboardSD)) {
+        Serial.println("error mounting microSD");
+        return;
     }
-    _audio.setPinout(_bclk, _lrclk, _dout);
-    return true;
+    Serial.println("microSD mounted successfully");
+
+	audio.setPinout(I2S_BCLK, I2S_LRCLK, I2S_DOUT);
+    audio.setVolume(21); // Set volume to maximum (0-21)
+    audio.setBalance(0); // Center balance
+    audio.forceMono(false); // Stereo output
+	Serial.println("Sound system setup complete.");
 }
 
-void Sound::play(const char* filename) {
-    strncpy(_lastPlayedFile, filename, sizeof(_lastPlayedFile));
-    if (_audio.connecttoFS(SD_MMC, filename)) {
-        _isPlaying = true;
-    }
-    else {
-        Serial.println("Failed to play file");
-        _isPlaying = false;
-    }
+void loopSound() {
+    audio.loop();
+    vTaskDelay(1);
 }
 
-void Sound::stop() {
-    _audio.stopSong();
-    _isPlaying = false;
-}
-
-void Sound::process() {
-    _audio.loop();
-    if(_loopMode && !_audio.isRunning()) {
-        // If loop mode is enabled and the audio is not running, restart playback
-        play(_lastPlayedFile);
-	}
-}
-
-bool Sound::isPlaying() const {
-    return _isPlaying;
-}
-
-void Sound::setVolume(uint8_t Volume) {
-    if (Volume > 21)
-        Volume = 21;
-    _audio.setVolume(Volume);
-}
-
-void Sound::setBalance(int8_t Balance) {
-    if (Balance > 16)
-        Balance = 16;
-    if (Balance < -16)
-        Balance = -16;
-     _audio.setBalance(-16); // -16...16 (left to right)
-}
-
-void Sound::setLoopMode(bool loop) {
-    _loopMode = loop;
-}
-
-void Sound::setMono(bool mono) {
-    _audio.forceMono(mono);
-
-}
 
 

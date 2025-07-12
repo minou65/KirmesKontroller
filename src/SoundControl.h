@@ -9,37 +9,8 @@
 	#include "WProgram.h"
 #endif
 
-#include <Audio.h>
-
-class Sound {
-public:
-    Sound(int bclk, int lrclk, int dout);
-
-    Sound();
-
-    bool begin();
-
-    void play(const char* filename);
-    void stop();
-
-    void process();
-
-    bool isPlaying() const;
-
-    void setVolume(uint8_t Volume);
-    void setBalance(int8_t Balance);
-
-    void setLoopMode(bool loop);
-
-    void setMono(bool mono);
-
-private:
-    int _bclk, _lrclk, _dout;
-    bool _isPlaying;
-	bool _loopMode;
-	char _lastPlayedFile[50]; // Store the last played file name
-    Audio _audio;
-};
+void setupSpund();
+void loopSound();
 
 #endif
 
