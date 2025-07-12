@@ -9,6 +9,8 @@
 #include "WProgram.h"
 #endif
 
+#include <string>
+
 enum class AccessoryType {
 	None,
 	LED,
@@ -20,6 +22,14 @@ enum class AccessoryType {
 	Motor
 };
 
+struct SoundSettings {
+	std::string filename;
+	int volume;
+	int balance;
+	bool mono;
+	int maxPlayTime;
+};
+
 // Root Klasse
 class accessories {
 protected:
@@ -29,6 +39,8 @@ protected:
 	bool IsActive;
 	
 	byte Mode;
+
+	SoundSettings _sound;
 
 public:
 	accessories() = default;
@@ -47,6 +59,13 @@ public:
 	virtual void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	virtual void notifyTurnoutAddress(uint16_t Address_, uint8_t Direction_, uint8_t OutputPower_);
 	virtual void notifyDccSpeed(uint16_t Addr, uint8_t Speed, uint8_t ForwardDir, uint8_t SpeedSteps);
+
+	void setSoundSettings(SoundSettings sound) {
+		_sound = sound;
+	}
+	SoundSettings getSoundSettings() {
+		return _sound;
+	}
 
 	bool isOn() const;
 	uint16_t Address();
