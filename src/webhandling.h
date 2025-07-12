@@ -306,17 +306,17 @@ private:
 };
 
 extern SoundGroup soundGroup;
-extern ServoGroup servoGroup1;
-extern ServoGroup servoGroup2;
-extern ServoGroup servoGroup3;
-extern OutputGroup outputGroup1;
-extern OutputGroup outputGroup2;
-extern OutputGroup outputGroup3;
-extern OutputGroup outputGroup4;
-extern OutputGroup outputGroup5;
-extern OutputGroup outputGroup6;
-extern OutputGroup outputGroup7;
-extern OutputGroup outputGroup8;
+extern ServoGroup ServoGroup1;
+extern ServoGroup ServoGroup2;
+extern ServoGroup ServoGroup3;
+extern OutputGroup OutputGroup1;
+extern OutputGroup OutputGroup2;
+extern OutputGroup OutputGroup3;
+extern OutputGroup OutputGroup4;
+extern OutputGroup OutputGroup5;
+extern OutputGroup OutputGroup6;
+extern OutputGroup OutputGroup7;
+extern OutputGroup OutputGroup8;
 
 #endif
 
