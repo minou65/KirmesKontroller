@@ -7,16 +7,51 @@
 #include "src/pinmapping.h"
 #include "src/Vector.h"
 #include "src/accessories.h"
+#include "src/webhandling.h"
+
+char Version[] = VERSION_STR;
 
 
 Neotimer InputTimer1(30000);
 Neotimer InputTimer2(30000);
-Sound sound;
-
 
 
 // Liste mit allen Decoderobjekten (Apps)
 Vector<accessories*> decoder;
+
+bool ResetDCCDecoder = false;
+
+void handleDecoderGroup(uint8_t DecoderGroup) {
+	if (DecoderGroupIsActive(DecoderGroup)) {
+		if (decoder[DecoderGroup]->isOn()) {
+			decoder[DecoderGroup]->off();
+		}
+		else {
+			decoder[DecoderGroup]->on();
+		}
+	}
+}
+
+bool DecoderGroupIsEnabled(uint8_t DecoderGroup) {
+	if (DecoderGroupIsActive(DecoderGroup)) {
+		return decoder[DecoderGroup]->isOn();
+	}
+	else {
+		return false;
+	}
+}
+
+bool DecoderGroupIsActive(uint8_t DecoderGroup) {
+	if (DecoderGroup < decoder.Size() && decoder[DecoderGroup] != nullptr) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void kDecoderReset() {
+}
 
 void kDecoderInit(void) {
 	uint8_t channel_ = 0;
@@ -28,7 +63,6 @@ void kDecoderInit(void) {
 
 	// Initialize the decoder here if needed
 	
-	sound.begin();
 	accessories* newAccessory = nullptr;
 
 	uint8_t Mode_ = 203; // Default Mode for Motor accessory
@@ -58,41 +92,45 @@ void setup() {
 	pinMode(INPUT1, INPUT_PULLUP);
 	pinMode(INPUT2, INPUT_PULLUP);
 
+	setupWeb(); // Set up web handling
+
+	setupSpund(); // Set up sound system
+
 	kDecoderInit(); // Initialize the decoder
 
 }
 
 void loop() {
-	sound.process(); // Process audio tasks
+	loopWeb(); // Handle web requests
+	loopSound(); // Handle sound playback
 
 	for (int i_ = 0; i_ < decoder.Size(); i_++) {
 		decoder[i_]->process();
 	}
 
-	if (digitalRead(INPUT1) == LOW && !sound.isPlaying()) {
+	//if (digitalRead(INPUT1) == LOW && !sound->isPlaying()) {
 
-		sound.play("/File1.mp3"); // Sound abspielen
+	//	sound->play("/File1.mp3"); // Sound abspielen
 
-		for (int i_ = 0; i_ < decoder.Size(); ++i_) {
-			if (decoder[i_]->getType() == AccessoryType::Motor) {
-				Motor* motor_ = (Motor*)decoder[i_];
-				motor_->on();
-			}
-		}
+	//	for (int i_ = 0; i_ < decoder.Size(); ++i_) {
+	//		if (decoder[i_]->getType() == AccessoryType::Motor) {
+	//			Motor* motor_ = (Motor*)decoder[i_];
+	//			motor_->on();
+	//		}
+	//	}
 
-		InputTimer1.start();
-	}
+	//	InputTimer1.start();
+	//}
 
-	if (InputTimer1.done()) {
-		for (int i_ = 0; i_ < decoder.Size(); ++i_) {
-			if (decoder[i_]->getType() == AccessoryType::Motor) {
-				Motor* motor_ = (Motor*)decoder[i_];
-				motor_->off();
-			}
-		}
-		sound.stop(); // Sound stoppen
-		InputTimer1.stop();
-	}
+	//if (InputTimer1.done()) {
+	//	for (int i_ = 0; i_ < decoder.Size(); ++i_) {
+	//		if (decoder[i_]->getType() == AccessoryType::Motor) {
+	//			Motor* motor_ = (Motor*)decoder[i_];
+	//			motor_->off();
+	//		}
+	//	}
+	//	sound->stop(); // Sound stoppen
+	//	InputTimer1.stop();
+	//}
 	
-	vTaskDelay(1);
 }
