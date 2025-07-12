@@ -94,7 +94,7 @@ void setup() {
 
 	setupWeb(); // Set up web handling
 
-	setupSpund(); // Set up sound system
+	setupSound(); // Set up sound system
 
 	kDecoderInit(); // Initialize the decoder
 
@@ -108,29 +108,29 @@ void loop() {
 		decoder[i_]->process();
 	}
 
-	//if (digitalRead(INPUT1) == LOW && !sound->isPlaying()) {
+	if (digitalRead(INPUT1) == LOW && !isplayingSound()) {
 
-	//	sound->play("/File1.mp3"); // Sound abspielen
+		playSoundLoop("/File1.mp3"); // Sound abspielen
 
-	//	for (int i_ = 0; i_ < decoder.Size(); ++i_) {
-	//		if (decoder[i_]->getType() == AccessoryType::Motor) {
-	//			Motor* motor_ = (Motor*)decoder[i_];
-	//			motor_->on();
-	//		}
-	//	}
+		for (int i_ = 0; i_ < decoder.Size(); ++i_) {
+			if (decoder[i_]->getType() == AccessoryType::Motor) {
+				Motor* motor_ = (Motor*)decoder[i_];
+				motor_->on();
+			}
+		}
 
-	//	InputTimer1.start();
-	//}
+		InputTimer1.start();
+	}
 
-	//if (InputTimer1.done()) {
-	//	for (int i_ = 0; i_ < decoder.Size(); ++i_) {
-	//		if (decoder[i_]->getType() == AccessoryType::Motor) {
-	//			Motor* motor_ = (Motor*)decoder[i_];
-	//			motor_->off();
-	//		}
-	//	}
-	//	sound->stop(); // Sound stoppen
-	//	InputTimer1.stop();
-	//}
+	if (InputTimer1.done()) {
+		for (int i_ = 0; i_ < decoder.Size(); ++i_) {
+			if (decoder[i_]->getType() == AccessoryType::Motor) {
+				Motor* motor_ = (Motor*)decoder[i_];
+				motor_->off();
+			}
+		}
+		stopSound(); // Sound stoppen
+		InputTimer1.stop();
+	}
 	
 }
