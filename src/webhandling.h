@@ -50,15 +50,15 @@ public:
 		return _monoBuffer[0] == '1';
 	}
 
-    // Volume-Parameter (0-100, Default 50)
+    // Volume-Parameter (0-21, Default 15)
     iotwebconf::NumberParameter _volumeParameter = iotwebconf::NumberParameter(
         "Volume",
         _volumeId,
         _volumeBuffer,
         sizeof(_volumeBuffer),
-        "50",
+        "15",
         nullptr,
-        "min='0' max='100'"
+        "min='0' max='21'"
     );
 
     // Mono-Checkbox (Default: aus)
@@ -70,7 +70,7 @@ public:
         false // Default: nicht aktiviert
     );
 
-    // Balance-Parameter (-50 bis +50, Default 0)
+    // Balance-Parameter (-16 bis +16, Default 0)
     iotwebconf::NumberParameter _balanceParameter = iotwebconf::NumberParameter(
         "Balance",
         _balanceId,
@@ -78,7 +78,7 @@ public:
         sizeof(_balanceBuffer),
         "0",
         nullptr,
-        "min='-50' max='50'"
+        "min='-16' max='16'"
     );
 
 private:
@@ -232,7 +232,7 @@ public:
         );
 
     iotwebconf::NumberParameter _NumberParam =
-        iotwebconf::NumberParameter("Number of outputs", _NumberId, _NumberValue, NUMBER_LEN, "1", "1..255", "min='1' max='255' step='1'");
+        iotwebconf::NumberParameter("Number of outputs", _NumberId, _NumberValue, NUMBER_LEN, "1", "1..8", "min='1' max=8' step='1'");
 
     iotwebconf::NumberParameter _AddressParam =
         iotwebconf::NumberParameter("DCC Address", _AddressId, _AddressValue, NUMBER_LEN, "3", "1..1024", "min='1' max='1024' step='1'");
