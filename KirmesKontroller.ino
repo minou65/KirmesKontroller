@@ -84,6 +84,13 @@ void kDecoderInit(void) {
 			uint8_t DayBrightness_ = 255;
 			uint8_t NightBrightness_ = 150;
 
+			SoundSettings sound_;
+			sound_.filename = outputgroup_->getSoundFilename();
+			sound_.volume = soundGroup.getVolume();
+			sound_.balance = soundGroup.getBalance();
+			sound_.mono = soundGroup.isMono();
+			sound_.maxPlayTime = outputgroup_->getActiveDuration()
+
 			Serial.print(F("Values for channel ")); Serial.print(channel_); Serial.println(F(" preserved"));
 			Serial.print(F("    Channels used: ")); Serial.println(Count_);
 			Serial.print(F("    Address: ")); Serial.println(Address_);
