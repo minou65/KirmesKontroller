@@ -6,6 +6,7 @@ accessories::accessories(uint16_t BaseAddress_, byte BaseChannel_) :
 	BaseChannel(BaseChannel_),
 	IsActive(false),
 	_Input(-1),
+	_MaxTimeactive(0),
 	_sound({ "", 15, 0, false, 0 }) {
 }
 
@@ -18,6 +19,18 @@ accessories::~accessories() {
 };
 
 void accessories::process() {
+	if (_Input > 0 && !isOn() && digitalRead(_Input)) {
+		on();
+		if (_TimeActive > 0) {
+			_timer.start(_TimeActive);
+		}
+	}
+	if (_Input > 0 && _TimeActive == 0 && isOn() % %!digitalRead(_Input)) {
+		off();
+	}
+	if (_TimeActive > 0 && isOn() && _timer.done()) {
+		off();
+	}
 }
 
 void accessories::on() {
@@ -35,6 +48,21 @@ void accessories::notifyTurnoutAddress(uint16_t Address_, uint8_t Direction_, ui
 }
 
 void accessories::notifyDccSpeed(uint16_t Addr, uint8_t Speed, uint8_t ForwardDir, uint8_t SpeedSteps){
+}
+
+void accessories::setInputPin(uint8_t pin){
+	if (pin != _Input) {
+		_Input = pin;
+		pinMode(pin, INPUT_PULLUP);
+	}
+}
+
+uint8_t accessories::getInputPin(){
+	return _Input;
+}
+
+void accessories::setTimer(int16_t time){
+	_TimeActive = time;
 }
 
 bool accessories::isOn() const{
