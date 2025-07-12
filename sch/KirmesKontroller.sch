@@ -18592,6 +18592,7 @@ diameter 2 mm, horizontal, grid 10.16 mm</description>
 <plain>
 <text x="20.32" y="233.68" size="1.778" layer="97" rot="R90">7 - 24VAC</text>
 <text x="25.4" y="119.38" size="1.778" layer="97" rot="R90">DCC</text>
+<text x="289.56" y="33.02" size="1.778" layer="97">v2 Input 1 und 2 auf andere pins gelegt wegen interner LED</text>
 </plain>
 <instances>
 <instance part="FRAME1" gate="G$1" x="0" y="0" smashed="yes"/>
@@ -19221,11 +19222,6 @@ diameter 2 mm, horizontal, grid 10.16 mm</description>
 </net>
 <net name="INPUT2" class="0">
 <segment>
-<pinref part="IC2" gate="G$1" pin="IO48"/>
-<wire x1="256.54" y1="205.74" x2="271.78" y2="205.74" width="0.1524" layer="91"/>
-<label x="266.7" y="205.74" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="R7" gate="G$1" pin="1"/>
 <wire x1="297.18" y1="147.32" x2="289.56" y2="147.32" width="0.1524" layer="91"/>
 <label x="259.08" y="147.32" size="1.778" layer="95"/>
@@ -19234,13 +19230,13 @@ diameter 2 mm, horizontal, grid 10.16 mm</description>
 <wire x1="289.56" y1="142.24" x2="289.56" y2="147.32" width="0.1524" layer="91"/>
 <junction x="289.56" y="147.32"/>
 </segment>
+<segment>
+<pinref part="IC2" gate="G$1" pin="IO38"/>
+<wire x1="256.54" y1="213.36" x2="271.78" y2="213.36" width="0.1524" layer="91"/>
+<label x="264.16" y="213.36" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="INPUT1" class="0">
-<segment>
-<pinref part="IC2" gate="G$1" pin="IO47"/>
-<wire x1="256.54" y1="203.2" x2="271.78" y2="203.2" width="0.1524" layer="91"/>
-<label x="266.7" y="203.2" size="1.778" layer="95"/>
-</segment>
 <segment>
 <pinref part="R6" gate="G$1" pin="1"/>
 <wire x1="297.18" y1="154.94" x2="281.94" y2="154.94" width="0.1524" layer="91"/>
@@ -19249,6 +19245,11 @@ diameter 2 mm, horizontal, grid 10.16 mm</description>
 <wire x1="281.94" y1="154.94" x2="259.08" y2="154.94" width="0.1524" layer="91"/>
 <wire x1="281.94" y1="142.24" x2="281.94" y2="154.94" width="0.1524" layer="91"/>
 <junction x="281.94" y="154.94"/>
+</segment>
+<segment>
+<pinref part="IC2" gate="G$1" pin="IO21"/>
+<wire x1="256.54" y1="208.28" x2="271.78" y2="208.28" width="0.1524" layer="91"/>
+<label x="264.16" y="208.28" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="X3_B-8" class="0">
