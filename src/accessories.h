@@ -10,6 +10,7 @@
 #endif
 
 #include <string>
+#include "neotimer.h"
 
 enum class AccessoryType {
 	None,
@@ -27,7 +28,6 @@ struct SoundSettings {
 	int volume;
 	int balance;
 	bool mono;
-	int maxPlayTime;
 };
 
 // Root Klasse
@@ -42,6 +42,9 @@ protected:
 
 	SoundSettings _sound;
 	uint8_t _Input;
+	int16_t _TimeActive;
+	Neotimer _timer = Neotimer();
+
 
 public:
 	accessories() = default;
@@ -67,6 +70,10 @@ public:
 	SoundSettings getSoundSettings() {
 		return _sound;
 	}
+	void setInputPin(uint8_t pin);
+	uint8_t getInputPin();
+
+	void setTimer(int16_t time);
 
 	bool isOn() const;
 	uint16_t Address();
