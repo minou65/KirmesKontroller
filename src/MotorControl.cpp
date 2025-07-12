@@ -43,15 +43,18 @@ void Motor::SetMaxSpeed(uint8_t Speed) {
 
 void Motor::on() {
 	Serial.println("Motor::on");
+	accessories::on();
 	_motor.on();
 }
 
 void Motor::off() {
 	Serial.println("Motor::off");
+	accessories::off();
 	_motor.off();
 }
 
 void Motor::process() {
+	accessories::process();
 	_motor.process();
 }
 
