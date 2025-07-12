@@ -24,8 +24,8 @@ static uint8_t ChannelToGPIOMapping[16] = {
 	41, // O23
 };
 
-#define INPUT1        48
-#define INPUT2        47
+#define INPUT1        21
+#define INPUT2        38
 
 #define SD_CS         10 
 #define SPI_MOSI      11
