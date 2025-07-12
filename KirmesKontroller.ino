@@ -218,31 +218,20 @@ void loop() {
 
 	for (int i_ = 0; i_ < decoder.Size(); i_++) {
 		decoder[i_]->process();
-	}
-
-	if (digitalRead(INPUT1) == LOW && !isplayingSound()) {
-
-		playSoundLoop("/File1.mp3"); // Sound abspielen
-
-		for (int i_ = 0; i_ < decoder.Size(); ++i_) {
-			if (decoder[i_]->getType() == AccessoryType::Motor) {
-				Motor* motor_ = (Motor*)decoder[i_];
-				motor_->on();
+		SoundSettings sound_ = decoder[i_]->getSoundSettings();
+		if (!sound_.filename.empty()) {
+			if (!decoder[i_]->isOn()) {
+				// Der Dateiname ist nicht leer, also kann abgespielt werden
+				setSoundVolume(sound_.volume);
+				setSoundBalance(sound_.balance);
+				playSoundLoop(sound_.filename);
+			}
+			else {
+				stopSound();
 			}
 		}
-
-		InputTimer1.start();
 	}
 
-	if (InputTimer1.done()) {
-		for (int i_ = 0; i_ < decoder.Size(); ++i_) {
-			if (decoder[i_]->getType() == AccessoryType::Motor) {
-				Motor* motor_ = (Motor*)decoder[i_];
-				motor_->off();
-			}
-		}
-		stopSound(); // Sound stoppen
-		InputTimer1.stop();
-	}
+	
 	
 }
