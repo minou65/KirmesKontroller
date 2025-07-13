@@ -15,6 +15,9 @@ char Version[] = VERSION_STR;
 // Liste mit allen Decoderobjekten (Apps)
 Vector<accessories*> decoder;
 
+// Task handle (Core 0 on ESP32)
+TaskHandle_t TaskHandle;
+
 bool ResetDCCDecoder = false;
 
 void handleDecoderGroup(uint8_t DecoderGroup) {
@@ -49,14 +52,7 @@ bool DecoderGroupIsActive(uint8_t DecoderGroup) {
 void kDecoderReset() {
 	OutputGroup* outputgroup_ = &OutputGroup1;
 	while (outputgroup_ != nullptr) {
-		outputgroup_->_DesignationParam.applyDefaultValue();
-		outputgroup_->_ModeParam.applyDefaultValue();
-		outputgroup_->_NumberParam.applyDefaultValue();
-		outputgroup_->_AddressParam.applyDefaultValue();
-		outputgroup_->_TimeOnParam.applyDefaultValue();
-		outputgroup_->_TimeOffParam.applyDefaultValue();
-		outputgroup_->_TimeOnFadeParam.applyDefaultValue();
-		outputgroup_->_TimeOffFadeParam.applyDefaultValue();
+		outputgroup_->applyDefaultValues();
 		outputgroup_->setActive(false);
 
 		outputgroup_ = (OutputGroup*)outputgroup_->getNext();
@@ -64,11 +60,7 @@ void kDecoderReset() {
 
 	ServoGroup* servogroup_ = &ServoGroup1;
 	while (servogroup_ != nullptr) {
-		servogroup_->_designationParam.applyDefaultValue();
-		servogroup_->_addressParam.applyDefaultValue();
-		servogroup_->_travelTimeParam.applyDefaultValue();
-		servogroup_->_limit1Param.applyDefaultValue();
-		servogroup_->_limit2Param.applyDefaultValue();
+		servogroup_->applyDefaultValues();
 		servogroup_->setActive(false);
 
 		servogroup_ = (ServoGroup*)servogroup_->getNext();
@@ -201,16 +193,43 @@ void setup() {
 	setupSound(); // Set up sound system
 
 	kDecoderInit(); // Initialize the decoder
+
+	if (CONFIG_PIN >= 0) {
+		pinMode(CONFIG_PIN, INPUT);
+		if (digitalRead(CONFIG_PIN) == LOW) {
+			Serial.println("config pin was pressed, reset decoder");
+			kDecoderReset();
+		}
+	}
+
+	xTaskCreatePinnedToCore(
+		loop2, /* Function to implement the task */
+		"TaskHandle", /* Name of the task */
+		10000,  /* Stack size in words */
+		NULL,  /* Task input parameter */
+		0,  /* Priority of the task */
+		&TaskHandle,  /* Task handle. */
+		0 /* Core where the task should run */
+	);
+
+	Serial.println("Everything has been initialized");
 }
 
 void loop() {
 	loopWeb(); // Handle web requests
 	loopSound(); // Handle sound playback
+}
 
-	for (int i_ = 0; i_ < decoder.Size(); i_++) {
-		decoder[i_]->process();
+void loop2(void* parameter) {
+
+	for (;;) {   // Endless loop
+		if (ResetDCCDecoder) {
+			kDecoderInit();
+			ResetDCCDecoder = false;
+		}
+
+		for (int _i = 0; _i < decoder.Size(); _i++) {
+			decoder[_i]->process();
+		}
 	}
-
-	
-	
 }
