@@ -37,7 +37,7 @@ static uint8_t ChannelToGPIOMapping[16] = {
 #define LED_BUILTIN   47
 
 #define DCC_INPUT     40
-#define WIFI_RESET    39
+#define CONFIG_PIN    39
 
 #endif
 
