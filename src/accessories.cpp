@@ -20,26 +20,41 @@ accessories::~accessories() {
 };
 
 void accessories::process() {
-	if (_Input > 0 && !isOn() && digitalRead(_Input)) {
+	//Serial.print("accessories::process ");
+	//Serial.print("    Input pin: "); Serial.print(_Input);
+	//Serial.print("    Time active: "); Serial.println(_TimeActive);
+
+	if (_Input > 0 && !isOn() && !digitalRead(_Input)) {
+		Serial.println("accessories::process: Input is LOW, turning on");
 		on();
-		if (_TimeActive > 0) {
-			_timer.start(_TimeActive);
-		}
+
 	}
-	if (_Input > 0 && _TimeActive == 0 && isOn() && !digitalRead(_Input)) {
+	if (_Input > 0 && _TimeActive == 0 && isOn() && digitalRead(_Input)) {
+		Serial.println("accessories::process: Input is HIGH, turning off");
 		off();
 	}
 	if (_TimeActive > 0 && isOn() && _timer.done()) {
+		Serial.println("accessories::process: Timer done, turning off");
 		off();
 	}
 }
 
 void accessories::on() {
+	Serial.println("accessories::on");
 	IsActive = true;
+	if (_TimeActive > 0) {
+		_timer.start(_TimeActive);
+		Serial.print("    accessory timer started for "); Serial.println(_TimeActive); Serial.println(" ms");
+	}
 }
 
 void accessories::off() {
+	Serial.println("accessories::off");
 	IsActive = false;
+	if (_TimeActive > 0) {
+		_timer.stop();
+		Serial.println("    accessory timer stopped");
+	}	
 }
 
 void accessories::notifyAddress(uint16_t Address_, uint8_t cmd_) {
@@ -52,9 +67,11 @@ void accessories::notifyDccSpeed(uint16_t Addr, uint8_t Speed, uint8_t ForwardDi
 }
 
 void accessories::setInputPin(uint8_t pin){
+	Serial.print("accessories::setInputPin ");
 	if (pin != _Input) {
 		_Input = pin;
 		pinMode(pin, INPUT_PULLUP);
+		Serial.print("    Pin set to: "); Serial.println(_Input);
 	}
 }
 
