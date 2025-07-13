@@ -25,18 +25,28 @@ void accessories::process() {
 	//Serial.print("    Input pin: "); Serial.print(_Input);
 	//Serial.print("    Time active: "); Serial.println(_TimeActive);
 
-	if (_Input > 0 && !isOn() && !digitalRead(_Input)) {
+	if (_Input > 0 && !isOn() && (digitalRead(_Input) == LOW)) {
 		Serial.println("accessories::process: Input is LOW, turning on");
 		on();
-
+		return;
 	}
-	if (_Input > 0 && _TimeActive == 0 && isOn() && digitalRead(_Input)) {
+	if (_Input > 0 && isOn() && (digitalRead(_Input) == LOW)) {
+		Serial.println("accessories::process: Input is LOW, reset timer");
+		if (_TimeActive > 0) {
+			_timer.start(_TimeActive);
+			//Serial.print("    accessory timer restarted for "); Serial.print(_TimeActive); Serial.println(" ms");
+		}
+		return;
+	}
+	if (_Input > 0 && _TimeActive == 0 && isOn() && (digitalRead(_Input) == HIGH)) {
 		Serial.println("accessories::process: Input is HIGH, turning off");
 		off();
+		return;
 	}
-	if (_TimeActive > 0 && isOn() && _timer.done()) {
+	if (_TimeActive > 0 && isOn() && _timer.done() && (digitalRead(_Input) == HIGH)) {
 		Serial.println("accessories::process: Timer done, turning off");
 		off();
+		return;
 	}
 }
 
