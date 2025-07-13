@@ -4,12 +4,15 @@
 [YB-ESP32-S3-AMP](https://github.com/yellobyte/YB-ESP32-S3-AMP)
 
 ## Librarys
+
  - [ESP32-audioI2S](https://github.com/schreibfaul1/ESP32-audioI2S) - Audio-Wiedergabe über I2S
  - [IotWebConf](https://github.com/prampec/IotWebConf) - Web-Konfigurationsoberfläche
  - [ArduinoOTA](https://github.com/esp8266/Arduino/tree/master/libraries/ArduinoOTA) - Over-The-Air Updates
 
 # Pin mapping
+
 ## internal pins
+
 ```c++
 #define SD_CS         10 
 #define SPI_MOSI      11
@@ -22,9 +25,12 @@
 
 #define DCC_INPUT     40
 #define WIFI_RESET    39
+
 ```
+
 ## external pins
-```
+
+```c++
 static uint8_t ChannelToGPIOMapping[16] = {
 	17, // O11
 	16, // O12
@@ -45,9 +51,11 @@ static uint8_t ChannelToGPIOMapping[16] = {
 ```
 
 ## Schema
+
 ![alt text](img/schema.png)
 
 ## Board
+
 ![alt text](img/board.png)
 
 ## Audio-Wiedergabe
