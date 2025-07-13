@@ -24,8 +24,8 @@ public:
 
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	void SetMaxBrightness(uint16_t MaxBrightness) override;
-	void on();
-	void off();
+	void on() override;
+	void off() override;
 };
 
 //=======================================================
@@ -51,10 +51,10 @@ public:
 	~Blinker();
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	void SetMaxBrightness(uint16_t MaxBrightness);
-	void process();
+	void process() override;
 
-	void on();
-	void off();
+	void on() override;
+	void off() override;
 };
 
 //=======================================================
@@ -71,9 +71,9 @@ public:
 	Wechselblinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_, uint8_t fadeUpTime_, uint8_t fadeDownTime_);
 	~Wechselblinker();
 	void SetMaxBrightness(uint16_t MaxBrightness);
-	void process();
-	void on();
-	void off();
+	void process() override;
+	void on() override;
+	void off() override;
 };
 
 //=======================================================
@@ -103,9 +103,9 @@ public:
 	~Lauflicht();
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	void SetMaxBrightness(uint16_t MaxBrightness);
-	void process();
-	void on();
-	void off();
+	void process() override;
+	void on() override;
+	void off() override;
 };
 
 //=======================================================
@@ -131,9 +131,9 @@ public:
 	~Hausbeleuchtung();
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	void SetMaxBrightness(uint16_t MaxBrightness);
-	void process();
-	void on();
-	void off();
+	void process() override;
+	void on() override;
+	void off() override;
 };
 
 //=======================================================
@@ -146,9 +146,9 @@ class Fernseher : public Blinker {
 public:
 	Fernseher(uint16_t BaseAddress_, uint8_t BaseChannel_);
 	~Fernseher();
-	void process();
-	void on();
-	void off();
+	void process() override;
+	void on() override;
+	void off() override;
 };
 
 //=======================================================
@@ -187,9 +187,9 @@ public:
 	Schweissen(uint16_t BaseAddress_, uint8_t BaseChannel_, uint64_t minRandomPause_, uint64_t maxRandomPause_);
 	~Schweissen();
 	void SetMaxBrightness(uint16_t MaxBrightness);
-	void process();
-	void on();
-	void off();
+	void process() override;
+	void on() override;
+	void off() override;
 };
 
 //=======================================================
@@ -214,10 +214,9 @@ public:
 	~NeonLampen();
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	void SetMaxBrightness(uint16_t MaxBrightness);
-	void process();
-
-	void on();
-	void off();
+	void process() override;
+	void on() override;
+	void off() override;
 };
 
 //=======================================================
@@ -245,10 +244,9 @@ public:
 	~NatriumLampen();
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	void SetMaxBrightness(uint16_t MaxBrightness);
-	void process();
-
-	void on();
-	void off();
+	void process() override;
+	void on() override;
+	void off() override;
 };
 
 //=======================================================
@@ -271,8 +269,8 @@ public:
 	Feuer(uint16_t BaseAddress_, uint8_t BaseChannel_);
 	~Feuer();
 	void SetMaxBrightness(uint16_t MaxBrightness);
-	void process();
-	void off();
+	void process() override;
+	void off() override;
 };
 
 
@@ -293,8 +291,8 @@ public:
 
 	void SetMaxBrightness(uint16_t MaxBrightness);
 
-	void process();
-	void on();
+	void process() override;
+	void on() override;
 };
 
 
