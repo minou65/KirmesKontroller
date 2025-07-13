@@ -1,4 +1,5 @@
 #include "accessories.h"
+#include "SoundControl.h"
 
 // Class accessories, dir Mutter aller Klassen
 accessories::accessories(uint16_t BaseAddress_, byte BaseChannel_) :
@@ -44,7 +45,11 @@ void accessories::on() {
 	IsActive = true;
 	if (_TimeActive > 0) {
 		_timer.start(_TimeActive);
-		Serial.print("    accessory timer started for "); Serial.println(_TimeActive); Serial.println(" ms");
+		Serial.print("    accessory timer started for "); Serial.print(_TimeActive); Serial.println(" ms");
+	}
+	if (_sound.filename.length() > 0 && !isplayingSound()) {
+		Serial.print("    Playing sound: "); Serial.println(_sound.filename.c_str());
+		playSoundLoop(_sound.filename.c_str());
 	}
 }
 
@@ -55,6 +60,10 @@ void accessories::off() {
 		_timer.stop();
 		Serial.println("    accessory timer stopped");
 	}	
+	if (_sound.filename.length() > 0 && isplayingSound()) {
+		Serial.print("    Stopping sound: "); Serial.println(_sound.filename.c_str());
+		stopSound();
+	}
 }
 
 void accessories::notifyAddress(uint16_t Address_, uint8_t cmd_) {
