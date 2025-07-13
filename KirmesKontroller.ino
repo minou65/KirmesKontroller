@@ -54,14 +54,14 @@ bool DecoderGroupIsActive(uint8_t DecoderGroup) {
 void kDecoderReset() {
 	OutputGroup* outputgroup_ = &OutputGroup1;
 	while (outputgroup_ != nullptr) {
-		outputgroup_->DesignationParam.applyDefaultValue();
-		outputgroup_->ModeParam.applyDefaultValue();
-		outputgroup_->NumberParam.applyDefaultValue();
-		outputgroup_->AddressParam.applyDefaultValue();
-		outputgroup_->TimeOnParam.applyDefaultValue();
-		outputgroup_->TimeOffParam.applyDefaultValue();
-		outputgroup_->TimeOnFadeParam.applyDefaultValue();
-		outputgroup_->TimeOffFadeParam.applyDefaultValue();
+		outputgroup_->_DesignationParam.applyDefaultValue();
+		outputgroup_->_ModeParam.applyDefaultValue();
+		outputgroup_->_NumberParam.applyDefaultValue();
+		outputgroup_->_AddressParam.applyDefaultValue();
+		outputgroup_->_TimeOnParam.applyDefaultValue();
+		outputgroup_->_TimeOffParam.applyDefaultValue();
+		outputgroup_->_TimeOnFadeParam.applyDefaultValue();
+		outputgroup_->_TimeOffFadeParam.applyDefaultValue();
 		outputgroup_->setActive(false);
 
 		outputgroup_ = (OutputGroup*)outputgroup_->getNext();
@@ -69,11 +69,11 @@ void kDecoderReset() {
 
 	ServoGroup* servogroup_ = &ServoGroup1;
 	while (servogroup_ != nullptr) {
-		servogroup_->DesignationParam.applyDefaultValue();
-		servogroup_->AddressParam.applyDefaultValue();
-		servogroup_->TravelTimeParam.applyDefaultValue();
-		servogroup_->Limit1Param.applyDefaultValue();
-		servogroup_->Limit2Param.applyDefaultValue();
+		servogroup_->_designationParam.applyDefaultValue();
+		servogroup_->_addressParam.applyDefaultValue();
+		servogroup_->_travelTimeParam.applyDefaultValue();
+		servogroup_->_limit1Param.applyDefaultValue();
+		servogroup_->_limit2Param.applyDefaultValue();
 		servogroup_->setActive(false);
 
 		servogroup_ = (ServoGroup*)servogroup_->getNext();
@@ -115,7 +115,6 @@ void kDecoderInit(void) {
 			sound_.volume = soundGroup.getVolume();
 			sound_.balance = soundGroup.getBalance();
 			sound_.mono = soundGroup.isMono();
-			sound_.maxPlayTime = outputgroup_->getActiveDuration();
 
 			Serial.print(F("Values for channel ")); Serial.print(channel_); Serial.println(F(" preserved"));
 			Serial.print(F("    Channels used: ")); Serial.println(Count_);
@@ -163,6 +162,10 @@ void kDecoderInit(void) {
 
 			if (newAccessory != nullptr) {
 				Serial.print(F("    Mode: ")); Serial.println(Mode_);
+
+				newAccessory->setSoundSettings(sound_);
+				//newAccessory->setInputPin(outputgroup_->getInputPin());
+				newAccessory->setTimer(outputgroup_->getActiveDuration());
 
 				// Check the type of newAccessory
 				if (newAccessory->getType() == AccessoryType::LED) {
@@ -224,7 +227,7 @@ void loop() {
 				// Der Dateiname ist nicht leer, also kann abgespielt werden
 				setSoundVolume(sound_.volume);
 				setSoundBalance(sound_.balance);
-				playSoundLoop(sound_.filename);
+				playSoundLoop(sound_.filename.c_str());
 			}
 			else {
 				stopSound();
