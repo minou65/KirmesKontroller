@@ -25,55 +25,70 @@ static char DecoderModeValues[][STRING_LEN] = {
     "40",
     "50",
     "51",
+
     "80",
     "81",
     "82",
     "83",
-    "52",
-    "53",
-    "54",
-    "55",
-    "60",
-    "61",
-    "62",
-    "102",
-    "103",
-    "104",
-    "105",
-    "106",
-    "110",
-    "70",
-    "201",
-    "202"
+
+    //"52",
+    //"53",
+    //"54",
+    //"55",
+
+    //"60",
+    //"61",
+    //"62",
+
+    //"102",
+    //"103",
+    //"104",
+    //"105",
+    //"106",
+    //"110",
+
+    //"70",
+
+    //"201",
+    //"202"
+
+    "203"
 };
 
 static char DecoderModeNames[][STRING_LEN] = {
-    "-",
-    "Watchdog",
-    "einfacher Ausgang (1)",  // ok
-    "Blinker (1)",  // ok, fading ok
-    "Wechselblinker (2)", // ok
-    "Fernseher (1)",  // 80 ok
-    "Schweisslicht (3)", // 81 ok
-    "Feuer (3)", // 82 ok
-    "Blitzlicht (1)", // 83 ok   
-    "Lauflicht 1 (1..16)", // ok
-    "Lauflicht 2 (1..16)",  // ok
-    "Lauflicht 3 (1..16)",  // ok
-    "Lauflicht 4 (1..16)",  // ok
+    "-",                    // 0
+    "Watchdog",             // 1
+    "einfacher Ausgang (1)",// 40
+    "Blinker (1)",          // 50
+    "Wechselblinker (2)",   // 51
 
-    "Hausbeleuchtung (1..16)", // ok
-    "Neonlampen (1..16)", // ok
-    "Natriumlampen (1..16)", // ok
-    "SBB_Hauptsignal_102 (2)",
-    "SBB_Hauptsignal_103 (3)",
-    "SBB_Hauptsignal_104 (4)",
-    "SBB_Hauptsignal_105 (5)",
-    "SBB_Hauptsignal_106 (5)",
-    "SBB_Zwergsignal_110 (3)",
-    "Strassen_Signal_70 (3)",
-    "Entkuppler (1)", // ok
-    "Weiche (2)",  // ok
+    "Fernseher (1)",        // 80
+    "Schweisslicht (3)",    // 81
+    "Feuer (3)",            // 82
+    "Blitzlicht (1)",       // 83
+
+    //"Lauflicht 1 (1..16)", // 52
+    //"Lauflicht 2 (1..16)", // 53
+    //"Lauflicht 3 (1..16)", // 54
+    //"Lauflicht 4 (1..16)", // 55
+
+    //"Hausbeleuchtung (1..16)", // 60
+    //"Neonlampen (1..16)",      // 61
+    //"Natriumlampen (1..16)",   // 62
+     
+    //"SBB_Hauptsignal_102 (2)", // 102
+    //"SBB_Hauptsignal_103 (3)", // 103
+    //"SBB_Hauptsignal_104 (4)", // 104
+    //"SBB_Hauptsignal_105 (5)", // 105
+    //"SBB_Hauptsignal_106 (5)", // 106
+    //"SBB_Zwergsignal_110 (3)", // 110
+     
+    //"Strassen_Signal_70 (3)",  // 70
+     
+    //"Entkuppler (1)",          // 201
+    //"Weiche (2)",              // 202
+
+    "Motor (1)"              // 203
 };
 
 #endif
