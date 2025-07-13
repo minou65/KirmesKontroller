@@ -38,7 +38,7 @@ bool DecoderGroupIsEnabled(uint8_t DecoderGroup) {
 }
 
 bool DecoderGroupIsActive(uint8_t DecoderGroup) {
-	if (DecoderGroup < decoder.Size() && decoder[DecoderGroup] != nullptr) {
+	if (DecoderGroup <= decoder.Size() && decoder[DecoderGroup] != nullptr) {
 		return true;
 	}
 	else {
@@ -152,6 +152,7 @@ void kDecoderInit(void) {
 				break;
 			case 203:// Motor
 				newAccessory = new Motor(Address_, Mode_); // Create a new Motor accessory
+				channel_ += 1;
 				break;
 			}
 
@@ -159,7 +160,7 @@ void kDecoderInit(void) {
 				Serial.print(F("    Mode: ")); Serial.println(Mode_);
 
 				newAccessory->setSoundSettings(sound_);
-				//newAccessory->setInputPin(outputgroup_->getInputPin());
+				newAccessory->setInputPin(outputgroup_->getInputPin());
 				newAccessory->setTimer(outputgroup_->getActiveDuration());
 
 				// Check the type of newAccessory
@@ -200,10 +201,6 @@ void setup() {
 	setupSound(); // Set up sound system
 
 	kDecoderInit(); // Initialize the decoder
-
-	setSoundVolume(5);
-	playSoundLoop("2.mp3");
-
 }
 
 void loop() {
@@ -212,18 +209,6 @@ void loop() {
 
 	for (int i_ = 0; i_ < decoder.Size(); i_++) {
 		decoder[i_]->process();
-		SoundSettings sound_ = decoder[i_]->getSoundSettings();
-		if (!sound_.filename.empty()) {
-			if (!decoder[i_]->isOn()) {
-				// Der Dateiname ist nicht leer, also kann abgespielt werden
-				setSoundVolume(sound_.volume);
-				setSoundBalance(sound_.balance);
-				playSoundLoop(sound_.filename.c_str());
-			}
-			else {
-				stopSound();
-			}
-		}
 	}
 
 	
