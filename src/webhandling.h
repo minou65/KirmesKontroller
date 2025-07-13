@@ -186,6 +186,8 @@ public:
         snprintf(_FilenameId, STRING_LEN, "%s-filename", this->getId());
         snprintf(_ActiveDurationId, STRING_LEN, "%s-activeduration", this->getId());
         snprintf(_ModeCustomHTML, STRING_LEN, "onchange=\"hideClass('%s')\"", this->getId());
+        snprintf(_InputPinId, STRING_LEN, "%s-inputpin", this->getId());
+        
 
         this->addItem(&_DesignationParam);
         this->addItem(&_ModeParam);
@@ -199,6 +201,7 @@ public:
         this->addItem(&_BrightnessParam);
         this->addItem(&_filenameParam);
         this->addItem(&_activeDurationParam);
+        this->addItem(&_InputPinParam);
     }
 
     char _DesignationValue[STRING_LEN];
@@ -213,6 +216,7 @@ public:
     char _BrightnessValue[NUMBER_LEN] = "255";
     char _filenameValue[STRING_LEN];
     char _activeDurationValue[NUMBER_LEN];
+    char _InputPinValue[NUMBER_LEN] = "0";
 
     iotwebconf::TextParameter _DesignationParam =
         iotwebconf::TextParameter("Designation", _DesignationId, _DesignationValue, STRING_LEN);
@@ -261,6 +265,20 @@ public:
     iotwebconf::NumberParameter _activeDurationParam =
         iotwebconf::NumberParameter("Active Duration (ms)", _ActiveDurationId, _activeDurationValue, NUMBER_LEN, "1000", "1..60000", "min='1' max='60000' step='1'");
 
+    MySelectParameter _InputPinParam =
+        MySelectParameter(
+            "Input Pin",
+            _InputPinId,
+            _InputPinValue,
+            NUMBER_LEN,
+            (char*)InputPinValues,
+            (char*)InputPinNames,
+            sizeof(InputPinValues) / NUMBER_LEN,
+            STRING_LEN,
+            "0",
+            nullptr
+        );
+
     char* getSoundFilename() {
         return _filenameValue;
 	}
@@ -280,6 +298,10 @@ public:
         return atoi(_NumberValue);
 	}
 
+    int getInputPin() const {
+        return atoi(_InputPinValue);
+	}
+
 private:
     char _DesignationId[STRING_LEN];
     char _ModeId[STRING_LEN];
@@ -293,6 +315,7 @@ private:
     char _BrightnessId[STRING_LEN];
     char _FilenameId[STRING_LEN];
     char _ActiveDurationId[STRING_LEN];
+    char _InputPinId[STRING_LEN];
     char _ModeCustomHTML[STRING_LEN];
 
     Neotimer _timer = Neotimer();
