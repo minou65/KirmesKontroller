@@ -152,6 +152,15 @@ public:
     iotwebconf::NumberParameter _limit2Param =
         iotwebconf::NumberParameter("Limit 2", _limit2Id, _limit2Value, NUMBER_LEN, "180", "1..180", "min='0' max='180' step='1'");
 
+    void applyDefaultValues() {
+        _designationParam.applyDefaultValue();
+        _addressParam.applyDefaultValue();
+        _travelTimeParam.applyDefaultValue();
+        _multiplierParam.applyDefaultValue();
+        _limit1Param.applyDefaultValue();
+        _limit2Param.applyDefaultValue();
+    }
+
 private:
     char _designationId[STRING_LEN];
     char _addressId[STRING_LEN];
@@ -301,6 +310,22 @@ public:
     int getInputPin() const {
         return atoi(_InputPinValue);
 	}
+
+    void applyDefaultValues() {
+        _DesignationParam.applyDefaultValue();
+        _ModeParam.applyDefaultValue();
+        _NumberParam.applyDefaultValue();
+        _AddressParam.applyDefaultValue();
+        _TimeOnParam.applyDefaultValue();
+        _TimeOffParam.applyDefaultValue();
+        _MultiplierParam.applyDefaultValue();
+        _TimeOnFadeParam.applyDefaultValue();
+        _TimeOffFadeParam.applyDefaultValue();
+        _BrightnessParam.applyDefaultValue();
+        _filenameParam.applyDefaultValue();
+        _activeDurationParam.applyDefaultValue();
+        _InputPinParam.applyDefaultValue();
+    }
 
 private:
     char _DesignationId[STRING_LEN];
