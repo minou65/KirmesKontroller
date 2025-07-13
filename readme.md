@@ -50,5 +50,45 @@ static uint8_t ChannelToGPIOMapping[16] = {
 ## Board
 ![alt text](img/board.png)
 
-## Kirmes sounds
-https://www.pond5.com/de/search?kw=karussell-unterhaltung-park-kirmes&media=sfx
+## Audio-Wiedergabe
+
+Der KirmesKontroller unterstützt die Wiedergabe von Sounddateien über das integrierte I2S-Interface. Die Audiodaten werden von einer SD-Karte gelesen und über den angeschlossenen Verstärker ausgegeben.
+
+### Unterstützte Audioformate
+
+| Format | Spezifikation | Bemerkungen |
+|--------|---------------|-------------|
+| **MP3** | Standard | Vollständig unterstützt |
+| **AAC** | Standard | Vollständig unterstützt |
+| **AACP** | Mono | Nur Mono-Wiedergabe |
+| **WAV** | 8/16 Bit | Bits per Sample: 8 oder 16 |
+| **FLAC** | Verlustfrei | Blockgröße max. 24.576 Bytes |
+| **Vorbis** | ≤196 kBit/s | Bitrate-Begrenzung beachten |
+| **M4A** | Standard | Vollständig unterstützt |
+
+### SD-Karte Setup
+
+Die Audiodateien müssen auf einer SD-Karte gespeichert werden.
+
+**Empfohlene SD-Karten-Struktur:**
+
+```text
+/sounds/
+├── ambient/
+│   ├── carousel.mp3
+│   └── fairground.wav
+├── effects/
+│   ├── bell.mp3
+│   └── whistle.wav
+└── music/
+    ├── waltz.mp3
+    └── polka.mp3
+```
+
+### Kirmes-Sounds Quellen
+
+Für authentische Kirmes- und Karussell-Sounds:
+
+- **Pond5:** [Karussell & Kirmes Sounds](https://www.pond5.com/de/search?kw=karussell-unterhaltung-park-kirmes&media=sfx)
+- **Freesound.org:** Community-basierte Sammlung von Soundeffekten
+- **YouTube Audio Library:** Kostenlose Hintergrundmusik und Effekte
