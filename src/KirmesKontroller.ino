@@ -1,14 +1,14 @@
 #include <Arduino.h>
 
-#include "src/neotimer.h"
-#include "src/version.h"
-#include "src/MotorControl.h"
-#include "src/SoundControl.h"
-#include "src/Blinkers.h"
-#include "src/pinmapping.h"
-#include "src/Vector.h"
-#include "src/accessories.h"
-#include "src/webhandling.h"
+#include "neotimer.h"
+#include "version.h"
+#include "MotorControl.h"
+#include "SoundControl.h"
+#include "Blinkers.h"
+#include "pinmapping.h"
+#include "Vector.h"
+#include "accessories.h"
+#include "webhandling.h"
 
 char Version[] = VERSION_STR;
 
@@ -196,17 +196,13 @@ void setup() {
 
 	Serial.println("Starting with Firmware " + String(VERSION));
 
-	pinMode(LED_BUILTIN, OUTPUT);
-	digitalWrite(LED_BUILTIN, LOW);
-
-	pinMode(INPUT1, INPUT_PULLUP);
-	pinMode(INPUT2, INPUT_PULLUP);
-
 	setupWeb(); // Set up web handling
-
 	setupSound(); // Set up sound system
 
 	kDecoderInit(); // Initialize the decoder
+
+	setSoundVolume(5);
+	playSoundLoop("2.mp3");
 
 }
 
