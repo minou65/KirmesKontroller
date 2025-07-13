@@ -12,11 +12,6 @@
 
 char Version[] = VERSION_STR;
 
-
-Neotimer InputTimer1(30000);
-Neotimer InputTimer2(30000);
-
-
 // Liste mit allen Decoderobjekten (Apps)
 Vector<accessories*> decoder;
 
