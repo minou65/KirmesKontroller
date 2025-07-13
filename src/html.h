@@ -148,6 +148,7 @@ function hideClass(id) {
     document.querySelector('label[for="' + id + '-onfade"]').innerHTML = 'Fader on (ms)';
     document.querySelector('label[for="' + id + '-offfade"]').innerHTML = 'Fader off (ms)';
     document.querySelector('label[for="' + id + '-multiplier"]').innerHTML = 'Multiplier';
+    document.querySelector('label[for="' + id + '-brightness"]').innerHTML = 'Brightness';
 
     parameters = ["83"];
     if (parameters.includes(selectedValue)) {
@@ -166,6 +167,11 @@ function hideClass(id) {
     if (parameters.includes(selectedValue)) {
         document.querySelector('label[for="' + id + '-onfade"]').innerHTML = 'minimal glowing time (ms)';
         document.querySelector('label[for="' + id + '-offfade"]').innerHTML = 'maximal glowing time (ms)';
+    }
+
+   parameters = ["203"];
+    if (parameters.includes(selectedValue)) {
+        document.querySelector('label[for="' + id + '-brightness"]').innerHTML = 'Motor Speed';
     }
 }
 )=====";
