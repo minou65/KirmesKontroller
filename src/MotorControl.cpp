@@ -79,6 +79,7 @@ MotorControl::MotorControl(const uint8_t Channel, const uint16_t Frequency, cons
 }
 
 MotorControl::~MotorControl() {
+	Serial.println("MotorControl::~MotorControl");
 	off();
 }
 
@@ -87,11 +88,13 @@ void MotorControl::process() {
 }
 
 void MotorControl::on(){
+	Serial.println("MotorControl::on");
 	_IsActive = true;
 	ledcWrite(_Channel, _Speed);
 }
 
 void MotorControl::off(){
+	Serial.println("MotorControl::off");
 	_IsActive = false;
 	ledcWrite(_Channel, PWM_Set_Off);
 }
