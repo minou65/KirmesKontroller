@@ -19,26 +19,25 @@ bool isPlaying = false;
 bool isLoopMode = false;
 
 void audio_eof_mp3(const char* info) {
-    Serial.print("eof: ");
-    Serial.println(info);
+    Serial.print("eof: "); Serial.println(info);
     if (isLoopMode) {
+		Serial.println("Looping sound...");
         playSound(info);
-    }
+    } else {
+        Serial.println("Sound playback finished.");
+	}
 }
 
 void audio_info(const char* info) {
-    Serial.print("info: ");
-    Serial.println(info);
+    Serial.print("info: "); Serial.println(info);
 }
 void audio_id3data(const char* info) {
-    Serial.print("id3: ");
-    Serial.println(info);
+    Serial.print("id3: "); Serial.println(info);
 }
 
 
 void audio_error(const char* info) {
-    Serial.print("error: ");
-    Serial.println(info);
+    Serial.print("error: "); Serial.println(info);
 }
 
 void setupSound() {
