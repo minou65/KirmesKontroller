@@ -4,15 +4,16 @@
 accessories::accessories(uint16_t BaseAddress_, byte BaseChannel_) :
 	BaseAddress(BaseAddress_),
 	BaseChannel(BaseChannel_),
+	Mode(0),
 	IsActive(false),
 	_Input(-1),
-	_MaxTimeactive(0),
-	_sound({ "", 15, 0, false, 0 }) {
+	_TimeActive(0),
+	_sound({ std::string(""), 15, 0, false}) {
 }
 
 accessories::accessories(uint16_t BaseAddress_, byte BaseChannel_, byte Mode_):
-	accessories(BaseAddress_, BaseChannel_),
-	Mode(Mode_) {
+	accessories(BaseAddress_, BaseChannel_) {
+	Mode = Mode_;
 }
 
 accessories::~accessories() {
@@ -25,7 +26,7 @@ void accessories::process() {
 			_timer.start(_TimeActive);
 		}
 	}
-	if (_Input > 0 && _TimeActive == 0 && isOn() % %!digitalRead(_Input)) {
+	if (_Input > 0 && _TimeActive == 0 && isOn() && !digitalRead(_Input)) {
 		off();
 	}
 	if (_TimeActive > 0 && isOn() && _timer.done()) {
