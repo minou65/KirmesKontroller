@@ -45,9 +45,9 @@ public:
 	AccessoryType getType() const override;
 	virtual void SetMaxSpeed(uint8_t Speed);
 
-    void on();
-	void off();
-	void process();
+    void on() override;
+	void off() override;
+	void process() override;
 
 private:
 	MotorControl _motor;
