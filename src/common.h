@@ -10,7 +10,7 @@
 #endif
 
 #define STRING_LEN 30
-#define NUMBER_LEN 5
+#define NUMBER_LEN 6
 
 // -- When CONFIG_PIN is pulled to ground on startup, the Thing will use the initial
 //      password to buld an AP. (E.g. in case of lost password)
@@ -90,6 +90,10 @@ static char DecoderModeNames[][STRING_LEN] = {
 
     "Motor (1)"              // 203
 };
+
+
+static const char InputPinValues[][NUMBER_LEN] = { "0", "36", "39" }; // 0 = -, 36 = INPUT1, 39 = INPUT2
+static const char InputPinNames[][STRING_LEN] = { "-", "Input1", "Input2" };
 
 #endif
 
