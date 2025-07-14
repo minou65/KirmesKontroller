@@ -115,6 +115,9 @@ void Accessory::on() {
 	}
 	if (_sound.filename[0] != '\0' && !isplayingSound()) {
 		Serial.print("    Playing sound: "); Serial.println(_sound.filename);
+		setSoundVolume(_sound.volume);
+		setSoundBalance(_sound.balance);
+		setSoundMono(_sound.mono);
 		playSoundLoop(_sound.filename);
 	}
 }
@@ -146,6 +149,8 @@ uint8_t Accessory::getInputPin(){
 }
 
 void Accessory::setTimer(int16_t time){
+	Serial.print("Accessory::setTimer ");
+	Serial.print("	Time set to: "); Serial.print(time); Serial.println("ms");
 	_TimeActive = time;
 }
 
