@@ -124,7 +124,7 @@ function hideClass(id) {
     numberClass.style.display = parameters.includes(selectedValue) ? "block" : "none";
 
     // The array parameters contains a list of items for which timeonClass should be visible
-    parameters = ["1", "50", "51", "52", "53", "54", "55", "60", "81", "83", "201", "202"];
+    parameters = ["1", "50", "51", "52", "53", "54", "55", "60", "81", "83", "201", "202", "203"];
     timeonClass.style.display = parameters.includes(selectedValue) ? "block" : "none";
 
     // The array parameters contains a list of items for which timeoffClass should be visible
@@ -132,7 +132,7 @@ function hideClass(id) {
     timeoffClass.style.display = parameters.includes(selectedValue) ? "block" : "none";
 
     // The array parameters contains a list of items for which multiplierClass should be visible
-    parameters = ["1", "50", "51", "52", "53", "54", "55", "60", "61", "62", "81", "83", "201", "202"];
+    parameters = ["1", "50", "51", "52", "53", "54", "55", "60", "61", "62", "81", "83", "201", "202", "203"];
     multiplierClass.style.display = parameters.includes(selectedValue) ? "block" : "none";
 
     // The array parameters contains a list of items for which onfadeClass should be visible
@@ -171,6 +171,7 @@ function hideClass(id) {
 
    parameters = ["203"];
     if (parameters.includes(selectedValue)) {
+document.querySelector('label[for="' + id + '-timeon"]').innerHTML = 'Start delay (ms)';
         document.querySelector('label[for="' + id + '-brightness"]').innerHTML = 'Motor Speed';
     }
 }
