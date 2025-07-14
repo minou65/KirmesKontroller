@@ -9,7 +9,6 @@
 #include "WProgram.h"
 #endif
 
-#include <string>
 #include "neotimer.h"
 
 enum class AccessoryType {
@@ -24,7 +23,7 @@ enum class AccessoryType {
 };
 
 struct SoundSettings {
-	std::string filename;
+	char filename[61];
 	int volume;
 	int balance;
 	bool mono;

@@ -185,7 +185,8 @@ void kDecoderInit(void) {
 			uint8_t NightBrightness_ = 150;
 
 			SoundSettings sound_;
-			sound_.filename = outputgroup_->getSoundFilename();
+			strncpy(sound_.filename, outputgroup_->getSoundFilename() ? outputgroup_->getSoundFilename() : "", sizeof(sound_.filename) - 1);
+			sound_.filename[sizeof(sound_.filename) - 1] = '\0'; // Nullterminierung sicherstellen
 			sound_.volume = soundGroup.getVolume();
 			sound_.balance = soundGroup.getBalance();
 			sound_.mono = soundGroup.isMono();
@@ -287,7 +288,7 @@ void setup() {
 	setupSound(); // Set up sound system
 	NMRAsetup();
 
-	kDecoderInit(); // Initialize the decoder
+	//kDecoderInit(); // Initialize the decoder
 
 	if (CONFIG_PIN >= 0) {
 		pinMode(CONFIG_PIN, INPUT);
