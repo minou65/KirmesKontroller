@@ -288,7 +288,7 @@ void setup() {
 	setupSound(); // Set up sound system
 	NMRAsetup();
 
-	//kDecoderInit(); // Initialize the decoder
+	kDecoderInit(); // Initialize the decoder
 
 	if (CONFIG_PIN >= 0) {
 		pinMode(CONFIG_PIN, INPUT);
