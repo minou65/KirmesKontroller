@@ -63,13 +63,21 @@ void loopSound() {
 }
 
 void playSound(const char* filename) {
-    if (audio.connecttoFS(SD, filename)) {
-        isPlaying = true;
-    }
-    else {
-        Serial.println("Failed to play file");
+    if (SD.exists(filename)) {
+        Serial.print("Playing file: "); Serial.println(filename);
+        if (audio.connecttoFS(SD, filename)) {
+            isPlaying = true;
+        }
+        else {
+            Serial.println("Failed to play file");
+            isPlaying = false;
+        }
+    } else {
+        Serial.print("File not found: ");
+        Serial.println(filename);
         isPlaying = false;
     }
+
 }
 
 void playSoundLoop(const char* filename) {
