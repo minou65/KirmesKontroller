@@ -24,8 +24,8 @@ enum class AccessoryType {
 
 struct SoundSettings {
 	char filename[61];
-	int volume;
-	int balance;
+	uint16_t volume;
+	int8_t balance;
 	bool mono;
 };
 
@@ -65,7 +65,7 @@ class Accessory : public accessories {
 protected:
 	SoundSettings _sound;
 	uint8_t _Input;
-	int16_t _TimeActive;
+	uint16_t _TimeActive;
 	Neotimer _timer = Neotimer();
 
 
@@ -88,7 +88,7 @@ public:
 	void setInputPin(uint8_t pin);
 	uint8_t getInputPin();
 
-	void setTimer(int16_t time);
+	void setTimer(uint16_t time);
 };
 
 // The base of all signals
