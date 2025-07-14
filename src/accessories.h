@@ -100,6 +100,10 @@ public:
 	Signal(uint16_t BaseAddress_, byte BaseChannel_, uint16_t DayLightAddress_, byte Mode_, byte Brightness1_ = 255, byte Brightness2_ = 100);
 	bool SignalState();
 	AccessoryType getType() const override { return AccessoryType::Signal; }
+
+	void process() override {};
+	void on() override {};
+	void off() overried {};
 };
 
 #endif
