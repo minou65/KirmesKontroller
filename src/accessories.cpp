@@ -113,6 +113,7 @@ void Accessory::on() {
 		_timer.start(_TimeActive);
 		Serial.print("    accessory timer started for "); Serial.print(_TimeActive); Serial.println(" ms");
 	}
+
 	if (_sound.filename[0] != '\0' && !isplayingSound()) {
 		Serial.print("    Playing sound: "); Serial.println(_sound.filename);
 		setSoundVolume(_sound.volume);
