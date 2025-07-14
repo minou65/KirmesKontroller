@@ -44,14 +44,20 @@ void Ausgang::on() {
 	Serial.println("Ausgang::on");
 	IsActive = true;
 	Output.on();
-
+	accessories::on();
 };
 
 void Ausgang::off() {
 	Serial.println("Ausgang::off");
 	IsActive = false;
 	Output.off();
+	accessories::off();
 };
+
+void Ausgang::process() {
+	accessories::process();
+	Output.process();
+}
 
 
 //=======================================================
@@ -116,24 +122,25 @@ void Blinker::SetMaxBrightness(uint16_t MaxBrightness) {
 }
 
 void Blinker::process() {
-
 	LED1.process();
 
 	// do nothing if not active
-	if (!IsActive)
-		return;
+	if (IsActive) {
 
-	if (BlinkTimer.repeat()) {
-		if (Status) {
-			LED1.on();
-			BlinkTimer.start(timeOn);
+		if (BlinkTimer.repeat()) {
+			if (Status) {
+				LED1.on();
+				BlinkTimer.start(timeOn);
+			}
+			else {
+				LED1.off();
+				BlinkTimer.start(timeOff);
+			}
+			Status = !Status;
 		}
-		else {
-			LED1.off();
-			BlinkTimer.start(timeOff);
-		}
-		Status = !Status;
+
 	}
+	accessories::process();
 }
 
 void Blinker::on() {
@@ -143,6 +150,7 @@ void Blinker::on() {
 	IsActive = true;
 	Status = true;
 	BlinkTimer.start(0);
+	accessories::on();
 }
 
 void Blinker::off() {	
@@ -150,6 +158,7 @@ void Blinker::off() {
 	IsActive = false;
 	BlinkTimer.stop();
 	LED1.off();
+	accessories::off();
 }
 
 //=======================================================
@@ -182,28 +191,27 @@ void Wechselblinker::SetMaxBrightness(uint16_t MaxBrightness) {
 }
 
 void Wechselblinker::process() {
-	
 	LED1.process();
 	LED2.process();
 
 	// do nothing if not active
-	if (!IsActive)
-		return;
+	if (IsActive) {
+		if (BlinkTimer.repeat()) {
+			if (Status) {
+				LED1.on();
+				LED2.off();
+				BlinkTimer.start(timeOn);
+			}
+			else {
+				LED1.off();
+				LED2.on();
+				BlinkTimer.start(timeOff);
+			}
 
-	if (BlinkTimer.repeat()){
-		if (Status) {
-			LED1.on();
-			LED2.off();
-			BlinkTimer.start(timeOn);
+			Status = !Status;
 		}
-		else {
-			LED1.off();
-			LED2.on();
-			BlinkTimer.start(timeOff);
-		}
-
-		Status = !Status;
 	}
+	accessories::process();
 }
 
 void Wechselblinker::on() {
@@ -211,6 +219,7 @@ void Wechselblinker::on() {
 	Serial.print("   timeOn:  "); Serial.println(timeOn);
 	Serial.print("   timeOff: "); Serial.println(timeOff);
 	Blinker::on();
+	accessories::on();
 }
 
 void Wechselblinker::off() {
@@ -218,6 +227,7 @@ void Wechselblinker::off() {
 	IsActive = false;
 	LED1.off();
 	LED2.off();
+	accessories::off();
 }
 
 //=======================================================
@@ -298,125 +308,124 @@ void Lauflicht::SetMaxBrightness(uint16_t MaxBrightness) {
 }
 
 void Lauflicht::process() {
-
 	for (int _i = 0; _i < LEDs.Size(); _i++)
 		LEDs[_i]->process();
 
 	// do nothing if not active
-	if (!IsActive)
-		return;
+	if (IsActive) {
+		// if time to do something, do it
+		if (OperationTimer.repeat()) {
 
-	// if time to do something, do it
-	if (OperationTimer.repeat()) {
+			switch (Mode) {
+			case 52:
+				// Kette durchgehen und notwendige LED einschalten, die anderen aussschalten
+				if (LastStep != NextStep) {
+					LEDs[LastStep]->off();
+					LastStep = NextStep;
+				};
 
-		switch (Mode) {
-		case 52:
-			// Kette durchgehen und notwendige LED einschalten, die anderen aussschalten
-			if (LastStep != NextStep) {
-				LEDs[LastStep]->off();
-				LastStep = NextStep;
-			};
-
-			LEDs[NextStep]->on(PWM_Set_On);
-			NextStep++;
-
-			if (NextStep >= Anzahl)
-				NextStep = 0;
-
-			break;
-		case 53:
-			// Alle Lampen werden nacheinander eingschaltet, am Schluss werden alle ausgeschaltet
-
-			// Ende der Kette ist noch nicht erreicht
-			if (NextStep != 254) {
-
-				if (NextStep < Anzahl)
-					LEDs[NextStep]->on();
+				LEDs[NextStep]->on(PWM_Set_On);
 				NextStep++;
 
-				if (NextStep > Anzahl)
-					NextStep = 254;
-			}
-			// Ende der Kette ist erreicht
-			else {
-				off();
-				IsActive = true;
+				if (NextStep >= Anzahl)
+					NextStep = 0;
 
-				// Prüfen ob alle Lampen dunkel sind
-				bool _b = true;
+				break;
+			case 53:
+				// Alle Lampen werden nacheinander eingschaltet, am Schluss werden alle ausgeschaltet
 
-				for (int _i = 0; _i < LEDs.Size(); _i++) {
-					if (LEDs[_i]->isDark()) {
-						_b = false;
+				// Ende der Kette ist noch nicht erreicht
+				if (NextStep != 254) {
+
+					if (NextStep < Anzahl)
+						LEDs[NextStep]->on();
+					NextStep++;
+
+					if (NextStep > Anzahl)
+						NextStep = 254;
+				}
+				// Ende der Kette ist erreicht
+				else {
+					off();
+					IsActive = true;
+
+					// Prüfen ob alle Lampen dunkel sind
+					bool _b = true;
+
+					for (int _i = 0; _i < LEDs.Size(); _i++) {
+						if (LEDs[_i]->isDark()) {
+							_b = false;
+						}
 					}
+
+					// Wenn alle dunkel sind  dann nächster Step
+					if (_b)
+						NextStep = 0;
+				};
+				break;
+
+			case 54:
+				// Lampe für Lampe wird eingeschaltet. Sind alle eingeschaltet, wird mit der ersten Lampe begonnen zu löschen.
+				if (NextStep < Anzahl)
+				{
+					LEDs[NextStep]->on();
+					NextStep++;
+
+				}
+				else if (LastStep < Anzahl) {
+					LEDs[LastStep]->off();
+					LastStep++;
+				}
+				else {
+					NextStep = 0;
+					LastStep = 0;
+				};
+
+				break;
+
+			case 55:
+				// Kette durchgehen und notwendige LED einschalten, die anderen aussschalten
+				if (LastStep != NextStep) {
+					LEDs[LastStep]->off();
+					LastStep = NextStep;
+				};
+
+				LEDs[NextStep]->on(PWM_Set_On);
+
+				if (Direction) {
+					NextStep++;
+				}
+				else {
+					NextStep--;
 				}
 
-				// Wenn alle dunkel sind  dann nächster Step
-				if (_b)
+				if (NextStep >= Anzahl && Direction) {
+					NextStep = Anzahl - 1;
+					Direction = false;
+				}
+
+				if (NextStep <= 0 && !Direction) {
 					NextStep = 0;
-			};
-			break;
+					Direction = true;
+				}
 
-		case 54:
-			// Lampe für Lampe wird eingeschaltet. Sind alle eingeschaltet, wird mit der ersten Lampe begonnen zu löschen.
-			if (NextStep < Anzahl)
-			{
-				LEDs[NextStep]->on();			
-				NextStep++;
-				
-			}
-			else if (LastStep < Anzahl) {
-				LEDs[LastStep]->off();
-				LastStep++;
+				break;
+
+			};
+
+			// Set on or off Intervall
+			if (Status) {
+				OperationTimer.start(timeOn);
 			}
 			else {
-				NextStep = 0;
-				LastStep = 0;
+				OperationTimer.start(timeOff);;
 			};
 
-			break;
+			Status = !Status;
 
-		case 55:
-			// Kette durchgehen und notwendige LED einschalten, die anderen aussschalten
-			if (LastStep != NextStep) {
-				LEDs[LastStep]->off();
-				LastStep = NextStep;
-			};
-
-			LEDs[NextStep]->on(PWM_Set_On);
-
-			if (Direction) {
-				NextStep++;
-			}
-			else {
-				NextStep--;
-			}
-
-			if (NextStep >= Anzahl && Direction) {
-				NextStep = Anzahl - 1;
-				Direction = false;
-			}
-
-			if (NextStep <= 0 && !Direction) {
-				NextStep = 0;
-				Direction = true;
-			}
-
-			break;
-
-		};
-
-		// Set on or off Intervall
-		if (Status) {
-			OperationTimer.start(timeOn);
-		}
-		else { 
-			OperationTimer.start(timeOff);;
-		};
-
-		Status = !Status;
-
-	}; // end of if
+		}; // end of if
+	}
+	accessories::process();
 };
 
 void Lauflicht::on() {
@@ -427,6 +436,7 @@ void Lauflicht::on() {
 	Status = false;
 	NextStep = 0;
 	LastStep = 0;
+	accessories::on();
 }
 
 void Lauflicht::off() {
@@ -436,6 +446,7 @@ void Lauflicht::off() {
 	for (int i = 0; i < LEDs.Size(); i++) {
 		LEDs[i]->off();
 	}
+	accessories::off();
 }
 
 //=======================================================
@@ -508,44 +519,43 @@ void Hausbeleuchtung::SetMaxBrightness(uint16_t MaxBrightness) {
 }
 
 void Hausbeleuchtung::process() {
-
 	for (int i = 0; i < LEDs.Size(); i++) {
 		LEDs[i]->process();
 	}
 
 	// do nothing if not active
-	if (!IsActive)
-		return;
+	if (IsActive) {
+		// if time to do something, do it
+		if (OperationTimer.repeat()) {
+			uint8_t t1_ = 0;
+			uint8_t	t2_ = 0;
 
-	// if time to do something, do it
-	if (OperationTimer.repeat()) {
-		uint8_t t1_ = 0;
-		uint8_t	t2_ = 0;
+			// Bestimmen welcher Ausgang geschaltet werden soll
+			randomSeed(esp_random());
+			t2_ = random(Anzahl);
 
-		// Bestimmen welcher Ausgang geschaltet werden soll
-		randomSeed(esp_random());
-		t2_ = random(Anzahl);
+			// Bestimmen wann das nächstemal etwas gemacht werden soll
+			OperationTimer.start(random(minRandomTime, maxRandomTime));
 
-		// Bestimmen wann das nächstemal etwas gemacht werden soll
-		OperationTimer.start(random(minRandomTime, maxRandomTime));
+			for (int i = 0; i < LEDs.Size(); i++) {
 
-		for (int i = 0; i < LEDs.Size(); i++) {
+				bool on_ = LEDs[i]->isOn();
 
-			bool on_ = LEDs[i]->isOn();
+				if (!on_ && IsActive && (t1_ == t2_)) {
+					LEDs[i]->on();
+					break;
+				};
 
-			if (!on_ && IsActive && (t1_ == t2_)) {
-				LEDs[i]->on();
-				break;
+				if ((on_) && (t1_ == t2_)) {
+					LEDs[i]->off();
+					break;
+				};
+
+				t1_++;
 			};
-
-			if ((on_) && (t1_ == t2_)) {
-				LEDs[i]->off();
-				break;
-			};
-
-			t1_++;
 		};
-	};
+	}
+	accessories::process();
 
 };
 
@@ -554,6 +564,7 @@ void Hausbeleuchtung::on() {
 	IsActive = true;
 	randomSeed(esp_random());
 	OperationTimer.start(random(minRandomTime, maxRandomTime));
+	accessories::on();
 }
 
 void Hausbeleuchtung::off() {
@@ -563,6 +574,7 @@ void Hausbeleuchtung::off() {
 		LEDs[i]->off();
 	}
 	OperationTimer.stop();
+	accessories::off();
 }
 
 //=======================================================
@@ -584,14 +596,15 @@ void Fernseher::process() {
 	LED1.process();
 	
 	// do nothing if not active
-	if (!IsActive)
-		return;
+	if (IsActive) {
 
-	// if time to do something, do it
-	if (BlinkTimer.repeat()) {
-		LED1.SetBrightness(random(250), true);
-		BlinkTimer.start(random(200));
-	} 
+		// if time to do something, do it
+		if (BlinkTimer.repeat()) {
+			LED1.SetBrightness(random(250), true);
+			BlinkTimer.start(random(200));
+		}
+	}
+	accessories::process();
 };
 
 void Fernseher::on() {
@@ -601,12 +614,14 @@ void Fernseher::on() {
 	Status = true;
 	LED1.on(random(250));
 	BlinkTimer.start(random(200));
+	accessories::on();
 };
 
 void Fernseher::off() {
 	Serial.println("Fernseher::off");
 	IsActive = false;
 	LED1.off();
+	accessories::off();
 }
 
 //=======================================================
@@ -642,84 +657,86 @@ void Schweissen::SetMaxBrightness(uint16_t MaxBrightness) {
 }
 
 void Schweissen::process() {
-
 	LED1.process();
 	LED2.process();
 	LED3.process();
 
 	// do nothing if not active and not is running
-	if (!IsActive && !Status)
-		return;
+	if (IsActive && Status) {
 
-	// if time to do something, do it
-	if (BlinkTimer.repeat()) {
-		randomSeed(esp_random());
+		// if time to do something, do it
+		if (BlinkTimer.repeat()) {
+			randomSeed(esp_random());
 
-		// Solange Flickertime grösser als 0 ist, schweissen
-		if (flickertime > 0) {
-		
-			// Flickertime reduzieren
-			flickertime--;
+			// Solange Flickertime grösser als 0 ist, schweissen
+			if (flickertime > 0) {
 
-			// running State auf true
-			Status = true;
+				// Flickertime reduzieren
+				flickertime--;
 
-			// Flackerwert bestimmen
-			uint8_t _flicker = random(flickermin, flickermax);
+				// running State auf true
+				Status = true;
 
-			LED1.SetBrightness(_flicker, true);
-			LED2.SetBrightness(_flicker, true);
+				// Flackerwert bestimmen
+				uint8_t _flicker = random(flickermin, flickermax);
 
-			// Je länger geschweisst wird, desto heisser wird das Material
-			if (PWM_Set_Off == 0) {
-				glow++;
-			} else {
-				glow--;
-			}
+				LED1.SetBrightness(_flicker, true);
+				LED2.SetBrightness(_flicker, true);
 
-			LED3.SetBrightness(glow, true);
+				// Je länger geschweisst wird, desto heisser wird das Material
+				if (PWM_Set_Off == 0) {
+					glow++;
+				}
+				else {
+					glow--;
+				}
 
-			// delay bestimmen
-			BlinkTimer.start(random(minRandomTime, maxRandomTime));
+				LED3.SetBrightness(glow, true);
 
-			if (flickertime == 0) {
-				// Es wird nicht mehr geschweisst
-				LED1.SetBrightness(PWM_Set_Off, true);
-				LED2.SetBrightness(PWM_Set_Off, true);
+				// delay bestimmen
+				BlinkTimer.start(random(minRandomTime, maxRandomTime));
+
+				if (flickertime == 0) {
+					// Es wird nicht mehr geschweisst
+					LED1.SetBrightness(PWM_Set_Off, true);
+					LED2.SetBrightness(PWM_Set_Off, true);
+				};
+
+			} // if (m_flickertime > 0)
+			else if (glow != PWM_Set_Off) {
+
+				if (PWM_Set_Off == 0) {
+					glow--;
+				}
+				else {
+					glow++;
+				}
+
+				// Langsam ausglühen
+				LED3.SetBrightness(glow, true);
+
+				// delay bestimmen
+				BlinkTimer.start(random(glowdelay));
+
+				// Pause bis zum nächsten Schweissen bestimmen
+				if (glow == PWM_Set_Off) {
+					BlinkTimer.start(random(pauseMin, pauseMax));
+				};
+
+			} // else if (m_glow > 0)
+			else if (glow == PWM_Set_Off) {
+				// Schweissvorgang neu starten
+				BlinkTimer.start(random(flickertimemin, flickertimemax));
+
+				// Anzahl flicker
+				flickertime = random(flickertimemin, flickertimemax);
+
+				// Running State auf false
+				Status = false;
 			};
-
-		} // if (m_flickertime > 0)
-		else if (glow != PWM_Set_Off) {
-		
-			if (PWM_Set_Off == 0) {
-				glow--;
-			} else {
-				glow++;
-			}
-
-			// Langsam ausglühen
-			LED3.SetBrightness(glow, true);
-
-			// delay bestimmen
-			BlinkTimer.start(random(glowdelay));
-
-			// Pause bis zum nächsten Schweissen bestimmen
-			if (glow == PWM_Set_Off) {
-				BlinkTimer.start(random(pauseMin, pauseMax));
-			};
-
-		} // else if (m_glow > 0)
-		else if (glow == PWM_Set_Off) {
-			// Schweissvorgang neu starten
-			BlinkTimer.start(random(flickertimemin, flickertimemax));
-
-			// Anzahl flicker
-			flickertime = random(flickertimemin, flickertimemax);
-
-			// Running State auf false
-			Status = false;
 		};
-	}; 
+	}
+	accessories::process();
 };
 
 void Schweissen::on() {
@@ -743,11 +760,13 @@ void Schweissen::on() {
 
 	// Anzahl flicker
 	flickertime = random(flickertimemin, flickertimemax);
+	accessories::on();
 };
 
 void Schweissen::off() {
 	Serial.println("Schweissen::off");
 	IsActive = false;
+	accessories::off();
 }
 
 //=======================================================
@@ -827,10 +846,11 @@ void NeonLampen::SetMaxBrightness(uint16_t MaxBrightness) {
 }
 
 void NeonLampen::process() {
-
+	
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->process();
 	}
+	accessories::process();
 }
 
 void NeonLampen::on() {
@@ -839,6 +859,7 @@ void NeonLampen::on() {
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->on();
 	}
+	accessories::on();
 }
 
 void NeonLampen::off() {
@@ -847,6 +868,7 @@ void NeonLampen::off() {
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->off();
 	}
+	accessories::off();
 }
 
 //=======================================================
@@ -943,6 +965,7 @@ void NatriumLampen::process() {
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->process();
 	}
+	accessories::process();
 }
 
 void NatriumLampen::on() {
@@ -953,6 +976,7 @@ void NatriumLampen::on() {
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->on();
 	}
+	accessories::on();
 }
 
 void NatriumLampen::off() {
@@ -963,6 +987,7 @@ void NatriumLampen::off() {
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->off();
 	}
+	accessories::off();
 }
 
 //=======================================================
@@ -994,22 +1019,27 @@ void Feuer::process() {
 	LED3.process();
 
 	// do nothing if not active and not is running
-	if (!IsActive)
-		return;
+	if (IsActive) {
+		// if time to do something, do it
+		if (BlinkTimer.repeat()) {
 
-	// if time to do something, do it
-	if (BlinkTimer.repeat()) {
+			randomSeed(esp_random());
 
-		randomSeed(esp_random());
+			// delay bestimmen
+			BlinkTimer.set(random(minRandomTime, maxRandomTime));
 
-		// delay bestimmen
-		BlinkTimer.set(random(minRandomTime, maxRandomTime));
+			// Helligkeit des Feuers bestimmen
+			LED1.SetBrightness(random(256));  // gelb
+			LED2.SetBrightness(random(256));  // rot
+			LED3.SetBrightness(random(256));  // gelb
+		};
+	}
+	accessories::process();
+};
 
-		// Helligkeit des Feuers bestimmen
-		LED1.SetBrightness(random(256));  // gelb
-		LED2.SetBrightness(random(256));  // rot
-		LED3.SetBrightness(random(256));  // gelb
-	};
+void Feuer::on() {
+	Serial.println("Feuer::on");
+	accessories::on();
 };
 
 void Feuer::off() {
@@ -1018,6 +1048,7 @@ void Feuer::off() {
 	LED1.off();
 	LED2.off();
 	LED3.off();
+	accessories::off();
 };
 
 //=======================================================
@@ -1057,33 +1088,44 @@ void Blitzlicht::process() {
 	LED1.process();
 
 	// do nothing if not active
-	if (!IsActive)
-		return;
+	if (IsActive) {
 
-	if (!Blitztimer.done()) {
-		if (Status2) {
-			Blinker::process();
+		if (!Blitztimer.done()) {
+			if (Status2) {
+				Blinker::process();
+			}
+			else {
+				LED1.off();
+			}
 		}
 		else {
-			LED1.off();
+			randomSeed(esp_random());
+			if (Status2) {
+				Blitztimer.start(random(sleeptimeMin, sleeptimeMax)); // sleep time
+			}
+			else {
+				Blitztimer.start(random(blitztimeMin, blitztimeMax)); // Blitztime
+			}
+			Status2 = !Status2;
 		}
 	}
-	else {
-		randomSeed(esp_random());
-		if (Status2) {
-			Blitztimer.start(random(sleeptimeMin, sleeptimeMax)); // sleep time
-		}
-		else {
-			Blitztimer.start(random(blitztimeMin, blitztimeMax)); // Blitztime
-		}
-		Status2 = !Status2;
-	}
+	accessories::process();
 }
 
 void Blitzlicht::on() {
-	Blinker::on();
 	Serial.println(" Blitzlicht::on");
+	Blinker::on();
 	Status2 = true;
 	randomSeed(esp_random());
 	Blitztimer.start(random(blitztimeMin, blitztimeMax));
+	accessories::on();
+}
+
+void Blitzlicht::off() {
+	Serial.println(" Blitzlicht::off");
+	IsActive = false;
+	Status2 = false;
+	LED1.off();
+	Blitztimer.stop();
+	accessories::off();
 }

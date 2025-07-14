@@ -26,6 +26,7 @@ public:
 	void SetMaxBrightness(uint16_t MaxBrightness) override;
 	void on() override;
 	void off() override;
+	void process() override;
 };
 
 //=======================================================
@@ -270,6 +271,7 @@ public:
 	~Feuer();
 	void SetMaxBrightness(uint16_t MaxBrightness);
 	void process() override;
+	void on() override;
 	void off() override;
 };
 
@@ -293,6 +295,7 @@ public:
 
 	void process() override;
 	void on() override;
+	void off() override;
 };
 
 
