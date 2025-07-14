@@ -19400,6 +19400,13 @@ diameter 2 mm, horizontal, grid 10.16 mm</description>
 <junction x="314.96" y="152.4"/>
 </segment>
 </net>
+<net name="LED" class="0">
+<segment>
+<pinref part="IC2" gate="G$1" pin="IO47"/>
+<wire x1="256.54" y1="203.2" x2="271.78" y2="203.2" width="0.1524" layer="91"/>
+<label x="264.16" y="203.2" size="1.778" layer="95"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>
