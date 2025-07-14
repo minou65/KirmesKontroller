@@ -64,7 +64,7 @@ Accessory::Accessory(uint16_t BaseAddress_, byte BaseChannel_) :
 	accessories(BaseAddress_, BaseChannel_),
 	_Input(-1),
 	_TimeActive(0),
-	_sound({ std::string(""), 15, 0, false}) {
+	_sound("", 15, 0, false) {
 }
 
 Accessory::Accessory(uint16_t BaseAddress_, byte BaseChannel_, byte Mode_):
@@ -113,9 +113,9 @@ void Accessory::on() {
 		_timer.start(_TimeActive);
 		Serial.print("    accessory timer started for "); Serial.print(_TimeActive); Serial.println(" ms");
 	}
-	if (_sound.filename.length() > 0 && !isplayingSound()) {
-		Serial.print("    Playing sound: "); Serial.println(_sound.filename.c_str());
-		playSoundLoop(_sound.filename.c_str());
+	if (_sound.filename[0] != '\0' && !isplayingSound()) {
+		Serial.print("    Playing sound: "); Serial.println(_sound.filename);
+		playSoundLoop(_sound.filename);
 	}
 }
 
@@ -125,9 +125,9 @@ void Accessory::off() {
 	if (_TimeActive > 0) {
 		_timer.stop();
 		Serial.println("    accessory timer stopped");
-	}	
-	if (_sound.filename.length() > 0 && isplayingSound()) {
-		Serial.print("    Stopping sound: "); Serial.println(_sound.filename.c_str());
+	}
+	if (_sound.filename[0] != '\0' && isplayingSound()) {
+		Serial.print("    Stopping sound: "); Serial.println(_sound.filename);
 		stopSound();
 	}
 }
