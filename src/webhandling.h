@@ -57,7 +57,7 @@ public:
         _volumeBuffer,
         sizeof(_volumeBuffer),
         "15",
-        nullptr,
+        "0..21",
         "min='0' max='21'"
     );
 
@@ -77,7 +77,7 @@ public:
         _balanceBuffer,
         sizeof(_balanceBuffer),
         "0",
-        nullptr,
+        "-16..0..16",
         "min='-16' max='16'"
     );
 
