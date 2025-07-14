@@ -29,10 +29,10 @@ void audio_eof_mp3(const char* info) {
 }
 
 void audio_info(const char* info) {
-    Serial.print("info: "); Serial.println(info);
+    //Serial.print("info: "); Serial.println(info);
 }
 void audio_id3data(const char* info) {
-    Serial.print("id3: "); Serial.println(info);
+    //Serial.print("id3: "); Serial.println(info);
 }
 
 
