@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="LED" Collapsed="true">
+    <Position X="2" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gIAAgAAAAACAAgAAAEABABIQEAAABAAAAAAAAAAAAAE=</HashCode>
+      <FileName>src\LEDControl.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LEDFader" Collapsed="true">
+    <Position X="2" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAADgQKAAACAhAAAACCEAAIAAAAAAICAAAiAgAAAQAA=</HashCode>
+      <FileName>src\LEDControl.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MotorControl" Collapsed="true">
+    <Position X="4.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAACIAAACBAAAAAIGAAAAAAAACAAQgAAEAAA=</HashCode>
+      <FileName>src\MotorControl.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neon" Collapsed="true">
+    <Position X="6.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAIiAABAICgAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\LEDControl.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Natrium" Collapsed="true">
+    <Position X="2" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAgAgAABAICCAIAAACAAAAIAQAAAAAAAAAECYAAAAAA=</HashCode>
+      <FileName>src\LEDControl.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

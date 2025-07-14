@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="accessories" Collapsed="true">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgoAgAICgAAAAEAABACqCAQAAAAACAAIEAgACIAg=</HashCode>
+      <FileName>src\accessories.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ausgang" Collapsed="true">
+    <Position X="4.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAgAAAAADAAAAAAAAIAAoAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>src\Blinkers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Blinker" Collapsed="true">
+    <Position X="6.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAgAgEACCEAACAAAAAAAoAAAEAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>src\Blinkers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Signal" Collapsed="true">
+    <Position X="2.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAgAAAIAgAAAAAAAAAAAIEAQIAAAAAAIBABAAAAAA=</HashCode>
+      <FileName>src\accessories.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LEDaccessories" Collapsed="true">
+    <Position X="4.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAAAAAAAAAAAgQAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\LEDControl.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Hausbeleuchtung" Collapsed="true">
+    <Position X="8" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAgAIAAACFAAAgAAAQAAoAAAAAAAAAAAAABEAAAAA=</HashCode>
+      <FileName>src\Blinkers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lauflicht" Collapsed="true">
+    <Position X="9.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAgAAGACChAACAACAQAAqAEAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>src\Blinkers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NatriumLampen" Collapsed="true">
+    <Position X="11.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAgAAQAACAAAQAAAAQAA4AAAAAAAQAAAACAAAAEAA=</HashCode>
+      <FileName>src\Blinkers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NeonLampen" Collapsed="true">
+    <Position X="13.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAgAAAAACAAAAAAAAQAA4AAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Blinkers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Motor" Collapsed="true">
+    <Position X="0.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAIEAgCAAAAAAAAAAAIABQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\MotorControl.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Blitzlicht" Collapsed="true">
+    <Position X="6.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAwAEAAACQQAAABABAAAIAAAAAAAABAAAAABAAAAA=</HashCode>
+      <FileName>src\Blinkers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fernseher" Collapsed="true">
+    <Position X="8.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAACACAAAAAAAAAAAIAAAAAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>src\Blinkers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Feuer" Collapsed="true">
+    <Position X="10.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAgAAAAACEAAAAAQAAAAIAAAwAABAAAAAAAEAAAAA=</HashCode>
+      <FileName>src\Blinkers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Schweissen" Collapsed="true">
+    <Position X="12.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAgAAAAESEABAAAAAAAAIIAEwACAAAAAAAEkAIIAI=</HashCode>
+      <FileName>src\Blinkers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Wechselblinker" Collapsed="true">
+    <Position X="14.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAgAAAAACQAAAAAAAAAAIAAAgAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>src\Blinkers.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
