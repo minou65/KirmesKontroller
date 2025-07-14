@@ -30,16 +30,40 @@ struct SoundSettings {
 	bool mono;
 };
 
-// Root Klasse
 class accessories {
-protected:
+	protected:
 	uint16_t BaseAddress;
 	byte BaseChannel;
-
 	bool IsActive;
 	
 	byte Mode;
 
+public:
+	accessories() = default;
+	accessories(uint16_t baseAddress, byte baseChannel);
+	accessories(uint16_t baseAddress, byte baseChannel, byte mode);
+	~accessories();
+
+	virtual void process();
+	virtual void on();
+	virtual void off();
+
+	virtual AccessoryType getType() const;
+
+	virtual void notifyAddress(uint16_t Address_, uint8_t cmd_);
+	virtual void notifyTurnoutAddress(uint16_t Address_, uint8_t Direction_, uint8_t OutputPower_);
+	virtual void notifyDccSpeed(uint16_t Addr, uint8_t Speed, uint8_t ForwardDir, uint8_t SpeedSteps);
+
+	bool isOn() const;
+	uint16_t Address();
+	byte Channel();
+
+	byte ChannelMode();
+};
+
+// Accessory class, the base class for all output accessories
+class Accessory : public accessories {
+protected:
 	SoundSettings _sound;
 	uint8_t _Input;
 	int16_t _TimeActive;
@@ -47,22 +71,14 @@ protected:
 
 
 public:
-	accessories() = default;
-	accessories(uint16_t BaseAddress_, byte BaseChannel_);
-	accessories(uint16_t BaseAddress, byte BaseChannel_y, byte Mode_);
-	~accessories();
+	Accessory() = default;
+	Accessory(uint16_t BaseAddress_, byte BaseChannel_);
+	Accessory(uint16_t BaseAddress, byte BaseChannel_y, byte Mode_);
+	~Accessory();
 
-	virtual void process();
-	virtual void on();
-	virtual void off();
-	virtual AccessoryType getType() const { 
-		Serial.print("accessories::getType");
-		return AccessoryType::None;
-	}
-
-	virtual void notifyAddress(uint16_t Address_, uint8_t cmd_);
-	virtual void notifyTurnoutAddress(uint16_t Address_, uint8_t Direction_, uint8_t OutputPower_);
-	virtual void notifyDccSpeed(uint16_t Addr, uint8_t Speed, uint8_t ForwardDir, uint8_t SpeedSteps);
+	void process() override;
+	void on() override;
+	void off() override;
 
 	void setSoundSettings(SoundSettings sound) {
 		_sound = sound;
@@ -74,16 +90,9 @@ public:
 	uint8_t getInputPin();
 
 	void setTimer(int16_t time);
-
-	bool isOn() const;
-	uint16_t Address();
-	byte Channel();
-
-	byte ChannelMode();
-
 };
 
-// Die Mutter aller Signale
+// The base of all signals
 class Signal : public accessories {
 protected:
 	uint16_t DayLightAddress;
@@ -101,9 +110,6 @@ public:
 	bool SignalState();
 	AccessoryType getType() const override { return AccessoryType::Signal; }
 
-	void process() override {};
-	void on() override {};
-	void off() overried {};
 };
 
 #endif

@@ -1,37 +1,93 @@
 #include "accessories.h"
 #include "SoundControl.h"
 
-// Class accessories, dir Mutter aller Klassen
-accessories::accessories(uint16_t BaseAddress_, byte BaseChannel_) :
-	BaseAddress(BaseAddress_),
-	BaseChannel(BaseChannel_),
+accessories::accessories(uint16_t baseAddress, byte baseChannel) :
+	BaseAddress(BaseAddress),
+	BaseChannel(BaseChannel),
 	Mode(0),
-	IsActive(false),
+	IsActive(false) {
+
+}
+
+accessories::accessories(uint16_t baseAddress, byte baseChannel, byte mode) :
+	accessories(BaseAddress, BaseChannel) {
+
+	Mode = Mode;
+}
+
+accessories::~accessories(){
+}
+
+AccessoryType accessories::getType() const {
+	Serial.print("Accessory::getType");
+	return AccessoryType::None;
+}
+
+void accessories::process() {
+}
+
+void accessories::on() {
+	IsActive = true;
+}
+
+void accessories::off() {
+	IsActive = false;
+}
+
+void accessories::notifyAddress(uint16_t Address_, uint8_t cmd_) {
+}
+
+void accessories::notifyTurnoutAddress(uint16_t Address_, uint8_t Direction_, uint8_t OutputPower_) {
+}
+
+void accessories::notifyDccSpeed(uint16_t Addr, uint8_t Speed, uint8_t ForwardDir, uint8_t SpeedSteps) {
+}
+
+bool accessories::isOn() const {
+	return IsActive;
+}
+
+uint16_t accessories::Address() {
+	return BaseAddress;
+}
+
+byte accessories::Channel() {
+	return BaseChannel;
+}
+
+byte accessories::ChannelMode() {
+	return Mode;
+}
+
+// Class Accessory, dir Mutter aller Klassen
+Accessory::Accessory(uint16_t BaseAddress_, byte BaseChannel_) :
+	accessories(BaseAddress_, BaseChannel_),
 	_Input(-1),
 	_TimeActive(0),
 	_sound({ std::string(""), 15, 0, false}) {
 }
 
-accessories::accessories(uint16_t BaseAddress_, byte BaseChannel_, byte Mode_):
-	accessories(BaseAddress_, BaseChannel_) {
+Accessory::Accessory(uint16_t BaseAddress_, byte BaseChannel_, byte Mode_):
+	Accessory(BaseAddress_, BaseChannel_) {
 	Mode = Mode_;
 }
 
-accessories::~accessories() {
+Accessory::~Accessory() {
 };
 
-void accessories::process() {
+void Accessory::process() {
 	//Serial.print("accessories::process ");
 	//Serial.print("    Input pin: "); Serial.print(_Input);
 	//Serial.print("    Time active: "); Serial.println(_TimeActive);
+	accessories::process();
 
 	if (_Input > 0 && !isOn() && (digitalRead(_Input) == LOW)) {
-		Serial.println("accessories::process: Input is LOW, turning on");
+		Serial.println("Accessory::process: Input is LOW, turning on");
 		on();
 		return;
 	}
 	if (_Input > 0 && isOn() && (digitalRead(_Input) == LOW)) {
-		Serial.println("accessories::process: Input is LOW, reset timer");
+		Serial.println("Accessory::process: Input is LOW, reset timer");
 		if (_TimeActive > 0) {
 			_timer.start(_TimeActive);
 			//Serial.print("    accessory timer restarted for "); Serial.print(_TimeActive); Serial.println(" ms");
@@ -39,20 +95,20 @@ void accessories::process() {
 		return;
 	}
 	if (_Input > 0 && _TimeActive == 0 && isOn() && (digitalRead(_Input) == HIGH)) {
-		Serial.println("accessories::process: Input is HIGH, turning off");
+		Serial.println("Accessory::process: Input is HIGH, turning off");
 		off();
 		return;
 	}
 	if (_TimeActive > 0 && isOn() && _timer.done() && (digitalRead(_Input) == HIGH)) {
-		Serial.println("accessories::process: Timer done, turning off");
+		Serial.println("Accessory::process: Timer done, turning off");
 		off();
 		return;
 	}
 }
 
-void accessories::on() {
-	Serial.println("accessories::on");
-	IsActive = true;
+void Accessory::on() {
+	Serial.println("Accessory::on");
+	accessories::on();
 	if (_TimeActive > 0) {
 		_timer.start(_TimeActive);
 		Serial.print("    accessory timer started for "); Serial.print(_TimeActive); Serial.println(" ms");
@@ -63,9 +119,9 @@ void accessories::on() {
 	}
 }
 
-void accessories::off() {
-	Serial.println("accessories::off");
-	IsActive = false;
+void Accessory::off() {
+	Serial.println("Accessory::off");
+	accessories::off();
 	if (_TimeActive > 0) {
 		_timer.stop();
 		Serial.println("    accessory timer stopped");
@@ -76,17 +132,8 @@ void accessories::off() {
 	}
 }
 
-void accessories::notifyAddress(uint16_t Address_, uint8_t cmd_) {
-}
-
-void accessories::notifyTurnoutAddress(uint16_t Address_, uint8_t Direction_, uint8_t OutputPower_){
-}
-
-void accessories::notifyDccSpeed(uint16_t Addr, uint8_t Speed, uint8_t ForwardDir, uint8_t SpeedSteps){
-}
-
-void accessories::setInputPin(uint8_t pin){
-	Serial.print("accessories::setInputPin ");
+void Accessory::setInputPin(uint8_t pin){
+	Serial.print("Accessory::setInputPin ");
 	if (pin != _Input) {
 		_Input = pin;
 		pinMode(pin, INPUT_PULLUP);
@@ -94,28 +141,12 @@ void accessories::setInputPin(uint8_t pin){
 	}
 }
 
-uint8_t accessories::getInputPin(){
+uint8_t Accessory::getInputPin(){
 	return _Input;
 }
 
-void accessories::setTimer(int16_t time){
+void Accessory::setTimer(int16_t time){
 	_TimeActive = time;
-}
-
-bool accessories::isOn() const{
-	return IsActive;
-}
-
-uint16_t accessories::Address(){
-	return BaseAddress;
-}
-
-byte accessories::Channel(){
-	return BaseChannel;
-}
-
-byte accessories::ChannelMode(){
-	return Mode;
 }
 
 // class Signal, die Mutter aller Signale
@@ -132,3 +163,4 @@ Signal::Signal(uint16_t BaseAddress_, byte BaseChannel_, uint16_t DayLightAddres
 bool Signal::SignalState(){
 	return State;
 }
+
