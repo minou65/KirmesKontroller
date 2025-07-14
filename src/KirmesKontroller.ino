@@ -1,3 +1,11 @@
+
+// #define NOTIFY_DCC_ACCSTATE_MSG
+// #define NOTIFY_DCC_MSG
+// #define NOTIFY_TURNOUT_MSG
+//#define NOTIFY_DCC_CV_WRITE_MSG
+//#define NOTIFY_DCC_CV_CHANGE_MSG
+//#define DEBUG_MSG
+
 #include <Arduino.h>
 
 #include "neotimer.h"
@@ -9,6 +17,7 @@
 #include "Vector.h"
 #include "accessories.h"
 #include "webhandling.h"
+#include "NMRAhandling.h"
 
 char Version[] = VERSION_STR;
 
@@ -19,6 +28,84 @@ Vector<accessories*> decoder;
 TaskHandle_t TaskHandle;
 
 bool ResetDCCDecoder = false;
+
+void notifyDccAccTurnoutOutput(uint16_t Addr, uint8_t Direction, uint8_t OutputPower) {
+#ifdef  NOTIFY_TURNOUT_MSG
+	Serial.print("notifyDccAccTurnoutOutput: Turnout: ");
+	Serial.print(Addr, DEC);
+	Serial.print(" Direction: ");
+	Serial.print(Direction ? "Closed" : "Thrown");
+	Serial.print(" Output: ");
+	Serial.println(OutputPower ? "On" : "Off");
+#endif
+
+	for (int _i = 0; _i < decoder.Size(); _i++) {
+		decoder[_i]->notifyTurnoutAddress(Addr, Direction, OutputPower);
+	}
+}
+
+void notifyDccSpeed(uint16_t Addr, uint8_t Speed, uint8_t ForwardDir, uint8_t SpeedSteps) {
+	for (int i = 0; i < decoder.Size(); i++) {
+
+		// is it a Servo?
+		if (decoder[i]->ChannelMode() == 230) {
+			decoder[i]->notifyDccSpeed(Addr, Speed, ForwardDir, SpeedSteps);
+		}
+	}
+}
+
+void notifyDccAccState(uint16_t Addr, uint16_t BoardAddr, uint8_t OutputAddr, uint8_t State) {
+	uint8_t _OutputNum = OutputAddr >> 1;  //shift over the bits so the outputaddr is 0 to 3
+	uint8_t _Cmd = OutputAddr & 0b00000001;  //JMRI puts out the state as the right most bit of pDccMsg->Data[1], the state argument doesnt change in JMRI Turnout.
+
+#ifdef NOTIFY_DCC_ACCSTATE_MSG
+	Serial.print("AccState - ");
+	Serial.print("Raw addr: ");
+	Serial.print(Addr);
+	Serial.print(" BoardAddr: ");
+	Serial.print(BoardAddr, DEC);
+	Serial.print(" OutputAddr: ");
+	Serial.print(OutputAddr, DEC);
+	Serial.print(" Output: ");
+	Serial.print(_OutputNum);
+	Serial.print(" State: 0b");
+	Serial.print(State, BIN);
+	Serial.print(" Command: ");
+	Serial.print(_Cmd == 1 ? "Closed" : "Thrown");
+	Serial.println();
+	//Serial.print("    zDecoder: "); Serial.println(BoardAddr + OutputAddr);
+#endif 
+
+#ifdef  NOTIFY_TURNOUT_MSG
+	Serial.print("zDecoder: Address"); Serial.print(Addr);
+	Serial.print(_Cmd == 1 ? " :Closed" : " :Thrown");
+	Serial.println();
+#endif
+
+	for (int _i = 0; _i < decoder.Size(); _i++) {
+		decoder[_i]->notifyAddress(Addr, _Cmd);
+	}
+}
+
+void notifyDccFunc(uint16_t Addr, uint8_t FuncNum, uint8_t FuncState) {
+
+	if (FuncNum != 1)
+		return;
+
+	for (int i = 0; i < decoder.Size(); i++) {
+
+		// is it a Servo?
+		if (decoder[i]->ChannelMode() == 230) {
+			if (FuncState & 0x10)
+				decoder[i]->on();
+			else
+				decoder[i]->off();
+		}
+	}
+
+	if (FuncNum != 1)
+		return;
+}
 
 void handleDecoderGroup(uint8_t DecoderGroup) {
 	if (DecoderGroupIsActive(DecoderGroup)) {
@@ -189,8 +276,15 @@ void setup() {
 
 	Serial.println("Starting with Firmware " + String(VERSION));
 
+	for (uint8_t _i = 0; _i < sizeof(ChannelToGPIOMapping) - 1; _i++) {
+		pinMode(ChannelToGPIOMapping[_i], OUTPUT);
+		digitalWrite(ChannelToGPIOMapping[_i], LOW);
+	}
+
+
 	setupWeb(); // Set up web handling
 	setupSound(); // Set up sound system
+	NMRAsetup();
 
 	kDecoderInit(); // Initialize the decoder
 
@@ -216,6 +310,7 @@ void setup() {
 }
 
 void loop() {
+	NMRAloop(); // Handle NMRA DCC messages
 	loopWeb(); // Handle web requests
 	loopSound(); // Handle sound playback
 }
