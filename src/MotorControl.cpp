@@ -11,13 +11,13 @@
 #include "MotorControl.h"
 
 Motor::Motor(uint16_t BaseAddress, byte BaseChannel) :
-	accessories(BaseAddress, BaseChannel, 203),
+	Accessory(BaseAddress, BaseChannel, 203),
 	_motor(BaseChannel) {
 	Serial.println("Motor::Motor(uint16_t BaseAddress, byte BaseChannel)");
 }
 
 Motor::Motor(uint16_t BaseAddress, byte BaseChannel, byte Mode) :
-	accessories(BaseAddress, BaseChannel, Mode),
+	Accessory(BaseAddress, BaseChannel, Mode),
 	_motor(BaseChannel){
 	Serial.println("Motor::Motor(uint16_t BaseAddress, byte BaseChannel, byte Mode)");
 }
@@ -43,18 +43,18 @@ void Motor::SetMaxSpeed(uint8_t Speed) {
 
 void Motor::on() {
 	Serial.println("Motor::on");
-	accessories::on();
+	Accessory::on();
 	_motor.on();
 }
 
 void Motor::off() {
 	Serial.println("Motor::off");
-	accessories::off();
+	Accessory::off();
 	_motor.off();
 }
 
 void Motor::process() {
-	accessories::process();
+	Accessory::process();
 	_motor.process();
 }
 

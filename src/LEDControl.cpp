@@ -8,11 +8,11 @@
 #include "pinmapping.h"
 
 LEDaccessories::LEDaccessories(uint16_t BaseAddress, byte BaseChannel) :
-	accessories(BaseAddress, BaseChannel) {
+	Accessory(BaseAddress, BaseChannel) {
 }
 
 LEDaccessories::LEDaccessories(uint16_t BaseAddress, byte BaseChannel, byte Mode) :
-	accessories(BaseAddress, BaseChannel, Mode) {
+	Accessory(BaseAddress, BaseChannel, Mode) {
 }
 
 LEDaccessories::~LEDaccessories() {

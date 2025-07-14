@@ -44,18 +44,18 @@ void Ausgang::on() {
 	Serial.println("Ausgang::on");
 	IsActive = true;
 	Output.on();
-	accessories::on();
+	Accessory::on();
 };
 
 void Ausgang::off() {
 	Serial.println("Ausgang::off");
 	IsActive = false;
 	Output.off();
-	accessories::off();
+	Accessory::off();
 };
 
 void Ausgang::process() {
-	accessories::process();
+	Accessory::process();
 	Output.process();
 }
 
@@ -140,7 +140,7 @@ void Blinker::process() {
 		}
 
 	}
-	accessories::process();
+	Accessory::process();
 }
 
 void Blinker::on() {
@@ -150,7 +150,7 @@ void Blinker::on() {
 	IsActive = true;
 	Status = true;
 	BlinkTimer.start(0);
-	accessories::on();
+	Accessory::on();
 }
 
 void Blinker::off() {	
@@ -158,7 +158,7 @@ void Blinker::off() {
 	IsActive = false;
 	BlinkTimer.stop();
 	LED1.off();
-	accessories::off();
+	Accessory::off();
 }
 
 //=======================================================
@@ -211,7 +211,7 @@ void Wechselblinker::process() {
 			Status = !Status;
 		}
 	}
-	accessories::process();
+	Accessory::process();
 }
 
 void Wechselblinker::on() {
@@ -219,7 +219,7 @@ void Wechselblinker::on() {
 	Serial.print("   timeOn:  "); Serial.println(timeOn);
 	Serial.print("   timeOff: "); Serial.println(timeOff);
 	Blinker::on();
-	accessories::on();
+	Accessory::on();
 }
 
 void Wechselblinker::off() {
@@ -227,7 +227,7 @@ void Wechselblinker::off() {
 	IsActive = false;
 	LED1.off();
 	LED2.off();
-	accessories::off();
+	Accessory::off();
 }
 
 //=======================================================
@@ -425,7 +425,7 @@ void Lauflicht::process() {
 
 		}; // end of if
 	}
-	accessories::process();
+	Accessory::process();
 };
 
 void Lauflicht::on() {
@@ -436,7 +436,7 @@ void Lauflicht::on() {
 	Status = false;
 	NextStep = 0;
 	LastStep = 0;
-	accessories::on();
+	Accessory::on();
 }
 
 void Lauflicht::off() {
@@ -446,7 +446,7 @@ void Lauflicht::off() {
 	for (int i = 0; i < LEDs.Size(); i++) {
 		LEDs[i]->off();
 	}
-	accessories::off();
+	Accessory::off();
 }
 
 //=======================================================
@@ -555,7 +555,7 @@ void Hausbeleuchtung::process() {
 			};
 		};
 	}
-	accessories::process();
+	Accessory::process();
 
 };
 
@@ -564,7 +564,7 @@ void Hausbeleuchtung::on() {
 	IsActive = true;
 	randomSeed(esp_random());
 	OperationTimer.start(random(minRandomTime, maxRandomTime));
-	accessories::on();
+	Accessory::on();
 }
 
 void Hausbeleuchtung::off() {
@@ -574,7 +574,7 @@ void Hausbeleuchtung::off() {
 		LEDs[i]->off();
 	}
 	OperationTimer.stop();
-	accessories::off();
+	Accessory::off();
 }
 
 //=======================================================
@@ -604,7 +604,7 @@ void Fernseher::process() {
 			BlinkTimer.start(random(200));
 		}
 	}
-	accessories::process();
+	Accessory::process();
 };
 
 void Fernseher::on() {
@@ -614,14 +614,14 @@ void Fernseher::on() {
 	Status = true;
 	LED1.on(random(250));
 	BlinkTimer.start(random(200));
-	accessories::on();
+	Accessory::on();
 };
 
 void Fernseher::off() {
 	Serial.println("Fernseher::off");
 	IsActive = false;
 	LED1.off();
-	accessories::off();
+	Accessory::off();
 }
 
 //=======================================================
@@ -736,7 +736,7 @@ void Schweissen::process() {
 			};
 		};
 	}
-	accessories::process();
+	Accessory::process();
 };
 
 void Schweissen::on() {
@@ -760,13 +760,13 @@ void Schweissen::on() {
 
 	// Anzahl flicker
 	flickertime = random(flickertimemin, flickertimemax);
-	accessories::on();
+	Accessory::on();
 };
 
 void Schweissen::off() {
 	Serial.println("Schweissen::off");
 	IsActive = false;
-	accessories::off();
+	Accessory::off();
 }
 
 //=======================================================
@@ -850,7 +850,7 @@ void NeonLampen::process() {
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->process();
 	}
-	accessories::process();
+	Accessory::process();
 }
 
 void NeonLampen::on() {
@@ -859,7 +859,7 @@ void NeonLampen::on() {
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->on();
 	}
-	accessories::on();
+	Accessory::on();
 }
 
 void NeonLampen::off() {
@@ -868,7 +868,7 @@ void NeonLampen::off() {
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->off();
 	}
-	accessories::off();
+	Accessory::off();
 }
 
 //=======================================================
@@ -965,7 +965,7 @@ void NatriumLampen::process() {
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->process();
 	}
-	accessories::process();
+	Accessory::process();
 }
 
 void NatriumLampen::on() {
@@ -976,7 +976,7 @@ void NatriumLampen::on() {
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->on();
 	}
-	accessories::on();
+	Accessory::on();
 }
 
 void NatriumLampen::off() {
@@ -987,7 +987,7 @@ void NatriumLampen::off() {
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->off();
 	}
-	accessories::off();
+	Accessory::off();
 }
 
 //=======================================================
@@ -1034,12 +1034,12 @@ void Feuer::process() {
 			LED3.SetBrightness(random(256));  // gelb
 		};
 	}
-	accessories::process();
+	Accessory::process();
 };
 
 void Feuer::on() {
 	Serial.println("Feuer::on");
-	accessories::on();
+	Accessory::on();
 };
 
 void Feuer::off() {
@@ -1048,7 +1048,7 @@ void Feuer::off() {
 	LED1.off();
 	LED2.off();
 	LED3.off();
-	accessories::off();
+	Accessory::off();
 };
 
 //=======================================================
@@ -1109,7 +1109,7 @@ void Blitzlicht::process() {
 			Status2 = !Status2;
 		}
 	}
-	accessories::process();
+	Accessory::process();
 }
 
 void Blitzlicht::on() {
@@ -1118,7 +1118,7 @@ void Blitzlicht::on() {
 	Status2 = true;
 	randomSeed(esp_random());
 	Blitztimer.start(random(blitztimeMin, blitztimeMax));
-	accessories::on();
+	Accessory::on();
 }
 
 void Blitzlicht::off() {
@@ -1127,5 +1127,5 @@ void Blitzlicht::off() {
 	Status2 = false;
 	LED1.off();
 	Blitztimer.stop();
-	accessories::off();
+	Accessory::off();
 }

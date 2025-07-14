@@ -18,7 +18,7 @@
 #define PWM_Set_On 255
 #define PWM_Set_Off 0
 
-class LEDaccessories : public accessories {
+class LEDaccessories : public Accessory {
 public:
 	LEDaccessories() = default;
 	LEDaccessories(uint16_t BaseAddress, byte BaseChannel);

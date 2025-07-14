@@ -36,13 +36,13 @@ private:
     bool _isOn = false;
 };
 
-class Motor : public accessories {
+class Motor : public Accessory {
 public:
     Motor() = default;
     Motor(uint16_t BaseAddress, byte BaseChannel);
     Motor(uint16_t BaseAddress, byte BaseChannel, byte Mode);
 	~Motor();
-	AccessoryType getType() const override;
+    AccessoryType getType() const override;
 	virtual void SetMaxSpeed(uint8_t Speed);
 
     void on() override;

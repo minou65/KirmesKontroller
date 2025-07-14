@@ -238,9 +238,10 @@ void kDecoderInit(void) {
 			if (newAccessory != nullptr) {
 				Serial.print(F("    Mode: ")); Serial.println(Mode_);
 
-				newAccessory->setSoundSettings(sound_);
-				newAccessory->setInputPin(outputgroup_->getInputPin());
-				newAccessory->setTimer(outputgroup_->getActiveDuration());
+				Accessory* accessory = static_cast<Accessory*>(newAccessory);
+				accessory->setSoundSettings(sound_);
+				accessory->setInputPin(outputgroup_->getInputPin());
+				accessory->setTimer(outputgroup_->getActiveDuration());
 
 				// Check the type of newAccessory
 				if (newAccessory->getType() == AccessoryType::LED) {
