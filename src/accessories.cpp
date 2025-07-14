@@ -148,7 +148,7 @@ uint8_t Accessory::getInputPin(){
 	return _Input;
 }
 
-void Accessory::setTimer(int16_t time){
+void Accessory::setTimer(uint16_t time){
 	Serial.print("Accessory::setTimer ");
 	Serial.print("	Time set to: "); Serial.print(time); Serial.println("ms");
 	_TimeActive = time;
