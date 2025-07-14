@@ -231,7 +231,7 @@ void kDecoderInit(void) {
 				channel_ += 1;
 				break;
 			case 203:// Motor
-				newAccessory = new Motor(Address_, Mode_); // Create a new Motor accessory
+				newAccessory = new Motor(Address_, channel_, Mode_, TimeOn_ * Multiplier_); // Create a new Motor accessory
 				channel_ += 1;
 				break;
 			}
