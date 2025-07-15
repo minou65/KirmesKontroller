@@ -98,23 +98,25 @@ bool areAllCharactersValid(const char* value) {
 bool formValidator(iotwebconf::WebRequestWrapper* webRequestWrapper) {
     OutputGroup* group_ = &OutputGroup1;
     while (group_ != nullptr) {
-        String filename = webRequestWrapper->arg(group_->_filenameValue);
-        if (!isFirstCharacterValid(filename.c_str())) {
-            group_->_filenameParam.errorMessage = "Fehler: Der Dateiname muss mit '/' beginnen.";
-            return false;
-        }
+        if (group_->isActive()) {
+            String filename = webRequestWrapper->arg(group_->_filenameValue);
+            if (!isFirstCharacterValid(filename.c_str())) {
+                group_->_filenameParam.errorMessage = "Fehler: Der Dateiname muss mit '/' beginnen.";
+                return false;
+            }
 
-        if (!areAllCharactersValid(filename.c_str())) {
-            group_->_filenameParam.errorMessage = "Fehler: Ungültiges Zeichen im Dateinamen.";
-            return false;
-        }
+            if (!areAllCharactersValid(filename.c_str())) {
+                group_->_filenameParam.errorMessage = "Fehler: Ungültiges Zeichen im Dateinamen.";
+                return false;
+            }
 
-        if (!isFilenameNotNull(filename.c_str())) {
-            group_->_filenameParam.errorMessage = "Fehler: Dateiname ist null.";
-            return false;
-        }
+            if (!isFilenameNotNull(filename.c_str())) {
+                group_->_filenameParam.errorMessage = "Fehler: Dateiname ist null.";
+                return false;
+            }
 
-        group_ = (OutputGroup*)group_->getNext();
+            group_ = (OutputGroup*)group_->getNext();
+        }
     }
     return true;
 }
