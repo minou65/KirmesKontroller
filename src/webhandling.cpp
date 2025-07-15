@@ -67,6 +67,59 @@ ServoGroup ServoGroup3 = ServoGroup("sg3");
 
 IotWebConf iotWebConf(thingName, &dnsServer, &server, wifiInitialApPassword, CONFIG_VERSION);
 
+bool isFilenameNotNull(const char* value) {
+    if (value == nullptr) {
+        Serial.println("Fehler: Dateiname ist null.");
+        return false;
+    }
+    return true;
+}
+
+bool isFirstCharacterValid(const char* value) {
+    if (value[0] != '/') {
+        Serial.println("Fehler: Der Dateiname muss mit '/' beginnen.");
+        return false;
+    }
+    return true;
+}
+
+bool areAllCharactersValid(const char* value) {
+    const char* allowedChars_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/";
+    while (*value) {
+        if (!strchr(allowedChars_, *value)) {
+            Serial.println("Fehler: Ungültiges Zeichen im Dateinamen.");
+            return false;
+        }
+        value++;
+    }
+    return true;
+}
+
+bool formValidator(iotwebconf::WebRequestWrapper* webRequestWrapper) {
+    OutputGroup* group_ = &OutputGroup1;
+    while (group_ != nullptr) {
+        String filename = webRequestWrapper->arg(group_->_filenameValue);
+        if (!isFirstCharacterValid(filename.c_str())) {
+            group_->_filenameParam.errorMessage = "Fehler: Der Dateiname muss mit '/' beginnen.";
+            return false;
+        }
+
+        if (!areAllCharactersValid(filename.c_str())) {
+            group_->_filenameParam.errorMessage = "Fehler: Ungültiges Zeichen im Dateinamen.";
+            return false;
+        }
+
+        if (!isFilenameNotNull(filename.c_str())) {
+            group_->_filenameParam.errorMessage = "Fehler: Dateiname ist null.";
+            return false;
+        }
+
+        group_ = (OutputGroup*)group_->getNext();
+    }
+    return true;
+}
+
+
 MySelectParameter::MySelectParameter(
     const char* label,
     const char* id,
@@ -458,6 +511,8 @@ void setupWeb() {
     iotWebConf.setStatusPin(STATUS_PIN, ON_LEVEL);
     iotWebConf.setConfigPin(CONFIG_PIN);
     iotWebConf.getApTimeoutParameter()->visible = true;
+
+    iotWebConf.setFormValidator(&formValidator);
 
     // -- Initializing the configuration.
     iotWebConf.init();
