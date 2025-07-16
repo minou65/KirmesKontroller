@@ -1,4 +1,4 @@
-#define DEBUG_WIFI(m) SERIAL_DBG.print(m)
+﻿#define DEBUG_WIFI(m) SERIAL_DBG.print(m)
 #define IOTWEBCONF_DEBUG_TO_SERIAL
 
 #include <Arduino.h>
@@ -66,6 +66,98 @@ ServoGroup ServoGroup2 = ServoGroup("sg2");
 ServoGroup ServoGroup3 = ServoGroup("sg3");
 
 IotWebConf iotWebConf(thingName, &dnsServer, &server, wifiInitialApPassword, CONFIG_VERSION);
+
+bool isFirstCharacterValid(const char* value) {
+    if (value[0] != '/') {
+        Serial.println("Fehler: Der Dateiname muss mit '/' beginnen.");
+        return false;
+    }
+    return true;
+}
+
+bool areAllCharactersValid(const char* value) {
+    const char* allowedChars_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/";
+    while (*value) {
+        if (!strchr(allowedChars_, *value)) {
+            Serial.println("Fehler: Ungültiges Zeichen im Dateinamen.");
+            return false;
+        }
+        value++;
+    }
+    return true;
+}
+
+bool containsSpaces(const char* value) {
+    while (*value) {
+        if (*value == ' ') {
+            Serial.println("Fehler: Der Dateiname darf keine Leerzeichen enthalten.");
+            return true;
+        }
+        value++;
+    }
+    return false;
+}
+
+bool hasValidExtension(const char* filename) {
+    // Liste der erlaubten Dateiendungen (immer mit Punkt)
+    const char* validExtensions[] = {
+        ".mp3", ".aac", ".aacp", ".wav", ".flac", ".vorbis", ".m4a"
+    };
+    const size_t extCount = sizeof(validExtensions) / sizeof(validExtensions[0]);
+
+    size_t len = strlen(filename);
+    if (len == 0) return false;
+
+    for (size_t i = 0; i < extCount; ++i) {
+        size_t extLen = strlen(validExtensions[i]);
+        if (len >= extLen) {
+            if (strcmp(filename + len - extLen, validExtensions[i]) == 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
+bool formValidator(iotwebconf::WebRequestWrapper* webRequestWrapper) {
+    bool allValid = true;
+    OutputGroup* group_ = &OutputGroup1;
+    while (group_ != nullptr) {
+        group_->_filenameParam.errorMessage = nullptr;
+        if (group_->isActive()) {
+            char filenameID_[STRING_LEN];
+            snprintf(filenameID_, STRING_LEN, "%s-filename", group_->getId());
+            String filename_ = webRequestWrapper->arg(filenameID_);
+
+            if (filename_.length() == 0) {
+                // Leeres Feld ist erlaubt, keine weiteren Prüfungen
+            }
+            else {
+                if (containsSpaces(filename_.c_str())) {
+                    group_->_filenameParam.errorMessage = "Fehler: Der Dateiname darf keine Leerzeichen enthalten.";
+                    allValid = false;
+                }
+                else if (!isFirstCharacterValid(filename_.c_str())) {
+                    group_->_filenameParam.errorMessage = "Fehler: Der Dateiname muss mit '/' beginnen.";
+                    allValid = false;
+                }
+                else if (!areAllCharactersValid(filename_.c_str())) {
+                    group_->_filenameParam.errorMessage = "Fehler: Ungültiges Zeichen im Dateinamen.";
+                    allValid = false;
+                }
+                else if (!hasValidExtension(filename_.c_str())) {
+                    group_->_filenameParam.errorMessage = "Fehler: Ungültige Dateiendung. Erlaubt sind: .mp3, .aac, .aacp, .wav, .flac, .vorbis, .m4a";
+                    allValid = false;
+                }
+            }
+        }
+        group_ = (OutputGroup*)group_->getNext();
+    }
+    return allValid;
+}
+
+
 
 MySelectParameter::MySelectParameter(
     const char* label,
@@ -458,6 +550,8 @@ void setupWeb() {
     iotWebConf.setStatusPin(STATUS_PIN, ON_LEVEL);
     iotWebConf.setConfigPin(CONFIG_PIN);
     iotWebConf.getApTimeoutParameter()->visible = true;
+
+    iotWebConf.setFormValidator(&formValidator);
 
     // -- Initializing the configuration.
     iotWebConf.init();
