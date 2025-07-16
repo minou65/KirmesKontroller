@@ -67,14 +67,6 @@ ServoGroup ServoGroup3 = ServoGroup("sg3");
 
 IotWebConf iotWebConf(thingName, &dnsServer, &server, wifiInitialApPassword, CONFIG_VERSION);
 
-bool isFilenameNotNull(const char* value) {
-    if (value == nullptr) {
-        Serial.println("Fehler: Dateiname ist null.");
-        return false;
-    }
-    return true;
-}
-
 bool isFirstCharacterValid(const char* value) {
     if (value[0] != '/') {
         Serial.println("Fehler: Der Dateiname muss mit '/' beginnen.");
@@ -95,31 +87,47 @@ bool areAllCharactersValid(const char* value) {
     return true;
 }
 
+bool containsSpaces(const char* value) {
+    while (*value) {
+        if (*value == ' ') {
+            Serial.println("Fehler: Der Dateiname darf keine Leerzeichen enthalten.");
+            return true;
+        }
+        value++;
+    }
+    return false;
+}
+
 bool formValidator(iotwebconf::WebRequestWrapper* webRequestWrapper) {
+    bool allValid = true;
     OutputGroup* group_ = &OutputGroup1;
     while (group_ != nullptr) {
+        group_->_filenameParam.errorMessage = nullptr;
         if (group_->isActive()) {
-            String filename = webRequestWrapper->arg(group_->_filenameValue);
-            if (!isFirstCharacterValid(filename.c_str())) {
-                group_->_filenameParam.errorMessage = "Fehler: Der Dateiname muss mit '/' beginnen.";
-                return false;
-            }
+            char filenameID_[STRING_LEN];
+            snprintf(filenameID_, STRING_LEN, "%s-filename", group_->getId());
+            String filename_ = webRequestWrapper->arg(filenameID_);
 
-            if (!areAllCharactersValid(filename.c_str())) {
-                group_->_filenameParam.errorMessage = "Fehler: Ungültiges Zeichen im Dateinamen.";
-                return false;
+            if (filename_.length() == 0) {
+                // Leeres Feld ist erlaubt, keine weiteren Prüfungen
+            } else {
+                if (containsSpaces(filename_.c_str())) {
+                    group_->_filenameParam.errorMessage = "Fehler: Der Dateiname darf keine Leerzeichen enthalten.";
+                    allValid = false;
+                } else if (!isFirstCharacterValid(filename_.c_str())) {
+                    group_->_filenameParam.errorMessage = "Fehler: Der Dateiname muss mit '/' beginnen.";
+                    allValid = false;
+                } else if (!areAllCharactersValid(filename_.c_str())) {
+                    group_->_filenameParam.errorMessage = "Fehler: Ungültiges Zeichen im Dateinamen.";
+                    allValid = false;
+                }
             }
-
-            if (!isFilenameNotNull(filename.c_str())) {
-                group_->_filenameParam.errorMessage = "Fehler: Dateiname ist null.";
-                return false;
-            }
-
-            group_ = (OutputGroup*)group_->getNext();
         }
+        group_ = (OutputGroup*)group_->getNext();
     }
-    return true;
+    return allValid;
 }
+
 
 
 MySelectParameter::MySelectParameter(
