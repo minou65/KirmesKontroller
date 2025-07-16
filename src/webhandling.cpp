@@ -1,4 +1,4 @@
-#define DEBUG_WIFI(m) SERIAL_DBG.print(m)
+ï»¿#define DEBUG_WIFI(m) SERIAL_DBG.print(m)
 #define IOTWEBCONF_DEBUG_TO_SERIAL
 
 #include <Arduino.h>
@@ -79,7 +79,7 @@ bool areAllCharactersValid(const char* value) {
     const char* allowedChars_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-/";
     while (*value) {
         if (!strchr(allowedChars_, *value)) {
-            Serial.println("Fehler: Ungültiges Zeichen im Dateinamen.");
+            Serial.println("Fehler: UngÃ¼ltiges Zeichen im Dateinamen.");
             return false;
         }
         value++;
@@ -98,6 +98,28 @@ bool containsSpaces(const char* value) {
     return false;
 }
 
+bool hasValidExtension(const char* filename) {
+    // Liste der erlaubten Dateiendungen (immer mit Punkt)
+    const char* validExtensions[] = {
+        ".mp3", ".aac", ".aacp", ".wav", ".flac", ".vorbis", ".m4a"
+    };
+    const size_t extCount = sizeof(validExtensions) / sizeof(validExtensions[0]);
+
+    size_t len = strlen(filename);
+    if (len == 0) return false;
+
+    for (size_t i = 0; i < extCount; ++i) {
+        size_t extLen = strlen(validExtensions[i]);
+        if (len >= extLen) {
+            if (strcmp(filename + len - extLen, validExtensions[i]) == 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
 bool formValidator(iotwebconf::WebRequestWrapper* webRequestWrapper) {
     bool allValid = true;
     OutputGroup* group_ = &OutputGroup1;
@@ -109,16 +131,23 @@ bool formValidator(iotwebconf::WebRequestWrapper* webRequestWrapper) {
             String filename_ = webRequestWrapper->arg(filenameID_);
 
             if (filename_.length() == 0) {
-                // Leeres Feld ist erlaubt, keine weiteren Prüfungen
-            } else {
+                // Leeres Feld ist erlaubt, keine weiteren PrÃ¼fungen
+            }
+            else {
                 if (containsSpaces(filename_.c_str())) {
                     group_->_filenameParam.errorMessage = "Fehler: Der Dateiname darf keine Leerzeichen enthalten.";
                     allValid = false;
-                } else if (!isFirstCharacterValid(filename_.c_str())) {
+                }
+                else if (!isFirstCharacterValid(filename_.c_str())) {
                     group_->_filenameParam.errorMessage = "Fehler: Der Dateiname muss mit '/' beginnen.";
                     allValid = false;
-                } else if (!areAllCharactersValid(filename_.c_str())) {
-                    group_->_filenameParam.errorMessage = "Fehler: Ungültiges Zeichen im Dateinamen.";
+                }
+                else if (!areAllCharactersValid(filename_.c_str())) {
+                    group_->_filenameParam.errorMessage = "Fehler: UngÃ¼ltiges Zeichen im Dateinamen.";
+                    allValid = false;
+                }
+                else if (!hasValidExtension(filename_.c_str())) {
+                    group_->_filenameParam.errorMessage = "Fehler: UngÃ¼ltige Dateiendung. Erlaubt sind: .mp3, .aac, .aacp, .wav, .flac, .vorbis, .m4a";
                     allValid = false;
                 }
             }
