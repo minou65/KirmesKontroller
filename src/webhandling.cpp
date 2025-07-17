@@ -27,7 +27,7 @@ const char wifiInitialApPassword[] = "123456789";
 
 
 // -- Configuration specific key. The value should be modified if config structure was changed.
-#define CONFIG_VERSION "001"
+#define CONFIG_VERSION "002"
 
 // -- Status indicator pin.
 //      First it will light up (kept LOW), on Wifi connection it will blink,
@@ -243,7 +243,7 @@ void handleRoot() {
         if ((outputgroup_->isActive()) && (atoi(outputgroup_->_ModeValue) >= 10)) {
             String b_ = html_button_code;
             b_.replace("[value]", String(i_));
-            b_.replace("[name]", String(outputgroup_->_DesignationValue) + " (" + String(outputgroup_->_ModeValue) + ")");
+            b_.replace("[name]", String(outputgroup_->_designationValue) + " (" + String(outputgroup_->_ModeValue) + ")");
             b_.replace("[id]", "output" + String(i_));
             if (DecoderGroupIsEnabled(i_ - 1)) {
                 b_.replace("red", "green");
@@ -342,21 +342,15 @@ void handleSettings() {
     OutputGroup* outputgroup_ = &OutputGroup1;
     while (outputgroup_ != nullptr) {
         if (outputgroup_->isActive()) {
-            content_ += String("<div>Output group " + String(outputgroup_->_DesignationValue) + "</div>").c_str();
+            content_ += String("<div>Output group " + String(outputgroup_->_designationValue) + "</div>").c_str();
             content_ += "<ul>";
             content_ += String("<li>Mode: " + String(outputgroup_->_ModeValue) + "</li>").c_str();
             content_ += String("<li>Number of outputs: " + String(outputgroup_->_NumberValue) + "</li>").c_str();
-            content_ += String("<li>DCC Address: " + String(outputgroup_->_AddressValue) + +"</li>").c_str();
+            content_ += String("<li>DCC Address: " + String(outputgroup_->_addressValue) + +"</li>").c_str();
             content_ += "</ul>";
         }
         else {
-            outputgroup_->_DesignationParam.applyDefaultValue();
-            outputgroup_->_ModeParam.applyDefaultValue();
-            outputgroup_->_NumberParam.applyDefaultValue();
-            outputgroup_->_AddressParam.applyDefaultValue();
-            outputgroup_->_TimeOnParam.applyDefaultValue();
-            outputgroup_->_TimeOffParam.applyDefaultValue();
-            outputgroup_->_TimeOnFadeParam.applyDefaultValue();
+            outputgroup_->applyDefaultValues();
         }
         outputgroup_ = (OutputGroup*)outputgroup_->getNext();
     }
@@ -523,9 +517,9 @@ void setupWeb() {
 
 	iotWebConf.addParameterGroup(&soundGroup);
 
-    iotWebConf.addParameterGroup(&ServoGroup1);
-    iotWebConf.addParameterGroup(&ServoGroup2);
-    iotWebConf.addParameterGroup(&ServoGroup3);
+    //iotWebConf.addParameterGroup(&ServoGroup1);
+    //iotWebConf.addParameterGroup(&ServoGroup2);
+    //iotWebConf.addParameterGroup(&ServoGroup3);
 
     iotWebConf.addParameterGroup(&OutputGroup1);
     iotWebConf.addParameterGroup(&OutputGroup2);

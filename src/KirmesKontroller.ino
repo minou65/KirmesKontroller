@@ -18,6 +18,7 @@
 #include "accessories.h"
 #include "webhandling.h"
 #include "NMRAhandling.h"
+#include "ServoControl.h"
 
 char Version[] = VERSION_STR;
 
@@ -172,7 +173,7 @@ void kDecoderInit(void) {
 		if (outputgroup_->isActive()) {
 			uint8_t Mode_ = atoi(outputgroup_->_ModeValue);
 			uint8_t Count_ = atoi(outputgroup_->_NumberValue);
-			uint16_t Address_ = atoi(outputgroup_->_AddressValue);
+			uint16_t Address_ = atoi(outputgroup_->_addressValue);
 			uint8_t TimeOn_ = atoi(outputgroup_->_TimeOnValue);
 			uint8_t TimeOff_ = atoi(outputgroup_->_TimeOffValue);
 			uint8_t Multiplier_ = atoi(outputgroup_->_MultiplierValue); // Multiplikator
@@ -264,7 +265,6 @@ void kDecoderInit(void) {
 		}
 
 		if (servogroup_->isActive()) {
-
 		}
 		servogroup_ = (ServoGroup*)servogroup_->getNext();
 	}
