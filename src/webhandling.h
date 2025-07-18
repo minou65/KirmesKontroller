@@ -148,6 +148,12 @@ public:
     void applyDefaultValues() {
         _designationParam.applyDefaultValue();
         _addressParam.applyDefaultValue();
+
+		// sound extension
+        _filenameParam.applyDefaultValue();
+        _activeDurationParam.applyDefaultValue();
+        _InputPinParam.applyDefaultValue();
+
     }
 
     int getAddress() const {
@@ -264,6 +270,7 @@ public:
         _multiplierParam.applyDefaultValue();
         _limit1Param.applyDefaultValue();
         _limit2Param.applyDefaultValue();
+		_ModeParam.applyDefaultValue();
     }
 
 private:
