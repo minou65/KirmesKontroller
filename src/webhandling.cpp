@@ -517,9 +517,9 @@ void setupWeb() {
 
 	iotWebConf.addParameterGroup(&soundGroup);
 
-    //iotWebConf.addParameterGroup(&ServoGroup1);
-    //iotWebConf.addParameterGroup(&ServoGroup2);
-    //iotWebConf.addParameterGroup(&ServoGroup3);
+    iotWebConf.addParameterGroup(&ServoGroup1);
+    iotWebConf.addParameterGroup(&ServoGroup2);
+    iotWebConf.addParameterGroup(&ServoGroup3);
 
     iotWebConf.addParameterGroup(&OutputGroup1);
     iotWebConf.addParameterGroup(&OutputGroup2);
