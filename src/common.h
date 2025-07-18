@@ -93,6 +93,20 @@ static char OutputModeNames[][STRING_LEN] = {
     "Motor (1)"              // 203
 };
 
+static char ServoModeValues[][STRING_LEN] = {
+    "0",
+    "1",
+    "2",
+    "3"
+};
+
+static char ServoModeNames[][STRING_LEN] = {
+    "-",           // 0
+    "Impuls",      // 1, nach einer eingestellten Zeit geht wieder zurück in die Ausgangsposition
+    "Flip",        // 2, wechselt zwischen zwei Positionen
+    "Zyklus"       // 3, wechsselt zwischen den positionen bis der Servo ausgeschaltet wird
+};
+
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
