@@ -6,6 +6,7 @@
 //#define NOTIFY_DCC_CV_CHANGE_MSG
 //#define DEBUG_MSG
 
+
 #include <Arduino.h>
 
 #include "neotimer.h"
@@ -18,7 +19,7 @@
 #include "accessories.h"
 #include "webhandling.h"
 #include "NMRAhandling.h"
-#include "ServoControl.h"
+#include "ServoModes.h"
 
 char Version[] = VERSION_STR;
 
@@ -158,7 +159,7 @@ void kDecoderReset() {
 void kDecoderInit(void) {
 	uint8_t channel_ = 0;
 
-	// Decoderobjekte in decoder löschen
+	// Decoderobjekte in decoder lï¿½schen
 	decoder.Erase(0, decoder.Size());
 	decoder.Clear();
 	Vector<accessories*>().Swap(decoder);
