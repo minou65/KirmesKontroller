@@ -517,10 +517,6 @@ void setupWeb() {
 
 	iotWebConf.addParameterGroup(&soundGroup);
 
-    iotWebConf.addParameterGroup(&ServoGroup1);
-    iotWebConf.addParameterGroup(&ServoGroup2);
-    iotWebConf.addParameterGroup(&ServoGroup3);
-
     iotWebConf.addParameterGroup(&OutputGroup1);
     iotWebConf.addParameterGroup(&OutputGroup2);
     iotWebConf.addParameterGroup(&OutputGroup3);
@@ -529,6 +525,10 @@ void setupWeb() {
     iotWebConf.addParameterGroup(&OutputGroup6);
     iotWebConf.addParameterGroup(&OutputGroup7);
     iotWebConf.addParameterGroup(&OutputGroup8);
+
+    iotWebConf.addParameterGroup(&ServoGroup1);
+    iotWebConf.addParameterGroup(&ServoGroup2);
+    iotWebConf.addParameterGroup(&ServoGroup3);
 
     // -- Define how to handle updateServer calls.
     iotWebConf.setupUpdateServer(
