@@ -19,7 +19,10 @@ enum class AccessoryType {
 	Output,
 	Signal,
 	Watchdog,
-	Motor
+	Motor,
+	ServoImpulse,
+	ServoFlip,
+	ServoPendel,
 };
 
 struct SoundSettings {
