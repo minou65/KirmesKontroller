@@ -104,7 +104,7 @@ static char ServoModeNames[][STRING_LEN] = {
     "-",           // 0
     "Impuls",      // 1, nach einer eingestellten Zeit geht wieder zurück in die Ausgangsposition
     "Flip",        // 2, wechselt zwischen zwei Positionen
-    "Zyklus"       // 3, wechsselt zwischen den positionen bis der Servo ausgeschaltet wird
+    "Pendel"       // 3, wechsselt zwischen den positionen bis der Servo ausgeschaltet wird
 };
 
 #define STR_HELPER(x) #x
