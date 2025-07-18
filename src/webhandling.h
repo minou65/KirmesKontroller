@@ -296,9 +296,9 @@ public:
             _ModeId,
             _ModeValue,
             STRING_LEN,
-            (char*)DecoderModeValues,
-            (char*)DecoderModeNames,
-            sizeof(DecoderModeValues) / STRING_LEN,
+            (char*)OutputModeValues,
+            (char*)OutputModeNames,
+            sizeof(OutputModeValues) / STRING_LEN,
             STRING_LEN,
             nullptr,
             _modeCustomHTML

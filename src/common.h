@@ -21,7 +21,7 @@
 extern bool ResetDCCDecoder;
 extern char Version[];
 
-static char DecoderModeValues[][STRING_LEN] = {
+static char OutputModeValues[][STRING_LEN] = {
     "0",
     "1",
     "40",
@@ -57,7 +57,7 @@ static char DecoderModeValues[][STRING_LEN] = {
     "203"
 };
 
-static char DecoderModeNames[][STRING_LEN] = {
+static char OutputModeNames[][STRING_LEN] = {
     "-",                    // 0
     "Watchdog",             // 1
     "einfacher Ausgang (1)",// 40
