@@ -213,12 +213,13 @@ class ServoGroup : public AccessoryGroup {
 public:
     ServoGroup(const char* id) : AccessoryGroup(id, "Servo") {
 
+		sniprintf(_ModeId, STRING_LEN, "%s-mode", this->getId());
         snprintf(_travelTimeId, STRING_LEN, "%s-traveltime", this->getId());
         snprintf(_multiplierId, STRING_LEN, "%s-multiplier", this->getId());
         snprintf(_limit1Id, STRING_LEN, "%s-limit1", this->getId());
         snprintf(_limit2Id, STRING_LEN, "%s-limit2", this->getId());
         
-
+		this->addItem(&_ModeParam);
         this->addItem(&this->_travelTimeParam);
         this->addItem(&this->_multiplierParam);
         this->addItem(&this->_limit1Param);
@@ -229,6 +230,7 @@ public:
     char _multiplierValue[NUMBER_LEN];
     char _limit1Value[NUMBER_LEN];
     char _limit2Value[NUMBER_LEN];
+    char _ModeValue[STRING_LEN];
 
     iotwebconf::NumberParameter _travelTimeParam =
         iotwebconf::NumberParameter("Travel time (ms)", _travelTimeId, _travelTimeValue, NUMBER_LEN, "10", "1..255", "min='1' max='255' step='1'");
@@ -241,6 +243,20 @@ public:
 
     iotwebconf::NumberParameter _limit2Param =
         iotwebconf::NumberParameter("Limit 2", _limit2Id, _limit2Value, NUMBER_LEN, "180", "1..180", "min='0' max='180' step='1'");
+
+    MySelectParameter _ModeParam =
+        MySelectParameter(
+            "Mode",
+            _ModeId,
+            _ModeValue,
+            STRING_LEN,
+            (char*)ServoModeValues,
+            (char*)ServoModeNames,
+            sizeof(ServoModeValues) / STRING_LEN,
+            STRING_LEN,
+            nullptr,
+            _modeCustomHTML
+        );
 
     void applyDefaultValues() {
 		AccessoryGroup::applyDefaultValues();
@@ -255,6 +271,7 @@ private:
     char _multiplierId[STRING_LEN];
     char _limit1Id[STRING_LEN];
     char _limit2Id[STRING_LEN];
+	char _ModeId[STRING_LEN];
 };
 
 class OutputGroup : public AccessoryGroup {
