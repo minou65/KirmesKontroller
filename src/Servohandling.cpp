@@ -2,7 +2,7 @@
 // 
 // 
 
-#include "ServoModes.h"
+#include "Servohandling.h"
 #include "common.h"
 
 
@@ -21,7 +21,7 @@ ServoAccessory::ServoAccessory(uint16_t Address, int8_t ServoPort, int16_t limit
 	off();
 }
 
-ServoAccessory::~ServoAccessory(){
+ServoAccessory::~ServoAccessory() {
 	if (_servoControl) {
 		_servoControl->~ServoControl();
 		_servoControl = nullptr;
@@ -34,12 +34,12 @@ void ServoAccessory::process() {
 	}
 }
 
-void ServoAccessory::on(){
+void ServoAccessory::on() {
 	Accessory::on();
 	MoveServo(100, true); // Move to maximum position
 }
 
-void ServoAccessory::off(){
+void ServoAccessory::off() {
 	Accessory::off();
 	MoveServo(0, false); // Move to minimum position
 }
@@ -70,24 +70,24 @@ ServoImpulseAccessory::ServoImpulseAccessory(uint16_t Address, int8_t ServoPort,
 	}
 }
 
-ServoImpulseAccessory::~ServoImpulseAccessory(){
+ServoImpulseAccessory::~ServoImpulseAccessory() {
 	ServoAccessory::~ServoAccessory();
 }
 
-void ServoImpulseAccessory::process(){
+void ServoImpulseAccessory::process() {
 	ServoAccessory::process();
 	if (_timer.done() && isOn()) {
 		off();
 	}
 }
 
-void ServoImpulseAccessory::on(){
+void ServoImpulseAccessory::on() {
 	Serial.println(F("ServoImpulseAccessory::on()"));
 	ServoAccessory::on();
 	_timer.start(_impulsTime); // Start the timer for the impulse duration
 }
 
-void ServoImpulseAccessory::off(){
+void ServoImpulseAccessory::off() {
 	Serial.println(F("ServoImpulseAccessory::off()"));
 	ServoAccessory::off();
 	_timer.stop();
@@ -102,36 +102,54 @@ ServoFlipAccessory::ServoFlipAccessory(uint16_t Address, int8_t ServoPort, int16
 	Serial.println(F("ServoFlipAccessory::ServoFlipAccessory()"));
 }
 
-ServoFlipAccessory::~ServoFlipAccessory(){
+ServoFlipAccessory::~ServoFlipAccessory() {
 	Serial.println(F("ServoFlipAccessory::~ServoFlipAccessory()"));
 	ServoAccessory::~ServoAccessory();
 }
 
-void ServoFlipAccessory::process(){
+void ServoFlipAccessory::process() {
 	ServoAccessory::process();
 }
 
-void ServoFlipAccessory::on(){
+void ServoFlipAccessory::on() {
 	Serial.println(F("ServoFlipAccessory::on()"));
 	ServoAccessory::on();
 }
 
-void ServoFlipAccessory::off(){
+void ServoFlipAccessory::off() {
 	Serial.println(F("ServoFlipAccessory::off()"));
 	ServoAccessory::off();
 }
 
 ServoPendelAccessory::ServoPendelAccessory(uint16_t Address, int8_t ServoPort, int16_t limit1, int16_t limit2, int16_t travelTime, uint16_t pendelTime) :
-		ServoAccessory(Address, ServoPort, limit1, limit2, travelTime),
-	_pendelTime(pendelTime),
+	ServoAccessory(Address, ServoPort, limit1, limit2, travelTime),
+	_onTime(pendelTime),
 	_direction(true), // Start with clockwise direction
 	_currentPosition(0) // Start at minimum position
 {
 	Serial.println(F("ServoPendelAccessory::ServoPendelAccessory()"));
-	if (_pendelTime < travelTime) {
-		_pendelTime = travelTime; // Ensure pendulum time is at least as long as travel time
+	if (_onTime < travelTime) {
+		_onTime = travelTime; // Ensure pendulum time is at least as long as travel time
 	}
-	
+	_offTime = _onTime; // Set off time to the same value initially
+
+}
+
+ServoPendelAccessory::ServoPendelAccessory(uint16_t Address, int8_t ServoPort, int16_t limit1, int16_t limit2, int16_t travelTime, uint16_t onTime, uint16_t offTime) :
+	ServoAccessory(Address, ServoPort, limit1, limit2, travelTime),
+	_onTime(onTime),
+	_offTime(offTime),
+	_direction(true), // Start with clockwise direction
+	_currentPosition(0) // Start at minimum position
+{
+	Serial.println(F("ServoPendelAccessory::ServoPendelAccessory()"));
+	if (_onTime < travelTime) {
+		_onTime = travelTime; // Ensure on time is at least as long as travel time
+	}
+	if (_offTime < travelTime) {
+		_offTime = travelTime; // Ensure off time is at least as long as travel time
+	}
+
 }
 
 
@@ -157,20 +175,21 @@ void ServoPendelAccessory::process() {
 			}
 
 			// Restart timer for next pendulum cycle
-			_timer.start(_pendelTime);
+			_timer.start(_onTime);
 		}
 	}
 }
 
-void ServoPendelAccessory::on(){
+void ServoPendelAccessory::on() {
 	Serial.println(F("ServoPendelAccessory::on()"));
 	Accessory::on();
-	_timer.start(_pendelTime); // Start the timer for pendulum movement
+	_timer.start(_onTime); // Start the timer for pendulum movement
 }
 
-void ServoPendelAccessory::off(){
+void ServoPendelAccessory::off() {
 	Serial.println(F("ServoPendelAccessory::off()"));
 	Accessory::off();
 	_timer.stop(); // Stop the timer when turned off
 
 }
+

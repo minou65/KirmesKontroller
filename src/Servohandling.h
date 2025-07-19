@@ -1,7 +1,7 @@
-// ServoModes.h
+// Servohandling.h
 
-#ifndef _SERVOMODES_h
-#define _SERVOMODES_h
+#ifndef _SERVOHANDLING_h
+#define _SERVOHANDLING_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"
@@ -32,7 +32,7 @@ private:
 	int16_t _travelTime = 0;
 	ServoControl* _servoControl = nullptr;
 
-	
+
 };
 
 class ServoImpulseAccessory : public ServoAccessory {
@@ -65,6 +65,7 @@ class ServoPendelAccessory : public ServoAccessory {
 public:
 	ServoPendelAccessory() = default;
 	ServoPendelAccessory(uint16_t Address, int8_t ServoPort, int16_t limit1, int16_t limit2, int16_t travelTime, uint16_t pendelTime);
+	ServoPendelAccessory(uint16_t Address, int8_t ServoPort, int16_t limit1, int16_t limit2, int16_t travelTime, uint16_t onTime, uint16_t offTime);
 	~ServoPendelAccessory();
 	AccessoryType getType() const override { return AccessoryType::ServoPendel; }
 	void process() override;
@@ -72,7 +73,8 @@ public:
 	void off() override;
 private:
 	Neotimer _timer;
-	uint16_t _pendelTime = 0; // Time in milliseconds for the pendulum movement
+	uint16_t _onTime = 0; // Time in milliseconds for the pendulum to stay in one position
+	uint16_t _offTime = 0; // Time in milliseconds for the pendulum to stay in one position
 
 	bool _direction = true; // true = clockwise, false = counter-clockwise
 	uint16_t _currentPosition = 0; // Current position of the servo in percentage
