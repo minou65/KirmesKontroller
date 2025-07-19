@@ -161,10 +161,12 @@ public:
         return atoi(_InputPinValue);
 	}
 
+    iotwebconf::TextParameter& getFilenameParam() { return _filenameParam; }
+    
 protected:
     char _designationId[STRING_LEN];
     char _addressId[STRING_LEN];
-	char _modeCustomHTML[STRING_LEN];
+    char _modeCustomHTML[STRING_LEN];
 
     String getEndTemplate() override {
         String result_ = "<script>hideClass('%s')</script>\n";
@@ -231,8 +233,8 @@ public:
         this->addItem(&this->_multiplierParam);
         this->addItem(&this->_limit1Param);
         this->addItem(&this->_limit2Param);
-        this->addItem(&_TimeOnParam);
-        this->addItem(&_TimeOffParam);
+        this->addItem(&this->_TimeOnParam);
+        this->addItem(&this->_TimeOffParam);
     }
 
     void applyDefaultValues() {
@@ -242,6 +244,8 @@ public:
         _limit1Param.applyDefaultValue();
         _limit2Param.applyDefaultValue();
 		_ModeParam.applyDefaultValue();
+        _TimeOnParam.applyDefaultValue();
+        _TimeOffParam.applyDefaultValue();
     }
 
     uint8_t getMode() const {
@@ -342,6 +346,63 @@ public:
 
     }
 
+    int getBrightness() const {
+        return atoi(_BrightnessValue);
+    }
+
+    int getNumber() const {
+        return atoi(_NumberValue);
+    }
+
+    int getTimeOn() const {
+        return atoi(_TimeOnValue);
+	}
+
+    int getTimeOff() const {
+        return atoi(_TimeOffValue);
+	}
+
+    int getMultiplier() const {
+		return atoi(_MultiplierValue);
+	}
+
+    int getTimeOnFade() const {
+        return atoi(_TimeOnFadeValue);
+	}
+
+    int getTimeOffFade() const {
+		return atoi(_TimeOffFadeValue);
+	}
+
+    void applyDefaultValues() {
+        AccessoryGroup::applyDefaultValues();
+        _ModeParam.applyDefaultValue();
+        _NumberParam.applyDefaultValue();
+        _TimeOnParam.applyDefaultValue();
+        _TimeOffParam.applyDefaultValue();
+        _MultiplierParam.applyDefaultValue();
+        _TimeOnFadeParam.applyDefaultValue();
+        _TimeOffFadeParam.applyDefaultValue();
+        _BrightnessParam.applyDefaultValue();
+        _filenameParam.applyDefaultValue();
+        _activeDurationParam.applyDefaultValue();
+        _InputPinParam.applyDefaultValue();
+    }
+
+    int getMode() const {
+        return atoi(_ModeValue);
+	}
+
+private:
+    char _ModeId[STRING_LEN];
+    char _NumberId[STRING_LEN];
+    char _TimeOnId[STRING_LEN];
+    char _TimeOffId[STRING_LEN];
+    char _MultiplierId[STRING_LEN];
+    char _TimeOnFadeId[STRING_LEN];
+    char _TimeOffFadeId[STRING_LEN];
+    char _BrightnessId[STRING_LEN];
+
     char _ModeValue[STRING_LEN];
     char _NumberValue[NUMBER_LEN];
     char _TimeOnValue[NUMBER_LEN];
@@ -385,43 +446,6 @@ public:
 
     iotwebconf::NumberParameter _BrightnessParam =
         iotwebconf::NumberParameter("Brightness", _BrightnessId, _BrightnessValue, NUMBER_LEN, "255", "0..255", "min='0' max='255' step='1'");
-
-    int getBrightness() const {
-        return atoi(_BrightnessValue);
-    }
-
-    int getNumber() const {
-        return atoi(_NumberValue);
-    }
-
-    void applyDefaultValues() {
-        AccessoryGroup::applyDefaultValues();
-        _ModeParam.applyDefaultValue();
-        _NumberParam.applyDefaultValue();
-        _TimeOnParam.applyDefaultValue();
-        _TimeOffParam.applyDefaultValue();
-        _MultiplierParam.applyDefaultValue();
-        _TimeOnFadeParam.applyDefaultValue();
-        _TimeOffFadeParam.applyDefaultValue();
-        _BrightnessParam.applyDefaultValue();
-        _filenameParam.applyDefaultValue();
-        _activeDurationParam.applyDefaultValue();
-        _InputPinParam.applyDefaultValue();
-    }
-
-    int getMode() const {
-        return atoi(_ModeValue);
-	}
-
-private:
-    char _ModeId[STRING_LEN];
-    char _NumberId[STRING_LEN];
-    char _TimeOnId[STRING_LEN];
-    char _TimeOffId[STRING_LEN];
-    char _MultiplierId[STRING_LEN];
-    char _TimeOnFadeId[STRING_LEN];
-    char _TimeOffFadeId[STRING_LEN];
-    char _BrightnessId[STRING_LEN];
 };
 
 extern SoundGroup soundGroup;
