@@ -124,7 +124,7 @@ bool formValidator(iotwebconf::WebRequestWrapper* webRequestWrapper) {
     bool allValid = true;
     OutputGroup* group_ = &OutputGroup1;
     while (group_ != nullptr) {
-        group_->_filenameParam.errorMessage = nullptr;
+        group_->getFilenameParam().errorMessage = nullptr;
         if (group_->isActive()) {
             char filenameID_[STRING_LEN];
             snprintf(filenameID_, STRING_LEN, "%s-filename", group_->getId());
@@ -135,19 +135,19 @@ bool formValidator(iotwebconf::WebRequestWrapper* webRequestWrapper) {
             }
             else {
                 if (containsSpaces(filename_.c_str())) {
-                    group_->_filenameParam.errorMessage = "Fehler: Der Dateiname darf keine Leerzeichen enthalten.";
+                    group_->getFilenameParam().errorMessage = "Fehler: Der Dateiname darf keine Leerzeichen enthalten.";
                     allValid = false;
                 }
                 else if (!isFirstCharacterValid(filename_.c_str())) {
-                    group_->_filenameParam.errorMessage = "Fehler: Der Dateiname muss mit '/' beginnen.";
+                    group_->getFilenameParam().errorMessage = "Fehler: Der Dateiname muss mit '/' beginnen.";
                     allValid = false;
                 }
                 else if (!areAllCharactersValid(filename_.c_str())) {
-                    group_->_filenameParam.errorMessage = "Fehler: Ungültiges Zeichen im Dateinamen.";
+                    group_->getFilenameParam().errorMessage = "Fehler: Ungültiges Zeichen im Dateinamen.";
                     allValid = false;
                 }
                 else if (!hasValidExtension(filename_.c_str())) {
-                    group_->_filenameParam.errorMessage = "Fehler: Ungültige Dateiendung. Erlaubt sind: .mp3, .aac, .aacp, .wav, .flac, .vorbis, .m4a";
+                    group_->getFilenameParam().errorMessage = "Fehler: Ungültige Dateiendung. Erlaubt sind: .mp3, .aac, .aacp, .wav, .flac, .vorbis, .m4a";
                     allValid = false;
                 }
             }
@@ -240,10 +240,10 @@ void handleRoot() {
 
     OutputGroup* outputgroup_ = &OutputGroup1;
     while (outputgroup_ != nullptr) {
-        if ((outputgroup_->isActive()) && (atoi(outputgroup_->_ModeValue) >= 10)) {
+        if ((outputgroup_->isActive()) && (outputgroup_->getMode()) >= 10) {
             String b_ = html_button_code;
             b_.replace("[value]", String(i_));
-            b_.replace("[name]", String(outputgroup_->_designationValue) + " (" + String(outputgroup_->_ModeValue) + ")");
+            b_.replace("[name]", String(outputgroup_->getDesignation()) + " (" + String(outputgroup_->getMode()) + ")");
             b_.replace("[id]", "output" + String(i_));
             if (DecoderGroupIsEnabled(i_ - 1)) {
                 b_.replace("red", "green");
@@ -261,7 +261,7 @@ void handleRoot() {
         if (servogroup_->isActive()) {
             String b_ = html_button_code;
             b_.replace("[value]", String(i_));
-            b_.replace("[name]", String(servogroup_->_designationValue));
+            b_.replace("[name]", String(servogroup_->getDesignation()));
             b_.replace("[id]", "servo" + String(i_));
             if (DecoderGroupIsEnabled(i_ - 1)) {
                 b_.replace("red", "green");
@@ -342,11 +342,11 @@ void handleSettings() {
     OutputGroup* outputgroup_ = &OutputGroup1;
     while (outputgroup_ != nullptr) {
         if (outputgroup_->isActive()) {
-            content_ += String("<div>Output group " + String(outputgroup_->_designationValue) + "</div>").c_str();
+            content_ += String("<div>Output group " + String(outputgroup_->getDesignation()) + "</div>").c_str();
             content_ += "<ul>";
-            content_ += String("<li>Mode: " + String(outputgroup_->_ModeValue) + "</li>").c_str();
-            content_ += String("<li>Number of outputs: " + String(outputgroup_->_NumberValue) + "</li>").c_str();
-            content_ += String("<li>DCC Address: " + String(outputgroup_->_addressValue) + +"</li>").c_str();
+            content_ += String("<li>Mode: " + String(outputgroup_->getMode()) + "</li>").c_str();
+            content_ += String("<li>Number of outputs: " + String(outputgroup_->getNumber()) + "</li>").c_str();
+            content_ += String("<li>DCC Address: " + String(outputgroup_->getAddress()) + +"</li>").c_str();
             content_ += "</ul>";
         }
         else {
