@@ -7,19 +7,20 @@
 //#define DEBUG_MSG
 
 
+
 #include <Arduino.h>
 
 #include "neotimer.h"
 #include "version.h"
 #include "MotorControl.h"
 #include "SoundControl.h"
-#include "Blinkers.h"
 #include "pinmapping.h"
 #include "Vector.h"
 #include "accessories.h"
 #include "webhandling.h"
 #include "NMRAhandling.h"
-#include "ServoModes.h"
+#include "Outputhandling.h"
+#include "Servohandling.h"
 
 char Version[] = VERSION_STR;
 
@@ -264,6 +265,52 @@ void kDecoderInit(void) {
 			Serial.println("no more free channels!");
 			break;
 		}
+
+		if(servogroup_->isActive()) {
+			uint16_t Address_ = servogroup_->getAddress();
+			uint8_t ServoPort_ = channel_;
+			uint16_t limit1_ = servogroup_->getLimit1();
+			uint16_t limit2_ = servogroup_->getLimit2();
+			uint16_t travelTime_ = servogroup_->getTravelTime();
+			uint16_t multiplier_ = servogroup_->getMultiplier();
+			uint16_t timeOn_ = servogroup_->getTimeOn();
+			uint16_t timeOff_ = servogroup_->getTimeOff();
+
+
+			Serial.print(F("Values for channel ")); Serial.print(channel_); Serial.println(F(" preserved"));
+			Serial.print(F("    Address: ")); Serial.println(Address_);
+			Serial.print(F("    Servo Port: ")); Serial.println(ServoPort_);
+			Serial.print(F("    Limit 1: ")); Serial.println(limit1_);
+			Serial.print(F("    Limit 2: ")); Serial.println(limit2_);
+			Serial.print(F("    Travel Time: ")); Serial.println(travelTime_);
+
+			// Einrichten des Ports
+			accessories* newAccessory_ = nullptr;
+			switch (servogroup_->getMode()) {
+			case 230: // Servo Impulse
+				newAccessory_ = new ServoImpulseAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_, timeOn_);
+				channel_++;
+				break;
+			case 231: // Servo Flip
+				newAccessory_ = new ServoFlipAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_);
+				channel_++;
+				break;
+			case 232: // Servo Pendel
+				newAccessory_ = new ServoPendelAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_, timeOn_, timeOff_);
+				channel_++;
+				break;
+			}
+
+			if (newAccessory_ != nullptr) {
+				Accessory* accessory_ = static_cast<Accessory*>(newAccessory_);
+
+				decoder.PushBack(newAccessory_);
+				channel_++;
+				Serial.print(F("    Mode: ")); Serial.println(servogroup_->getMode());
+				Serial.print(F("    Channel: ")); Serial.println(channel_);
+			}
+		}
+
 
 		if (servogroup_->isActive()) {
 		}
