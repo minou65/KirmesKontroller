@@ -94,10 +94,10 @@ static char OutputModeNames[][STRING_LEN] = {
 };
 
 static char ServoModeValues[][STRING_LEN] = {
-    "0",
-    "1",
-    "2",
-    "3"
+    "250",
+    "251",
+    "252",
+    "253"
 };
 
 static char ServoModeNames[][STRING_LEN] = {
