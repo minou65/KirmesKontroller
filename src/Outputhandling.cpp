@@ -1,4 +1,8 @@
-#include "Blinkers.h"
+// 
+// 
+// 
+
+#include "Outputhandling.h"
 #include "LEDControl.h"
 
 using namespace std;
@@ -8,9 +12,9 @@ using namespace std;
 //Mode 40
 //Type n/a
 //=======================================================
-Ausgang::Ausgang(uint16_t BaseAddress_, uint8_t BaseChannel_):
+Ausgang::Ausgang(uint16_t BaseAddress_, uint8_t BaseChannel_) :
 	LEDaccessories(BaseAddress_, BaseChannel_, 40),
-	Output(BaseChannel_){
+	Output(BaseChannel_) {
 
 	off();
 };
@@ -65,7 +69,7 @@ void Ausgang::process() {
 //Mode 50
 //Type n/a
 //=======================================================
-Blinker::Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_):
+Blinker::Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_) :
 	LEDaccessories(BaseAddress_, BaseChannel_, 50),
 	Status(false),
 	timeOff(timeOff_),
@@ -75,7 +79,7 @@ Blinker::Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_,
 	off();
 };
 
-Blinker::Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_,  uint8_t Mode_):
+Blinker::Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_, uint8_t Mode_) :
 	LEDaccessories(BaseAddress_, BaseChannel_, Mode_),
 	Status(false),
 	timeOff(timeOff_),
@@ -86,7 +90,7 @@ Blinker::Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_,
 
 };
 
-Blinker::Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_, uint8_t fadeUpTime_, uint8_t fadeDownTime_,  uint8_t Mode_):
+Blinker::Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_, uint8_t fadeUpTime_, uint8_t fadeDownTime_, uint8_t Mode_) :
 	LEDaccessories(BaseAddress_, BaseChannel_, Mode_),
 	Status(false),
 	timeOff(timeOff_),
@@ -95,7 +99,7 @@ Blinker::Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_,
 
 	off();
 }
-Blinker::~Blinker(){
+Blinker::~Blinker() {
 	LED1.~LEDFader();
 	BlinkTimer.~Neotimer();
 }
@@ -153,7 +157,7 @@ void Blinker::on() {
 	Accessory::on();
 }
 
-void Blinker::off() {	
+void Blinker::off() {
 	Serial.println("Blinker::off");
 	IsActive = false;
 	BlinkTimer.stop();
@@ -235,7 +239,7 @@ void Wechselblinker::off() {
 //Mode 
 //Type 
 //=======================================================
-Lauflicht::Lauflicht(uint16_t BaseAddress_, uint8_t BaseChannel_,  uint8_t Anzahl_, uint16_t timeOff_, uint16_t timeOn_,  uint8_t Mode_):
+Lauflicht::Lauflicht(uint16_t BaseAddress_, uint8_t BaseChannel_, uint8_t Anzahl_, uint16_t timeOff_, uint16_t timeOn_, uint8_t Mode_) :
 	LEDaccessories(BaseAddress_, BaseChannel_, Mode_),
 	Anzahl(Anzahl_),
 	Status(false),
@@ -251,7 +255,7 @@ Lauflicht::Lauflicht(uint16_t BaseAddress_, uint8_t BaseChannel_,  uint8_t Anzah
 	off();
 };
 
-Lauflicht::Lauflicht(uint16_t BaseAddress_, uint8_t BaseChannel_,  uint8_t Anzahl_, uint16_t timeOff_, uint16_t timeOn_, uint8_t fadeUpTime_, uint8_t fadeDownTime_,  uint8_t Mode_) :
+Lauflicht::Lauflicht(uint16_t BaseAddress_, uint8_t BaseChannel_, uint8_t Anzahl_, uint16_t timeOff_, uint16_t timeOn_, uint8_t fadeUpTime_, uint8_t fadeDownTime_, uint8_t Mode_) :
 	LEDaccessories(BaseAddress_, BaseChannel_, Mode_),
 	Anzahl(Anzahl_),
 	Status(false),
@@ -274,7 +278,7 @@ Lauflicht::~Lauflicht() {
 		LEDs[i]->~LEDFader();
 		delete LEDs[i];
 	};
-	
+
 	// Grösse von Decoder auf 0 setzen
 	LEDs.Clear();
 
@@ -455,7 +459,7 @@ void Lauflicht::off() {
 //Type n/a
 // http://forum.arduino.cc/index.php?topic=159117.15
 //=======================================================
-Hausbeleuchtung::Hausbeleuchtung(uint16_t BaseAddress_, uint8_t BaseChannel_,  uint8_t Anzahl_, uint32_t minRandomTime_, uint32_t maxRandomTime_) :
+Hausbeleuchtung::Hausbeleuchtung(uint16_t BaseAddress_, uint8_t BaseChannel_, uint8_t Anzahl_, uint32_t minRandomTime_, uint32_t maxRandomTime_) :
 	LEDaccessories(BaseAddress_, BaseChannel_),
 	Anzahl(Anzahl_),
 	maxRandomTime(maxRandomTime_),
@@ -588,13 +592,13 @@ Fernseher::Fernseher(uint16_t BaseAddress_, uint8_t BaseChannel_) :
 
 	randomSeed(esp_random());
 }
-Fernseher::~Fernseher(){
+Fernseher::~Fernseher() {
 
 }
 
 void Fernseher::process() {
 	LED1.process();
-	
+
 	// do nothing if not active
 	if (IsActive) {
 
@@ -776,14 +780,14 @@ void Schweissen::off() {
 // http://forum.arduino.cc/index.php?topic=159117.15
 // 
 //=======================================================
-NeonLampen::NeonLampen(uint16_t BaseAddress_, uint8_t BaseChannel_,  uint8_t Anzahl_,  uint8_t Chance_) :
+NeonLampen::NeonLampen(uint16_t BaseAddress_, uint8_t BaseChannel_, uint8_t Anzahl_, uint8_t Chance_) :
 	LEDaccessories(BaseAddress_, BaseChannel_),
 	Anzahl(Anzahl_),
 	Chance(Chance_) {
 
 	uint8_t DefekteLampe_ = 0;
 	bool Defekt_ = false;
-	
+
 	randomSeed(esp_random());
 	// Chance_
 	// Prozentuale chance auf defekte Lampe: 
@@ -846,7 +850,7 @@ void NeonLampen::SetMaxBrightness(uint16_t MaxBrightness) {
 }
 
 void NeonLampen::process() {
-	
+
 	for (int i = 0; i < Lampen.Size(); i++) {
 		Lampen[i]->process();
 	}
@@ -996,7 +1000,7 @@ void NatriumLampen::off() {
 //Type n/a
 // http://www.instructables.com/id/Realistic-Fire-Effect-with-Arduino-and-LEDs/?ALLSTEPS
 //=======================================================
-Feuer::Feuer(uint16_t BaseAddress_, uint8_t BaseChannel_):
+Feuer::Feuer(uint16_t BaseAddress_, uint8_t BaseChannel_) :
 	Blinker(BaseAddress_, BaseChannel_, 0, 0, 0, 0, 82),
 	LED2(BaseChannel_ + 1, PWM_Set_On, 0, 0),
 	LED3(BaseChannel_ + 2, PWM_Set_On, 0, 0) {
@@ -1059,7 +1063,7 @@ void Feuer::off() {
 //=======================================================
 
 
-Blitzlicht::Blitzlicht(uint16_t BaseAddress_, uint8_t BaseChannel_):
+Blitzlicht::Blitzlicht(uint16_t BaseAddress_, uint8_t BaseChannel_) :
 	Blinker(BaseAddress_, BaseChannel_, 50, 20, 83),
 	Status2(false),
 	sleeptimeMin(5000),
@@ -1129,3 +1133,4 @@ void Blitzlicht::off() {
 	Blitztimer.stop();
 	Accessory::off();
 }
+
