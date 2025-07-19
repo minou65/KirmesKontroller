@@ -9,6 +9,9 @@
 #include "WProgram.h"
 #endif
 
+#define SOUND_FEATURE 1 // 0 = Sound disabled, 1 = Sound enabled
+#define INPUT_PIN_FEATURE 1 // 0 = Input pin disabled, 1 = Input pin enabled
+
 #include "neotimer.h"
 
 enum class AccessoryType {
@@ -22,15 +25,17 @@ enum class AccessoryType {
 	Motor,
 	ServoImpulse,
 	ServoFlip,
-	ServoPendel,
+	ServoPendel
 };
 
+#if SOUND_FEATURE == 1
 struct SoundSettings {
 	char filename[61];
 	uint16_t volume;
 	int8_t balance;
 	bool mono;
 };
+#endif
 
 class accessories {
 	protected:
@@ -66,10 +71,15 @@ public:
 // Accessory class, the base class for all output accessories
 class Accessory : public accessories {
 protected:
+#if SOUND_FEATURE == 1
 	SoundSettings _sound;
+#endif
+
+#if INPUT_PIN_FEATURE == 1
 	uint8_t _Input;
 	uint16_t _TimeActive;
 	Neotimer _timer = Neotimer();
+#endif // INPUT_PIN_FEATURE
 
 
 public:
@@ -82,16 +92,23 @@ public:
 	void on() override;
 	void off() override;
 
+#if SOUND_FEATURE == 1
 	void setSoundSettings(SoundSettings sound) {
 		_sound = sound;
 	}
+
 	SoundSettings getSoundSettings() {
 		return _sound;
 	}
+#endif
+
+#if INPUT_PIN_FEATURE == 1
 	void setInputPin(uint8_t pin);
 	uint8_t getInputPin();
 
 	void setTimer(uint16_t time);
+#endif // INPUT_PIN_FEATURE
+
 };
 
 // The base of all signals
