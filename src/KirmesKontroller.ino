@@ -173,15 +173,15 @@ void kDecoderInit(void) {
 		}
 
 		if (outputgroup_->isActive()) {
-			uint8_t Mode_ = atoi(outputgroup_->_ModeValue);
-			uint8_t Count_ = atoi(outputgroup_->_NumberValue);
-			uint16_t Address_ = atoi(outputgroup_->_addressValue);
-			uint8_t TimeOn_ = atoi(outputgroup_->_TimeOnValue);
-			uint8_t TimeOff_ = atoi(outputgroup_->_TimeOffValue);
-			uint8_t Multiplier_ = atoi(outputgroup_->_MultiplierValue); // Multiplikator
-			uint8_t TimeOnFade_ = atoi(outputgroup_->_TimeOnFadeValue);
-			uint8_t TimeOffFade_ = atoi(outputgroup_->_TimeOffFadeValue);
-			uint8_t Brightness_ = atoi(outputgroup_->_BrightnessValue);
+			uint8_t Mode_ = outputgroup_->getMode();
+			uint8_t Count_ = outputgroup_->getNumber();
+			uint16_t Address_ = outputgroup_->getAddress();
+			uint8_t TimeOn_ = outputgroup_->getTimeOn();
+			uint8_t TimeOff_ = outputgroup_->getTimeOff();
+			uint8_t Multiplier_ = outputgroup_->getMultiplier(); // Multiplikator
+			uint8_t TimeOnFade_ = outputgroup_->getTimeOnFade();
+			uint8_t TimeOffFade_ = outputgroup_->getTimeOffFade();
+			uint8_t Brightness_ = outputgroup_->getBrightness();
 
 			uint16_t DayLightAddress_ = 0;
 			uint8_t DayBrightness_ = 255;
