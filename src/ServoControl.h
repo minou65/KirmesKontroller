@@ -28,57 +28,58 @@
 
 class ServoControl : public Accessory {
 private:
-    ESPServo espservo;
-    Neotimer TravelTimer;
+    ESPServo _espservo;
+    Neotimer _TravelTimer;
 
-    uint8_t GPIO;
-    uint8_t Channel;
+    uint8_t _GPIO;
+    uint8_t _Channel;
 
-    bool IsActive;
+    bool _IsActive;
 
-    int limit1;     // Limit of travel in one direction
-    int limit2;     // Limit of travel in the other direction
-    int tlimit1;    // Limit of travel in one directionin tenths
-    int tlimit2;    // Limit of travel in the other direction in tenths
-    long travelTime; // Total travel time between two limits in milliseconds
-    int interval;   // Time between steps of 1 degree in milliseconds
+    int _limit1;     // Limit of travel in one direction
+    int _limit2;     // Limit of travel in the other direction
+    int _tlimit1;    // Limit of travel in one directionin tenths
+    int _tlimit2;    // Limit of travel in the other direction in tenths
+    long _travelTime; // Total travel time between two limits in milliseconds
+    int _interval;   // Time between steps of 1 degree in milliseconds
 
-    bool clockwise;  // Current direction is clockwise
-    int percentage; // Current speed percentage
-    bool moving;     // Servo is moving
+    bool _clockwise;  // Current direction is clockwise
+    int _percentage; // Current speed percentage
+    bool _moving;     // Servo is moving
 
-    int angle;
+    int _angle;
 
-    unsigned int flags;	 // Configuration flags
+    unsigned int _flags;	 // Configuration flags
 
-    int blimit;
-    bool bclockwise;
-    bool bounced;
-    bool bouncing;
-    int bouncingSteps;
-    int bouncingAngle;
-    int bouncepoint;
+    int _blimit;
+    bool _bclockwise;
+    bool _bounced;
+    bool _bouncing;
+    int _bouncingSteps;
+    int _bouncingAngle;
+    int _bouncepoint;
 
-    int reported;
+    int _reported;
 
 public:
     ServoControl() = default;
-    ServoControl(int8_t Channel_, int limit1_, int limit2_, int travelTime_, unsigned int flags_ = SERVO_INITMID);
+    ServoControl(int8_t Channel, int limit1, int limit2, int travelTime, unsigned int flags = SERVO_INITMID);
     ~ServoControl();
     void process();
-    void setActive(bool active_);
-    void setStart(int start_);
-    void setEnd(int angle_);
-    void setFlags(int flags_);
-    void setBounceAngle(int angle_);
-    void setBouncingSteps(int steps_);
-    void setPosition(int percentage_);
-    void setPosition(int percentage_, bool clockwise_);
-    void setAngle(int angle_);
+    void setActive(bool active);
+    void setStart(int start);
+    void setEnd(int angle);
+    void setFlags(int flags);
+    void setBounceAngle(int angle);
+    void setBouncingSteps(int steps);
+    void setPosition(int percentage);
+    void setPosition(int percentage, bool clockwise);
+    void setAngle(int angle);
     int getAngle();
-    void setTravelTime(int time_);
+    void setTravelTime(int time);
+    void setTravelTime_ms(uint16_t ms);
     boolean isAbsolute();
-    void writeTenths(int tenth_);
+    void writeTenths(int tenths);
 
     AccessoryType getType() const override { return AccessoryType::Servo; }
 };
