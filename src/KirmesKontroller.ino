@@ -111,13 +111,18 @@ void notifyDccFunc(uint16_t Addr, uint8_t FuncNum, uint8_t FuncState) {
 }
 
 void handleDecoderGroup(uint8_t DecoderGroup) {
+	Serial.print(F("Toggling decoder group: ")); Serial.println(DecoderGroup);
 	if (DecoderGroupIsActive(DecoderGroup)) {
+		Serial.print(F("    Decoder group is active, toggling state..."));
 		if (decoder[DecoderGroup]->isOn()) {
 			decoder[DecoderGroup]->off();
 		}
 		else {
 			decoder[DecoderGroup]->on();
 		}
+	}
+	else {
+		Serial.println(F("    Decoder group is not active, cannot toggle state."));
 	}
 }
 
@@ -131,7 +136,20 @@ bool DecoderGroupIsEnabled(uint8_t DecoderGroup) {
 }
 
 bool DecoderGroupIsActive(uint8_t DecoderGroup) {
-	if (DecoderGroup <= decoder.Size() && decoder[DecoderGroup] != nullptr) {
+#ifdef DEBUG_MSG
+	Serial.print(F("[DEBUG] DecoderGroupIsActive: DecoderGroup="));
+	Serial.print(DecoderGroup);
+	Serial.print(F(", decoder.Size()="));
+	Serial.print(decoder.Size());
+	if (DecoderGroup < decoder.Size()) {
+		Serial.print(F(", decoder[DecoderGroup] is "));
+		Serial.println(decoder[DecoderGroup] != nullptr ? "not null" : "null");
+	}
+	else {
+		Serial.println(F(", DecoderGroup out of range"));
+	}
+#endif
+	if (DecoderGroup < decoder.Size() && decoder[DecoderGroup] != nullptr) {
 		return true;
 	}
 	else {
@@ -165,9 +183,10 @@ void kDecoderInit(void) {
 	decoder.Clear();
 	Vector<accessories*>().Swap(decoder);
 
+	Serial.println("======== Setting up outputs... =========");
 	OutputGroup* outputgroup_ = &OutputGroup1;
 	while (outputgroup_ != nullptr) {
-		if (channel_ > 15) {
+		if (channel_ > 7) {
 			Serial.println("no more free channels!");
 			break;
 		}
@@ -259,9 +278,11 @@ void kDecoderInit(void) {
 		outputgroup_ = (OutputGroup*)outputgroup_->getNext();
 	}
 
+	channel_ = 0; // Reset channel for servos
 	ServoGroup* servogroup_ = &ServoGroup1;
+	Serial.println("======== Setting up servos... =========");
 	while (servogroup_ != nullptr) {
-		if (channel_ > 15) {
+		if (channel_ > 2) {
 			Serial.println("no more free channels!");
 			break;
 		}
@@ -275,9 +296,11 @@ void kDecoderInit(void) {
 			uint16_t multiplier_ = servogroup_->getMultiplier();
 			uint16_t timeOn_ = servogroup_->getTimeOn();
 			uint16_t timeOff_ = servogroup_->getTimeOff();
+			uint16_t Mode_ = servogroup_->getMode();
 
 
 			Serial.print(F("Values for channel ")); Serial.print(channel_); Serial.println(F(" preserved"));
+			Serial.print(F("    Mode: ")); Serial.println(Mode_);
 			Serial.print(F("    Address: ")); Serial.println(Address_);
 			Serial.print(F("    Servo Port: ")); Serial.println(ServoPort_);
 			Serial.print(F("    Limit 1: ")); Serial.println(limit1_);
@@ -286,16 +309,16 @@ void kDecoderInit(void) {
 
 			// Einrichten des Ports
 			accessories* newAccessory_ = nullptr;
-			switch (servogroup_->getMode()) {
-			case 230: // Servo Impulse
+			switch (Mode_) {
+			case 251: // Servo Impulse
 				newAccessory_ = new ServoImpulseAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_, timeOn_);
 				channel_++;
 				break;
-			case 231: // Servo Flip
+			case 252: // Servo Flip
 				newAccessory_ = new ServoFlipAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_);
 				channel_++;
 				break;
-			case 232: // Servo Pendel
+			case 253: // Servo Pendel
 				newAccessory_ = new ServoPendelAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_, timeOn_, timeOff_);
 				channel_++;
 				break;
@@ -308,6 +331,9 @@ void kDecoderInit(void) {
 				channel_++;
 				Serial.print(F("    Mode: ")); Serial.println(servogroup_->getMode());
 				Serial.print(F("    Channel: ")); Serial.println(channel_);
+			}
+			else {
+				Serial.println(F("    No valid servo mode found, skipping this group."));
 			}
 		}
 
@@ -329,6 +355,11 @@ void setup() {
 	for (uint8_t _i = 0; _i < sizeof(ChannelToGPIOMapping) - 1; _i++) {
 		pinMode(ChannelToGPIOMapping[_i], OUTPUT);
 		digitalWrite(ChannelToGPIOMapping[_i], LOW);
+	}
+
+	for (uint8_t _i = 0; _i < sizeof(ServoChannelToGPIOMapping) - 1; _i++) {
+		pinMode(ServoChannelToGPIOMapping[_i], OUTPUT);
+		digitalWrite(ServoChannelToGPIOMapping[_i], LOW);
 	}
 
 
