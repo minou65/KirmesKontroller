@@ -75,6 +75,7 @@ private:
 	Neotimer _timer;
 	uint16_t _onTime = 0; // Time in milliseconds for the pendulum to stay in one position
 	uint16_t _offTime = 0; // Time in milliseconds for the pendulum to stay in one position
+	bool _started = false; // Flag to indicate if the pendulum has started moving
 
 	bool _direction = true; // true = clockwise, false = counter-clockwise
 	uint16_t _currentPosition = 0; // Current position of the servo in percentage

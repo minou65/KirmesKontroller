@@ -3,6 +3,7 @@
 // 
 
 #include "Servohandling.h"
+#include "pinmapping.h"
 #include "common.h"
 
 
@@ -15,9 +16,8 @@ ServoAccessory::ServoAccessory(uint16_t Address, int8_t ServoPort, int16_t limit
 	_limit1(limit1),
 	_limit2(limit2),
 	_travelTime(travelTime) {
-	Serial.print(F("ServoAccessory::ServoAccessory"));
+	Serial.println(F("ServoAccessory::ServoAccessory"));
 	_servoControl = new ServoControl(ServoPort, limit1, limit2, travelTime);
-	_servoControl->setActive(true);
 	off();
 }
 
@@ -45,17 +45,15 @@ void ServoAccessory::off() {
 }
 
 void ServoAccessory::MoveServo(uint16_t percentage, bool clockwise) {
+	Serial.println(F("ServoAccessory::MoveServo()"));
+	Serial.print(F("    Percentage: ")); Serial.println(percentage);
+	Serial.print(F("    Clockwise: ")); Serial.println(clockwise ? "true" : "false");
 	if (_servoControl == nullptr) {
 		Serial.println(F("ServoControl is not initialized!"));
 		return;
 	}
 
-	if (_servoControl->isAbsolute()) {
-		_servoControl->setPosition(percentage);
-	}
-	else {
-		_servoControl->setPosition(percentage, clockwise);
-	}
+	_servoControl->setPosition(percentage);
 }
 
 // ServoImpulseAccessory is a class that represents a servo motor accessory with an impulse feature.
@@ -143,6 +141,8 @@ ServoPendelAccessory::ServoPendelAccessory(uint16_t Address, int8_t ServoPort, i
 	_currentPosition(0) // Start at minimum position
 {
 	Serial.println(F("ServoPendelAccessory::ServoPendelAccessory()"));
+	Serial.print(F("    onTime: ")); Serial.println(_onTime);
+	Serial.print(F("    offTime: ")); Serial.println(_offTime);
 	if (_onTime < travelTime) {
 		_onTime = travelTime; // Ensure on time is at least as long as travel time
 	}
@@ -162,20 +162,23 @@ void ServoPendelAccessory::process() {
 	ServoAccessory::process();
 
 	if (isOn()) {
-		if (_timer.done()) {
-			// Switch direction
-			_direction = !_direction;
+		if (_timer.done() || !_started) {
+			if (_started){
+				// Toggle direction after each cycle
+				_direction = !_direction;
+			}
+
+			_started = true; // Mark that the pendulum has started moving
 
 			// Set position: 0% for one direction, 100% for the other
 			if (_direction) {
 				MoveServo(100, true); // Move to _limit2
+				_timer.start(_onTime); // Start with _onTime
 			}
 			else {
 				MoveServo(0, false);  // Move to _limit1
+				_timer.start(_offTime); // Start with _offTime
 			}
-
-			// Restart timer for next pendulum cycle
-			_timer.start(_onTime);
 		}
 	}
 }
