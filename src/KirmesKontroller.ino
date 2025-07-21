@@ -278,8 +278,8 @@ void kDecoderInit(void) {
 		outputgroup_ = (OutputGroup*)outputgroup_->getNext();
 	}
 
-	channel_ = 0; // Reset channel for servos
 	ServoGroup* servogroup_ = &ServoGroup1;
+	uint8_t i_ = 0;
 	Serial.println("======== Setting up servos... =========");
 	while (servogroup_ != nullptr) {
 		if (channel_ > 2) {
@@ -289,7 +289,7 @@ void kDecoderInit(void) {
 
 		if(servogroup_->isActive()) {
 			uint16_t Address_ = servogroup_->getAddress();
-			uint8_t ServoPort_ = channel_;
+			uint8_t ServoPort_ = ServoChannelToGPIOMapping[i_];
 			uint16_t limit1_ = servogroup_->getLimit1();
 			uint16_t limit2_ = servogroup_->getLimit2();
 			uint16_t travelTime_ = servogroup_->getTravelTime();
@@ -299,27 +299,28 @@ void kDecoderInit(void) {
 			uint16_t Mode_ = servogroup_->getMode();
 
 
-			Serial.print(F("Values for channel ")); Serial.print(channel_); Serial.println(F(" preserved"));
+			Serial.print(F("Values for Servo ")); Serial.print(i_); Serial.println(F(" preserved"));
 			Serial.print(F("    Mode: ")); Serial.println(Mode_);
 			Serial.print(F("    Address: ")); Serial.println(Address_);
 			Serial.print(F("    Servo Port: ")); Serial.println(ServoPort_);
 			Serial.print(F("    Limit 1: ")); Serial.println(limit1_);
 			Serial.print(F("    Limit 2: ")); Serial.println(limit2_);
 			Serial.print(F("    Travel Time: ")); Serial.println(travelTime_);
+			Serial.print(F("    Multiplier: ")); Serial.println(multiplier_);
 
 			// Einrichten des Ports
 			accessories* newAccessory_ = nullptr;
 			switch (Mode_) {
 			case 251: // Servo Impulse
-				newAccessory_ = new ServoImpulseAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_, timeOn_);
+				newAccessory_ = new ServoImpulseAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_ * multiplier_, timeOn_);
 				channel_++;
 				break;
 			case 252: // Servo Flip
-				newAccessory_ = new ServoFlipAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_);
+				newAccessory_ = new ServoFlipAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_ * multiplier_);
 				channel_++;
 				break;
 			case 253: // Servo Pendel
-				newAccessory_ = new ServoPendelAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_, timeOn_, timeOff_);
+				newAccessory_ = new ServoPendelAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_ * multiplier_, timeOn_, timeOff_);
 				channel_++;
 				break;
 			}
@@ -340,6 +341,7 @@ void kDecoderInit(void) {
 
 		if (servogroup_->isActive()) {
 		}
+		i_++;
 		servogroup_ = (ServoGroup*)servogroup_->getNext();
 	}
 }
