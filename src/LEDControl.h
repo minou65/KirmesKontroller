@@ -103,7 +103,7 @@ public:
 	// Time in ms
 	void SetFadeTime(uint16_t fadeUpTime, uint16_t fadeDownTime);
 	// Time in ms, zudem kann das Intevall angepasst werden, kleinst möglicher Wert ist 10ms
-	void SetFadeTime(uint16_t fadeUpTime, uint16_t fadeDownTime, uint16_t fadeUpIntervall, uint16_t fadeDownIntervall);
+	void SetFadeTime(uint16_t fadeUpTime, uint16_t fadeDownTime, uint16_t fadeUpInterval, uint16_t fadeDownInterval);
 	// Mit diser funktion kann das Intervall zusätzlich erhöht werden. Sollte nicht mehr verwendet werden
 	void SetFadeMultiplikator(uint8_t Multiplikator);
 	// Liefert die aktuelle helligkeit
