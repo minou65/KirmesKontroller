@@ -11,7 +11,7 @@
 
 #include "accessories.h"
 #include "neotimer.h"
-#include "ESPServo.h"
+#include "ESP32Servo.h"
 
 #define SERVO_INITL1		0x01
 #define SERVO_INITL2		0x02
@@ -23,65 +23,54 @@
 #define SERVO_AUTO_REVERSE	0x20
 #define SERVO_REVERSE		0x80
 
-#define SERVO_MIN() (544)  // minimum value in uS for this servo
-#define SERVO_MAX() (2400)  // maximum value in uS for this servo 
+#define SERVO_MIN() (500)  // minimum value in uS for this servo
+#define SERVO_MAX() (2500)  // maximum value in uS for this servo 
 
-class ServoControl : public Accessory {
+class ServoControl {
 private:
-    ESPServo _espservo;
-    Neotimer _TravelTimer;
+    Servo _servo;
+
+    Neotimer _intervalTimer;
+	uint16_t _intervalSteps; // Number of steps in the current interval
+	uint16_t _intervalTime; // Time in milliseconds for the current interval
+    uint32_t _travelTime; // Total travel time between two limits in milliseconds
 
     uint8_t _GPIO;
-    uint8_t _Channel;
 
     bool _IsActive;
 
-    int _limit1;     // Limit of travel in one direction
-    int _limit2;     // Limit of travel in the other direction
-    int _tlimit1;    // Limit of travel in one directionin tenths
-    int _tlimit2;    // Limit of travel in the other direction in tenths
-    long _travelTime; // Total travel time between two limits in milliseconds
-    int _interval;   // Time between steps of 1 degree in milliseconds
+    uint16_t _limit1;     // Limit of travel in one direction in gradients
+    uint16_t _limit2;     // Limit of travel in the other direction in gradients
+    uint16_t _tlimit1;    // Limit of travel in one directionin in tenths
+    uint16_t _tlimit2;    // Limit of travel in the other direction in in tenths
+	int32_t _targetThenths; // Target position in tenths
+	int16_t _currentTenths; // Current position in tenths
 
-    bool _clockwise;  // Current direction is clockwise
-    int _percentage; // Current speed percentage
-    bool _moving;     // Servo is moving
+    uint16_t _flags;	 // Configuration flags
 
-    int _angle;
-
-    unsigned int _flags;	 // Configuration flags
-
-    int _blimit;
-    bool _bclockwise;
-    bool _bounced;
-    bool _bouncing;
-    int _bouncingSteps;
-    int _bouncingAngle;
-    int _bouncepoint;
-
-    int _reported;
+    void setTravelTime(uint16_t ms);
+    void SetIntervalTime(uint16_t interval);
+    void SetIntervalTime(uint16_t travelTime, uint16_t minIntervalTime);
 
 public:
     ServoControl() = default;
-    ServoControl(int8_t Channel, int limit1, int limit2, int travelTime, unsigned int flags = SERVO_INITMID);
+    ServoControl(int8_t ServoPort, int limit1, int limit2, int travelTime, unsigned int flags = SERVO_INITMID);
     ~ServoControl();
     void process();
-    void setActive(bool active);
-    void setStart(int start);
-    void setEnd(int angle);
-    void setFlags(int flags);
-    void setBounceAngle(int angle);
-    void setBouncingSteps(int steps);
-    void setPosition(int percentage);
-    void setPosition(int percentage, bool clockwise);
-    void setAngle(int angle);
-    int getAngle();
-    void setTravelTime(int time);
-    void setTravelTime_ms(uint16_t ms);
-    boolean isAbsolute();
-    void writeTenths(int tenths);
+	void on();
+	void off();
 
-    AccessoryType getType() const override { return AccessoryType::Servo; }
+    void setStartAngle(uint8_t degrees);
+    void setEndAngle(uint8_t degrees);
+
+    void setThenths(int tenths);
+    void setPosition(int percentage);
+    void setAngle(uint8_t degrees);
+
+    uint32_t getTenths();
+    uint8_t getAngle();
+
+    void writeTenths(int tenths);
 };
 
 extern void notifyServoPosition(ServoControl*, int) __attribute__((weak));
