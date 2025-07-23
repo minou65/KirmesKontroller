@@ -23,7 +23,7 @@ ServoControl::ServoControl(int8_t ServoPort, int limit1, int limit2, int travelT
     setIntervalTime(_travelTime, 10);
 
     _currentTenths = _tlimit1;
-    _targetThenths = _currentTenths; // Initialize target position to current position
+    _targetTenths = _currentTenths; // Initialize target position to current position
 
     _servo.setPeriodHertz(50);
     _servo.attach(_GPIO, SERVO_MIN(), SERVO_MAX());
@@ -31,9 +31,6 @@ ServoControl::ServoControl(int8_t ServoPort, int limit1, int limit2, int travelT
 
 
     Serial.println("ServoControl::ServoControl");
-
-    Serial.print("    Limit1:     "); Serial.println(_limit1);
-    Serial.print("    Limit2:     "); Serial.println(_limit2);
     Serial.print("    tLimit1:    "); Serial.println(_tlimit1);
     Serial.print("    tLimit2:    "); Serial.println(_tlimit2);
 
@@ -50,32 +47,32 @@ void ServoControl::process() {
 
 	int16_t direction_;
 
-    if (_currentTenths != _targetThenths) {
-		direction_ = _targetThenths - _currentTenths;
+    if (_currentTenths != _targetTenths) {
+		direction_ = _targetTenths - _currentTenths;
 
         if (direction_ > 0) {
             if (_intervalSteps == 0) {
-                _currentTenths = _targetThenths;
+                _currentTenths = _targetTenths;
             } else if (_intervalTimer.repeat()) {
 			    _currentTenths += _intervalSteps;
-                if (_currentTenths > _targetThenths) {
-                    _currentTenths = _targetThenths;
+                if (_currentTenths > _targetTenths) {
+                    _currentTenths = _targetTenths;
 			    }
             }
 
         }
         else if (direction_ < 0) {
             if (_intervalSteps == 0) {
-                _currentTenths = _targetThenths;
+                _currentTenths = _targetTenths;
             }
             else if (_intervalTimer.repeat()) {
                 _currentTenths -= _intervalSteps;
-                if (_currentTenths < _targetThenths) {
-                    _currentTenths = _targetThenths;
+                if (_currentTenths < _targetTenths) {
+                    _currentTenths = _targetTenths;
                 }
             }
         }
-        writeThenths(_currentTenths);
+        writeTenths(_currentTenths);
     }
 
 }
@@ -101,8 +98,8 @@ void ServoControl::setLimit(int limit1, int limit2) {
     setIntervalTime(_travelTime, 10);
 }
 
-void ServoControl::setThenths(int tenths) {
-    Serial.println("ServoControl::setThenths");
+void ServoControl::setTenths(int tenths) {
+    Serial.println("ServoControl::setTenths");
     Serial.print("    Tenths: "); Serial.println(tenths);
     if (tenths < _tlimit1) {
         tenths = _tlimit1;
@@ -111,10 +108,10 @@ void ServoControl::setThenths(int tenths) {
         tenths = _tlimit2;
     }
 
-    _targetThenths = tenths;
+    _targetTenths = tenths;
     _intervalTimer.start(_intervalTime);
 
-    Serial.print("    Target Tenths: "); Serial.println(_targetThenths);
+    Serial.print("    Target Tenths: "); Serial.println(_targetTenths);
 }
 
 void ServoControl::setPercentPosition(int percentage) {
@@ -132,7 +129,7 @@ void ServoControl::setPercentPosition(int percentage) {
         tenths_ = map(percentage, 100, 0, _tlimit1, _tlimit2);
     }
 
-    setThenths(tenths_);
+    setTenths(tenths_);
 }
 
 void ServoControl::setAngle(uint8_t degrees) {
@@ -143,7 +140,7 @@ void ServoControl::setAngle(uint8_t degrees) {
     Serial.println("ServoControl::setAngle");
     Serial.print("    Angle: "); Serial.println(degrees);
     
-	setThenths(degrees * 10); // Set the target position in tenths
+	setTenths(degrees * 10); // Set the target position in tenths
 }
 
 uint32_t ServoControl::getTenths() {
@@ -156,19 +153,10 @@ uint8_t ServoControl::getAngle() {
 
 void ServoControl::writeTenths(int tenths) {
 
-    // Begrenzung auf die aktuellen Limits
-    int minTenths = std::min(_tlimit1, _tlimit2);
-    int maxTenths = std::max(_tlimit1, _tlimit2);
-    tenths = std::max(minTenths, std::min(tenths, maxTenths));
-
     Serial.println("ServoControl::writeTenths");
     Serial.print("    tenths: "); Serial.println(tenths);
 
-    _servo.writeMicroseconds(map(
-        tenths,
-        minTenths, maxTenths,
-        SERVO_MIN(), SERVO_MAX()
-    ));
+    _servo.writeMicroseconds(map(tenths,_tlimit1, _tlimit2, SERVO_MIN(), SERVO_MAX()));
 }
 
 // Set the travel time in milliseconds and calculate the interval based on the limits
@@ -208,8 +196,8 @@ void ServoControl::setIntervalTime(uint16_t travelTime, uint16_t minIntervalTime
     Serial.print("    steps per interval: "); Serial.println(stepsPerInterval_);
 }
 
-void ServoControl::writeThenths(int tenths) {
-    Serial.println("ServoControl::writeThenths");
+void ServoControl::writeTenths(int tenths) {
+    Serial.println("ServoControl::writeTenths");
     Serial.print("    tenths: "); Serial.println(tenths);
 
     _servo.writeMicroseconds(map(tenths, 0, 1800, SERVO_MIN(), SERVO_MAX()));
@@ -239,12 +227,12 @@ void ServoBounce::process() {
             if (_bounceDirection) {
                 // Move 10 tenths away from the limit
                 Serial.print("    Moving: "); Serial.println(_bounceLimit);
-                writeThenths(_bounceLimit)
+                writeTenths(_bounceLimit)
             }
             else {
                 // Move back to the limit
-                Serial.print("    Moving: "); Serial.println(_targetThenths);
-                writeThenths(_targetThenths);
+                Serial.print("    Moving: "); Serial.println(_targetTenths);
+                writeTenths(_targetTenths);
                 
             }
             _bounceDirection = !_bounceDirection; // Toggle direction for next bounce
@@ -263,11 +251,11 @@ void ServoBounce::process() {
         _shouldBounce = true;
         if (isClockwise()) {
 			_bounceDirection = true; // Clockwise
-            _bounceLimit = _targetThenths - 50;
+            _bounceLimit = _targetTenths - 50;
         }
         else {
 			_bounceDirection = false; // Counter-clockwise
-			_bounceLimit = _targetThenths + 50;
+			_bounceLimit = _targetTenths + 50;
         }
 		Serial.println("Bounce direction set to: " + String(_bounceDirection ? "clockwise" : "conter clockwise"));
     }
