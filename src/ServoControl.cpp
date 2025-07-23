@@ -209,8 +209,6 @@ ServoBounce::ServoBounce(int8_t ServoPort, int limit1, int limit2, int travelTim
     _bounceTime(100){
 	Serial.println("ServoBounce::ServoBounce");
 
-    _flags = setFlag(_flags, SERVO_BOUNCE_L1 | SERVO_BOUNCE_L2);
-
 	_bounceTimer.stop();
 }
 
