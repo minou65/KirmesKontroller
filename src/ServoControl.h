@@ -37,10 +37,6 @@ protected:
 
     uint8_t _GPIO;
 
-    bool _IsActive;
-
-    uint16_t _limit1;     // Limit of travel in one direction in gradients
-    uint16_t _limit2;     // Limit of travel in the other direction in gradients
     uint16_t _tlimit1;    // Limit of travel in one directionin in tenths
     uint16_t _tlimit2;    // Limit of travel in the other direction in in tenths
 	int32_t _targetThenths; // Target position in tenths
