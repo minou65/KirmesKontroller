@@ -27,7 +27,7 @@
 #define SERVO_MAX() (2500)  // maximum value in uS for this servo 
 
 class ServoControl {
-private:
+protected:
     Servo _servo;
 
     Neotimer _intervalTimer;
@@ -56,9 +56,9 @@ public:
     ServoControl() = default;
     ServoControl(int8_t ServoPort, int limit1, int limit2, int travelTime, unsigned int flags = SERVO_INITMID);
     ~ServoControl();
-    void process();
-	void on();
-	void off();
+    virtual void process();
+	virtual void on();
+	virtual void off();
 
     void setStartAngle(uint8_t degrees);
     void setEndAngle(uint8_t degrees);
@@ -70,7 +70,39 @@ public:
     uint32_t getTenths();
     uint8_t getAngle();
 
+	bool isMoving() const { return _currentTenths != _targetThenths; }
+	bool isClockwise() const { return _targetThenths > _currentTenths; }
+
     void writeTenths(int tenths);
+};
+
+class ServoBounce : public ServoControl {
+public:
+    ServoBounce() = default;
+    ServoBounce(int8_t ServoPort, int limit1, int limit2, int travelTime, unsigned int flags = SERVO_INITMID);
+    ~ServoBounce() = default;
+    void process() override;
+    void on() override;
+    void off() override;
+
+	void setBouncingLimit(int tenths) { _bounceLimit = tenths; }
+	void setBouncingTime(uint16_t time) { _bounceTime = time; }
+	void setBouncingCount(uint8_t count) { _bounceCount = count; }
+    	
+	uint16_t getBounceLimit() const { return _bounceLimit; }
+	uint16_t getBounceTime() const { return _bounceTime; }
+    uint8_t getBounceCount() const { return _bounceCount; }
+
+private:
+    bool _bounceDirection; // true = towards limit1, false = towards limit2
+    uint16_t _bounceTime; // Time in milliseconds for bouncing
+    Neotimer _bounceTimer; // Timer for bouncing    
+    uint16_t _bounceLimit; // Bounce limit in tenths
+    uint8_t _bounceCount = 0; // Count of bounces
+
+    bool _shouldBounce = false;
+	bool _bounceStarted = false;
+
 };
 
 extern void notifyServoPosition(ServoControl*, int) __attribute__((weak));
