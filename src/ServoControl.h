@@ -39,7 +39,7 @@ protected:
 
     uint16_t _tlimit1;    // Limit of travel in one directionin in tenths
     uint16_t _tlimit2;    // Limit of travel in the other direction in in tenths
-	int32_t _targetThenths; // Target position in tenths
+	int32_t _targetTenths; // Target position in tenths
 	int16_t _currentTenths; // Current position in tenths
 
     uint16_t _flags;	 // Configuration flags
@@ -59,17 +59,17 @@ public:
 
     void setLimit(int limit1, int limit2);
 
-    void setThenths(int tenths);
+    void setTenths(int tenths);
     void setPercentPosition(int percentage);
     void setAngle(uint8_t degrees);
 
     uint32_t getTenths();
     uint8_t getAngle();
 
-	bool isMoving() const { return _currentTenths != _targetThenths; }
-	bool isClockwise() const { return _targetThenths > _currentTenths; }
+	bool isMoving() const { return _currentTenths != _targetTenths; }
+	bool isClockwise() const { return _targetTenths > _currentTenths; }
 
-    void writeThenths(int tenths);
+    void writeTenths(int tenths);
 };
 
 class ServoBounce : public ServoControl {
