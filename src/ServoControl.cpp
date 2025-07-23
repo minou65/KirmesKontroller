@@ -1,15 +1,15 @@
 #include "ServoControl.h"
 #include "pinmapping.h"
 
-uint8_t setFlag(uint8_t flag, uint8_t value) {
+uint16_t setFlag(uint16_t flag, uint16_t value) {
     return flag | value;
 }
 
-uint8_t removeFlag(uint8_t flag, uint8_t value) {
+uint16_t removeFlag(uint16_t flag, uint16_t value) {
     return flag & ~value;
 }
 
-bool isFlag(uint8_t flag, uint8_t value) {
+bool isFlag(uint16_t flag, uint16_t value) {
     return (flag & value) != 0;
 }
 
