@@ -49,22 +49,22 @@ protected:
     uint16_t _flags;	 // Configuration flags
 
     void setTravelTime(uint16_t ms);
-    void SetIntervalTime(uint16_t interval);
-    void SetIntervalTime(uint16_t travelTime, uint16_t minIntervalTime);
+    void setIntervalTime(uint16_t interval);
+    void setIntervalTime(uint16_t travelTime, uint16_t minIntervalTime);
 
 public:
     ServoControl() = default;
     ServoControl(int8_t ServoPort, int limit1, int limit2, int travelTime, unsigned int flags = SERVO_INITMID);
     ~ServoControl();
+   
     virtual void process();
 	virtual void on();
 	virtual void off();
 
-    void setStartAngle(uint8_t degrees);
-    void setEndAngle(uint8_t degrees);
+    void setLimit(int limit1, int limit2);
 
     void setThenths(int tenths);
-    void setPosition(int percentage);
+    void setPercentPosition(int percentage);
     void setAngle(uint8_t degrees);
 
     uint32_t getTenths();
@@ -73,7 +73,7 @@ public:
 	bool isMoving() const { return _currentTenths != _targetThenths; }
 	bool isClockwise() const { return _targetThenths > _currentTenths; }
 
-    void writeTenths(int tenths);
+    void writeThenths(int tenths);
 };
 
 class ServoBounce : public ServoControl {
@@ -84,6 +84,8 @@ public:
     void process() override;
     void on() override;
     void off() override;
+
+    void getBounceLimit(int limit1, int limit2);
 
 	void setBouncingLimit(int tenths) { _bounceLimit = tenths; }
 	void setBouncingTime(uint16_t time) { _bounceTime = time; }
