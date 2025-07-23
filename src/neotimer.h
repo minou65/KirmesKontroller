@@ -5,9 +5,9 @@
 #define _NEOTIMER_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
+#include "arduino.h"
 #else
-	#include "WProgram.h"
+#include "WProgram.h"
 #endif
 
 #define NEOTIMER_INDEFINITE -1
@@ -21,6 +21,7 @@ public:
 	~Neotimer();            //Destructor
 
 	void init();            //Initializations
+	boolean repeatdone(int times);
 	boolean done();         //Indicates time has elapsed
 	boolean repeat(int times);
 	boolean repeat(int times, unsigned long _t);
