@@ -50,7 +50,7 @@ protected:
 
 public:
     ServoControl() = default;
-    ServoControl(int8_t ServoPort, int limit1, int limit2, int travelTime, unsigned int flags = SERVO_INITMID);
+    ServoControl(int8_t ServoPort, int limit1, int limit2, int travelTime, unsigned int flags = SERVO_INITMID | SERVO_BOUNCE_L1 | SERVO_BOUNCE_L2);
     ~ServoControl();
    
     virtual void process();
