@@ -225,7 +225,6 @@ ServoBounce::ServoBounce(int8_t ServoPort, int limit1, int limit2, int travelTim
 void ServoBounce::process() {
     ServoControl::process();
 
-
     if (_bounceTimer.started()) {
 		//Serial.println("ServoBounce::process - Bouncing was started.");
 
@@ -233,13 +232,11 @@ void ServoBounce::process() {
             _bounceCount++;
 
             if (_bounceDirection) {
-                // Move 10 tenths away from the limit
-                Serial.print("    Moving: "); Serial.println(_bounceLimit);
+                // Move _bounceLimit tenths away from the limit
                 writeTenths(_bounceLimit);
             }
             else {
                 // Move back to the limit
-                Serial.print("    Moving: "); Serial.println(_targetTenths);
                 writeTenths(_targetTenths);
                 
             }
@@ -274,71 +271,6 @@ void ServoBounce::process() {
 		_shouldBounce = false;
 		_bounceStarted = true;
     }
-
-
-    return;
-
-
- //   if (_startedBouncing && (_bounceCount < 10)) {
- //       //Serial.println("ServoBounce::process - Stopping bounce after 10 iterations.");
- //       if (_bounceTimer.started()) {
-	//		Serial.println("ServoBounce::process - Bounce timer is running.");
- //       }
-
- //       if (_bounceTimer.repeat(5)) {
- //           Serial.println("ServoBounce::process - Bouncing...");
- //           _bounceCount++;
-	//	}
-
-	//	//if (_bounceTimer.repeat()) {
-	//	//	Serial.println("ServoBounce::process - Bouncing...");
- // //          if (!_bounceDirection) {
- // //              // Move 10 tenths away from the limit
- // //              //_servo.write((_bounceLimit - 20) / 10);
-	//	//		Serial.print("    Moving away from limit: "); Serial.println(_bounceLimit - 20);
- // //          }
- // //          else {
- // //              // Move back to the limit
- // //              //_servo.write(_bounceLimit / 10);
-	//	//		Serial.print("    Moving to limit: "); Serial.println(_bounceLimit);
- // //          }
- // //          _bounceDirection = !_bounceDirection; // Toggle direction for next bounce
- // //          _bounceCount++;
- // //      }
-	//	
- //       return;
- //   } else if (_startedBouncing){
- //       _bounceTimer.stop();
- //       _startedBouncing = false;
-	//	_bounceCount = 0; // Reset bounce count
-	//	Serial.println("ServoBounce::process - Bounce timer stopped.");
- //       //Serial.println("ServoBounce::process - Bounce timer stopped.");
-	//}
-
-    // Normal logic
-    if (!_shouldBounce && isMoving()) {
-        Serial.println("ServoBounce::process - Servo is moving.");
-        _shouldBounce = true;
-        _bounceDirection = !isClockwise();
-    }
-
-    if (_shouldBounce && !isMoving()) {
-        Serial.println("ServoBounce::process - Servo is not moving, starting bounce.");
-        if (_bounceDirection) {
-            _bounceLimit = _tlimit1;
-        }
-        else {
-            _bounceLimit = _tlimit2;
-        }
-
-        // Start the bounce timer
-		Serial.println("ServoBounce::process - Starting bounce timer");
-        _bounceTimer.start(500);
-
-		_shouldBounce = false;
-		_bounceCount = 0;
-    }
-
 }
 
 void ServoBounce::on(){
