@@ -282,7 +282,7 @@ void kDecoderInit(void) {
 	uint8_t i_ = 0;
 	Serial.println("======== Setting up servos... =========");
 	while (servogroup_ != nullptr) {
-		if (channel_ > 2) {
+		if (i_ > 2) {
 			Serial.println("no more free channels!");
 			break;
 		}
