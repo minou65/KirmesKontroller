@@ -113,7 +113,7 @@ void notifyDccFunc(uint16_t Addr, uint8_t FuncNum, uint8_t FuncState) {
 void handleDecoderGroup(uint8_t DecoderGroup) {
 	Serial.print(F("Toggling decoder group: ")); Serial.println(DecoderGroup);
 	if (DecoderGroupIsActive(DecoderGroup)) {
-		Serial.print(F("    Decoder group is active, toggling state..."));
+		Serial.println(F("    Decoder group is active, toggling state..."));
 		if (decoder[DecoderGroup]->isOn()) {
 			decoder[DecoderGroup]->off();
 		}
