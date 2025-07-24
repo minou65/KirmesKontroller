@@ -15,12 +15,12 @@
 
 #define SERVO_INITL1		0x01
 #define SERVO_INITL2		0x02
-#define SERVO_INITMID		0x03
+#define SERVO_INITMID		0x04
+#define SERVO_ABSOLUTE		0x08
 
-#define SERVO_ABSOLUTE		0x04
-#define SERVO_BOUNCE_L1		0x08
-#define SERVO_BOUNCE_L2		0x10
-#define SERVO_AUTO_REVERSE	0x20
+#define SERVO_BOUNCE_L1		0x10
+#define SERVO_BOUNCE_L2		0x20
+#define SERVO_AUTO_REVERSE	0x40
 #define SERVO_REVERSE		0x80
 
 #define SERVO_MIN() (500)  // minimum value in uS for this servo
@@ -70,12 +70,15 @@ public:
 	bool isClockwise() const { return _targetTenths > _currentTenths; }
 
     void writeTenths(int tenths);
+
+private:
+	bool _detachAfterMoving = false; // Flag to detach servo after moving
 };
 
 class ServoBounce : public ServoControl {
 public:
     ServoBounce() = default;
-    ServoBounce(int8_t ServoPort, int limit1, int limit2, int travelTime, unsigned int flags = SERVO_INITMID);
+    ServoBounce(int8_t ServoPort, int limit1, int limit2, int travelTime, unsigned int flags = SERVO_INITMID | SERVO_BOUNCE_L1 | SERVO_BOUNCE_L2);
     ~ServoBounce() = default;
     void process() override;
     void on() override;
@@ -100,6 +103,7 @@ private:
 
     bool _shouldBounce = false;
 	bool _bounceStarted = false;
+    bool _bounceAllowed = false;
 
 };
 
