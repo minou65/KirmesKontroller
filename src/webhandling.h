@@ -130,24 +130,15 @@ public:
         this->addItem(&_InputPinParam);
     }
 
-    char _designationValue[STRING_LEN];
-    char _addressValue[NUMBER_LEN];
-
-    iotwebconf::TextParameter _designationParam =
-        iotwebconf::TextParameter("Designation", _designationId, _designationValue, STRING_LEN);
-
-    iotwebconf::NumberParameter _addressParam =
-        iotwebconf::NumberParameter("DCC Address", _addressId, _addressValue, NUMBER_LEN, "3", "1..1024", "min='1' max='1024' step='1'");
-
-    iotwebconf::TextParameter _filenameParam =
-        iotwebconf::TextParameter("Filename", _FilenameId, _filenameValue, STRING_LEN);
-
-    iotwebconf::NumberParameter _activeDurationParam =
-        iotwebconf::NumberParameter("Active Duration (ms)", _ActiveDurationId, _activeDurationValue, NUMBER_LEN, "1000", "1..60000", "min='1' max='60000' step='1'");
-
     void applyDefaultValues() {
         _designationParam.applyDefaultValue();
         _addressParam.applyDefaultValue();
+
+		// sound extension
+        _filenameParam.applyDefaultValue();
+        _activeDurationParam.applyDefaultValue();
+        _InputPinParam.applyDefaultValue();
+
     }
 
     int getAddress() const {
@@ -158,6 +149,58 @@ public:
     }
 
 	// sound extension
+    char* getSoundFilename() {
+        return _filenameValue;
+    }
+
+    int getActiveDuration() const {
+        return atoi(_activeDurationValue);
+    }
+
+    int getInputPin() const {
+        return atoi(_InputPinValue);
+	}
+
+    iotwebconf::TextParameter& getFilenameParam() { return _filenameParam; }
+    
+protected:
+    char _designationId[STRING_LEN];
+    char _addressId[STRING_LEN];
+    char _modeCustomHTML[STRING_LEN];
+
+    String getEndTemplate() override {
+        String result_ = "<script>hideClass('%s')</script>\n";
+        result_.replace("%s", this->getId());
+        result_ += ChainedParameterGroup::getEndTemplate();
+        return result_;
+    };
+
+    char _designationValue[STRING_LEN];
+    char _addressValue[NUMBER_LEN];
+
+    iotwebconf::TextParameter _designationParam =
+        iotwebconf::TextParameter("Designation", _designationId, _designationValue, STRING_LEN);
+
+    iotwebconf::NumberParameter _addressParam =
+        iotwebconf::NumberParameter("DCC Address", _addressId, _addressValue, NUMBER_LEN, "3", "1..1024", "min='1' max='1024' step='1'");
+
+    // Sound extension
+    char _filenameValue[STRING_LEN];
+    char _activeDurationValue[NUMBER_LEN];
+    char _InputPinValue[NUMBER_LEN] = "0";
+
+    char _FilenameId[STRING_LEN];
+    char _ActiveDurationId[STRING_LEN];
+    char _InputPinId[STRING_LEN];
+
+    Neotimer _timer = Neotimer();
+
+    iotwebconf::TextParameter _filenameParam =
+        iotwebconf::TextParameter("Filename", _FilenameId, _filenameValue, STRING_LEN);
+
+    iotwebconf::NumberParameter _activeDurationParam =
+        iotwebconf::NumberParameter("Active Duration (ms)", _ActiveDurationId, _activeDurationValue, NUMBER_LEN, "1000", "1..60000", "min='1' max='60000' step='1'");
+
     MySelectParameter _InputPinParam =
         MySelectParameter(
             "Input Pin",
@@ -171,64 +214,79 @@ public:
             "0",
             nullptr
         );
-
-    char* getSoundFilename() {
-        return _filenameValue;
-    }
-
-    int getActiveDuration() const {
-        return atoi(_activeDurationValue);
-    }
-
-    int getInputPin() const {
-        return atoi(_InputPinValue);
-	}
-
-protected:
-    char _designationId[STRING_LEN];
-    char _addressId[STRING_LEN];
-	char _modeCustomHTML[STRING_LEN];
-
-    String getEndTemplate() override {
-        String result_ = "<script>hideClass('%s')</script>\n";
-        result_.replace("%s", this->getId());
-        result_ += ChainedParameterGroup::getEndTemplate();
-        return result_;
-    };
-
-    // Sound extension
-    char _filenameValue[STRING_LEN];
-    char _activeDurationValue[NUMBER_LEN];
-    char _InputPinValue[NUMBER_LEN] = "0";
-
-    char _FilenameId[STRING_LEN];
-    char _ActiveDurationId[STRING_LEN];
-    char _InputPinId[STRING_LEN];
-
-    Neotimer _timer = Neotimer();
-
 };
 
 class ServoGroup : public AccessoryGroup {
 public:
     ServoGroup(const char* id) : AccessoryGroup(id, "Servo") {
 
+		sniprintf(_ModeId, STRING_LEN, "%s-mode", this->getId());
         snprintf(_travelTimeId, STRING_LEN, "%s-traveltime", this->getId());
         snprintf(_multiplierId, STRING_LEN, "%s-multiplier", this->getId());
         snprintf(_limit1Id, STRING_LEN, "%s-limit1", this->getId());
         snprintf(_limit2Id, STRING_LEN, "%s-limit2", this->getId());
+        snprintf(_TimeOnId, STRING_LEN, "%s-timeon", this->getId());
+        snprintf(_TimeOffId, STRING_LEN, "%s-timeoff", this->getId());
         
-
+		this->addItem(&_ModeParam);
         this->addItem(&this->_travelTimeParam);
         this->addItem(&this->_multiplierParam);
         this->addItem(&this->_limit1Param);
         this->addItem(&this->_limit2Param);
+        this->addItem(&this->_TimeOnParam);
+        this->addItem(&this->_TimeOffParam);
     }
+
+    void applyDefaultValues() {
+		AccessoryGroup::applyDefaultValues();
+        _travelTimeParam.applyDefaultValue();
+        _multiplierParam.applyDefaultValue();
+        _limit1Param.applyDefaultValue();
+        _limit2Param.applyDefaultValue();
+		_ModeParam.applyDefaultValue();
+        _TimeOnParam.applyDefaultValue();
+        _TimeOffParam.applyDefaultValue();
+    }
+
+    uint8_t getMode() const {
+        return atoi(_ModeValue);
+	}
+
+    int getTravelTime() const {
+        return atoi(_travelTimeValue);
+    }
+    int getMultiplier() const {
+        return atoi(_multiplierValue);
+    }
+    int getLimit1() const {
+        return atoi(_limit1Value);
+    }
+    int getLimit2() const {
+        return atoi(_limit2Value);
+    }
+    int getTimeOn() const {
+        return atoi(_TimeOnValue);
+    }
+    int getTimeOff() const {
+        return atoi(_TimeOffValue);
+	}
+
+private:
+    char _travelTimeId[STRING_LEN];
+    char _multiplierId[STRING_LEN];
+    char _limit1Id[STRING_LEN];
+    char _limit2Id[STRING_LEN];
+	char _ModeId[STRING_LEN];
+    char _TimeOnId[STRING_LEN];
+    char _TimeOffId[STRING_LEN];
 
     char _travelTimeValue[NUMBER_LEN];
     char _multiplierValue[NUMBER_LEN];
     char _limit1Value[NUMBER_LEN];
     char _limit2Value[NUMBER_LEN];
+    char _ModeValue[STRING_LEN];
+    char _TimeOnValue[NUMBER_LEN];
+    char _TimeOffValue[NUMBER_LEN];
 
     iotwebconf::NumberParameter _travelTimeParam =
         iotwebconf::NumberParameter("Travel time (ms)", _travelTimeId, _travelTimeValue, NUMBER_LEN, "10", "1..255", "min='1' max='255' step='1'");
@@ -242,19 +300,26 @@ public:
     iotwebconf::NumberParameter _limit2Param =
         iotwebconf::NumberParameter("Limit 2", _limit2Id, _limit2Value, NUMBER_LEN, "180", "1..180", "min='0' max='180' step='1'");
 
-    void applyDefaultValues() {
-		AccessoryGroup::applyDefaultValues();
-        _travelTimeParam.applyDefaultValue();
-        _multiplierParam.applyDefaultValue();
-        _limit1Param.applyDefaultValue();
-        _limit2Param.applyDefaultValue();
-    }
+    iotwebconf::NumberParameter _TimeOnParam =
+        iotwebconf::NumberParameter("Time On (ms)", _TimeOnId, _TimeOnValue, NUMBER_LEN, "1000", "1..99999", "min='1' max='99999' step='1'");
 
-private:
-    char _travelTimeId[STRING_LEN];
-    char _multiplierId[STRING_LEN];
-    char _limit1Id[STRING_LEN];
-    char _limit2Id[STRING_LEN];
+    iotwebconf::NumberParameter _TimeOffParam =
+        iotwebconf::NumberParameter("Time Off (ms)", _TimeOffId, _TimeOffValue, NUMBER_LEN, "1000", "1..99999", "min='1' max='99999' step='1'");
+
+    MySelectParameter _ModeParam =
+        MySelectParameter(
+            "Mode",
+            _ModeId,
+            _ModeValue,
+            STRING_LEN,
+            (char*)ServoModeValues,
+            (char*)ServoModeNames,
+            sizeof(ServoModeValues) / STRING_LEN,
+            STRING_LEN,
+            nullptr,
+            _modeCustomHTML
+        );
+
 };
 
 class OutputGroup : public AccessoryGroup {
@@ -280,6 +345,63 @@ public:
         this->addItem(&_BrightnessParam);
 
     }
+
+    int getBrightness() const {
+        return atoi(_BrightnessValue);
+    }
+
+    int getNumber() const {
+        return atoi(_NumberValue);
+    }
+
+    int getTimeOn() const {
+        return atoi(_TimeOnValue);
+	}
+
+    int getTimeOff() const {
+        return atoi(_TimeOffValue);
+	}
+
+    int getMultiplier() const {
+		return atoi(_MultiplierValue);
+	}
+
+    int getTimeOnFade() const {
+        return atoi(_TimeOnFadeValue);
+	}
+
+    int getTimeOffFade() const {
+		return atoi(_TimeOffFadeValue);
+	}
+
+    void applyDefaultValues() {
+        AccessoryGroup::applyDefaultValues();
+        _ModeParam.applyDefaultValue();
+        _NumberParam.applyDefaultValue();
+        _TimeOnParam.applyDefaultValue();
+        _TimeOffParam.applyDefaultValue();
+        _MultiplierParam.applyDefaultValue();
+        _TimeOnFadeParam.applyDefaultValue();
+        _TimeOffFadeParam.applyDefaultValue();
+        _BrightnessParam.applyDefaultValue();
+        _filenameParam.applyDefaultValue();
+        _activeDurationParam.applyDefaultValue();
+        _InputPinParam.applyDefaultValue();
+    }
+
+    int getMode() const {
+        return atoi(_ModeValue);
+	}
+
+private:
+    char _ModeId[STRING_LEN];
+    char _NumberId[STRING_LEN];
+    char _TimeOnId[STRING_LEN];
+    char _TimeOffId[STRING_LEN];
+    char _MultiplierId[STRING_LEN];
+    char _TimeOnFadeId[STRING_LEN];
+    char _TimeOffFadeId[STRING_LEN];
+    char _BrightnessId[STRING_LEN];
 
     char _ModeValue[STRING_LEN];
     char _NumberValue[NUMBER_LEN];
@@ -324,39 +446,6 @@ public:
 
     iotwebconf::NumberParameter _BrightnessParam =
         iotwebconf::NumberParameter("Brightness", _BrightnessId, _BrightnessValue, NUMBER_LEN, "255", "0..255", "min='0' max='255' step='1'");
-
-    int getBrightness() const {
-        return atoi(_BrightnessValue);
-    }
-
-    int getNumber() const {
-        return atoi(_NumberValue);
-    }
-
-    void applyDefaultValues() {
-        AccessoryGroup::applyDefaultValues();
-        _ModeParam.applyDefaultValue();
-        _NumberParam.applyDefaultValue();
-        _TimeOnParam.applyDefaultValue();
-        _TimeOffParam.applyDefaultValue();
-        _MultiplierParam.applyDefaultValue();
-        _TimeOnFadeParam.applyDefaultValue();
-        _TimeOffFadeParam.applyDefaultValue();
-        _BrightnessParam.applyDefaultValue();
-        _filenameParam.applyDefaultValue();
-        _activeDurationParam.applyDefaultValue();
-        _InputPinParam.applyDefaultValue();
-    }
-
-private:
-    char _ModeId[STRING_LEN];
-    char _NumberId[STRING_LEN];
-    char _TimeOnId[STRING_LEN];
-    char _TimeOffId[STRING_LEN];
-    char _MultiplierId[STRING_LEN];
-    char _TimeOnFadeId[STRING_LEN];
-    char _TimeOffFadeId[STRING_LEN];
-    char _BrightnessId[STRING_LEN];
 };
 
 extern SoundGroup soundGroup;

@@ -6,19 +6,21 @@
 //#define NOTIFY_DCC_CV_CHANGE_MSG
 //#define DEBUG_MSG
 
+
+
 #include <Arduino.h>
 
 #include "neotimer.h"
 #include "version.h"
 #include "MotorControl.h"
 #include "SoundControl.h"
-#include "Blinkers.h"
 #include "pinmapping.h"
 #include "Vector.h"
 #include "accessories.h"
 #include "webhandling.h"
 #include "NMRAhandling.h"
-#include "ServoControl.h"
+#include "Outputhandling.h"
+#include "Servohandling.h"
 
 char Version[] = VERSION_STR;
 
@@ -109,13 +111,18 @@ void notifyDccFunc(uint16_t Addr, uint8_t FuncNum, uint8_t FuncState) {
 }
 
 void handleDecoderGroup(uint8_t DecoderGroup) {
+	Serial.print(F("Toggling decoder group: ")); Serial.println(DecoderGroup);
 	if (DecoderGroupIsActive(DecoderGroup)) {
+		Serial.print(F("    Decoder group is active, toggling state..."));
 		if (decoder[DecoderGroup]->isOn()) {
 			decoder[DecoderGroup]->off();
 		}
 		else {
 			decoder[DecoderGroup]->on();
 		}
+	}
+	else {
+		Serial.println(F("    Decoder group is not active, cannot toggle state."));
 	}
 }
 
@@ -129,7 +136,20 @@ bool DecoderGroupIsEnabled(uint8_t DecoderGroup) {
 }
 
 bool DecoderGroupIsActive(uint8_t DecoderGroup) {
-	if (DecoderGroup <= decoder.Size() && decoder[DecoderGroup] != nullptr) {
+#ifdef DEBUG_MSG
+	Serial.print(F("[DEBUG] DecoderGroupIsActive: DecoderGroup="));
+	Serial.print(DecoderGroup);
+	Serial.print(F(", decoder.Size()="));
+	Serial.print(decoder.Size());
+	if (DecoderGroup < decoder.Size()) {
+		Serial.print(F(", decoder[DecoderGroup] is "));
+		Serial.println(decoder[DecoderGroup] != nullptr ? "not null" : "null");
+	}
+	else {
+		Serial.println(F(", DecoderGroup out of range"));
+	}
+#endif
+	if (DecoderGroup < decoder.Size() && decoder[DecoderGroup] != nullptr) {
 		return true;
 	}
 	else {
@@ -158,28 +178,29 @@ void kDecoderReset() {
 void kDecoderInit(void) {
 	uint8_t channel_ = 0;
 
-	// Decoderobjekte in decoder löschen
+	// Decoderobjekte in decoder lï¿½schen
 	decoder.Erase(0, decoder.Size());
 	decoder.Clear();
 	Vector<accessories*>().Swap(decoder);
 
+	Serial.println("======== Setting up outputs... =========");
 	OutputGroup* outputgroup_ = &OutputGroup1;
 	while (outputgroup_ != nullptr) {
-		if (channel_ > 15) {
+		if (channel_ > 7) {
 			Serial.println("no more free channels!");
 			break;
 		}
 
 		if (outputgroup_->isActive()) {
-			uint8_t Mode_ = atoi(outputgroup_->_ModeValue);
-			uint8_t Count_ = atoi(outputgroup_->_NumberValue);
-			uint16_t Address_ = atoi(outputgroup_->_addressValue);
-			uint8_t TimeOn_ = atoi(outputgroup_->_TimeOnValue);
-			uint8_t TimeOff_ = atoi(outputgroup_->_TimeOffValue);
-			uint8_t Multiplier_ = atoi(outputgroup_->_MultiplierValue); // Multiplikator
-			uint8_t TimeOnFade_ = atoi(outputgroup_->_TimeOnFadeValue);
-			uint8_t TimeOffFade_ = atoi(outputgroup_->_TimeOffFadeValue);
-			uint8_t Brightness_ = atoi(outputgroup_->_BrightnessValue);
+			uint8_t Mode_ = outputgroup_->getMode();
+			uint8_t Count_ = outputgroup_->getNumber();
+			uint16_t Address_ = outputgroup_->getAddress();
+			uint8_t TimeOn_ = outputgroup_->getTimeOn();
+			uint8_t TimeOff_ = outputgroup_->getTimeOff();
+			uint8_t Multiplier_ = outputgroup_->getMultiplier(); // Multiplikator
+			uint8_t TimeOnFade_ = outputgroup_->getTimeOnFade();
+			uint8_t TimeOffFade_ = outputgroup_->getTimeOffFade();
+			uint8_t Brightness_ = outputgroup_->getBrightness();
 
 			uint16_t DayLightAddress_ = 0;
 			uint8_t DayBrightness_ = 255;
@@ -258,14 +279,69 @@ void kDecoderInit(void) {
 	}
 
 	ServoGroup* servogroup_ = &ServoGroup1;
+	uint8_t i_ = 0;
+	Serial.println("======== Setting up servos... =========");
 	while (servogroup_ != nullptr) {
-		if (channel_ > 15) {
+		if (i_ > 2) {
 			Serial.println("no more free channels!");
 			break;
 		}
 
+		if(servogroup_->isActive()) {
+			uint16_t Address_ = servogroup_->getAddress();
+			uint8_t ServoPort_ = ServoChannelToGPIOMapping[i_];
+			uint16_t limit1_ = servogroup_->getLimit1();
+			uint16_t limit2_ = servogroup_->getLimit2();
+			uint16_t travelTime_ = servogroup_->getTravelTime();
+			uint16_t multiplier_ = servogroup_->getMultiplier();
+			uint16_t timeOn_ = servogroup_->getTimeOn();
+			uint16_t timeOff_ = servogroup_->getTimeOff();
+			uint16_t Mode_ = servogroup_->getMode();
+
+
+			Serial.print(F("Values for Servo ")); Serial.print(i_); Serial.println(F(" preserved"));
+			Serial.print(F("    Mode: ")); Serial.println(Mode_);
+			Serial.print(F("    Address: ")); Serial.println(Address_);
+			Serial.print(F("    Servo Port: ")); Serial.println(ServoPort_);
+			Serial.print(F("    Limit 1: ")); Serial.println(limit1_);
+			Serial.print(F("    Limit 2: ")); Serial.println(limit2_);
+			Serial.print(F("    Travel Time: ")); Serial.println(travelTime_);
+			Serial.print(F("    Multiplier: ")); Serial.println(multiplier_);
+
+			// Einrichten des Ports
+			accessories* newAccessory_ = nullptr;
+			switch (Mode_) {
+			case 251: // Servo Impulse
+				newAccessory_ = new ServoImpulseAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_ * multiplier_, timeOn_);
+				channel_++;
+				break;
+			case 252: // Servo Flip
+				newAccessory_ = new ServoFlipAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_ * multiplier_);
+				channel_++;
+				break;
+			case 253: // Servo Pendel
+				newAccessory_ = new ServoPendelAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_ * multiplier_, timeOn_, timeOff_);
+				channel_++;
+				break;
+			}
+
+			if (newAccessory_ != nullptr) {
+				Accessory* accessory_ = static_cast<Accessory*>(newAccessory_);
+
+				decoder.PushBack(newAccessory_);
+				channel_++;
+				Serial.print(F("    Mode: ")); Serial.println(servogroup_->getMode());
+				Serial.print(F("    Channel: ")); Serial.println(channel_);
+			}
+			else {
+				Serial.println(F("    No valid servo mode found, skipping this group."));
+			}
+		}
+
+
 		if (servogroup_->isActive()) {
 		}
+		i_++;
 		servogroup_ = (ServoGroup*)servogroup_->getNext();
 	}
 }
@@ -281,6 +357,11 @@ void setup() {
 	for (uint8_t _i = 0; _i < sizeof(ChannelToGPIOMapping) - 1; _i++) {
 		pinMode(ChannelToGPIOMapping[_i], OUTPUT);
 		digitalWrite(ChannelToGPIOMapping[_i], LOW);
+	}
+
+	for (uint8_t _i = 0; _i < sizeof(ServoChannelToGPIOMapping) - 1; _i++) {
+		pinMode(ServoChannelToGPIOMapping[_i], OUTPUT);
+		digitalWrite(ServoChannelToGPIOMapping[_i], LOW);
 	}
 
 

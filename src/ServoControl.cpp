@@ -1,293 +1,309 @@
 #include "ServoControl.h"
-#include "ESPServo.h"
 #include "pinmapping.h"
 
-ServoControl::ServoControl(int8_t Channel_, int limit1_, int limit2_, int travelTime_, unsigned int flags_) :
-    GPIO(ChannelToGPIOMapping[Channel_]),
-    Channel(Channel_),
-    limit1(limit1_),
-    limit2(limit2_),
-    tlimit1(limit1_ * 10),
-    tlimit2(limit2_ * 10),
-    travelTime(travelTime_),
-    angle(tlimit1),
-    bouncing(false),
-    bounced(false),
-    bouncingSteps(1),
-    bouncingAngle(0),
-    clockwise(true),
-    moving(false),
-    IsActive(false),
-    flags(flags_) {
+uint16_t setFlag(uint16_t flag, uint16_t value) {
+    return flag | value;
+}
 
-   
-    interval = travelTime / (max(tlimit1,tlimit2) - min(tlimit1, tlimit2));
+uint16_t removeFlag(uint16_t flag, uint16_t value) {
+    return flag & ~value;
+}
 
-    if (interval == 0)
-        flags |= SERVO_ABSOLUTE;
+bool isFlag(uint16_t flag, uint16_t value) {
+    return (flag & value) != 0;
+}
 
-    switch (flags & (SERVO_INITL1 | SERVO_INITL2 | SERVO_INITMID)){
-    case SERVO_INITL1:
-        espservo.attach(GPIO, Channel);
-        espservo.write(limit1);
-        break;
-    case SERVO_INITL2:
-        espservo.attach(GPIO, Channel);
-        espservo.write(limit2);
-        break;
-    case SERVO_INITMID:
-        espservo.attach(GPIO, Channel);
-        espservo.write(limit1 + (limit2 - limit1) / 2);
-        break;
-    }
+ServoControl::ServoControl(int8_t ServoPort, int limit1, int limit2, int travelTime_, unsigned int flags) :
+    _GPIO(ServoPort),
+    _travelTime(travelTime_),
+    _flags(flags) {
 
     Serial.println("ServoControl::ServoControl");
-    Serial.print("    Channel:    "); Serial.println(Channel);
-    Serial.print("    GPIO:       "); Serial.println(GPIO);
-    Serial.print("    TravelTime: "); Serial.println(travelTime);
-    Serial.print("    Limit1:     "); Serial.println(limit1);
-    Serial.print("    Limit2:     "); Serial.println(limit2);
-    Serial.print("    tLimit1:    "); Serial.println(tlimit1);
-    Serial.print("    tLimit2:    "); Serial.println(tlimit2);
-    Serial.print("    Interval:   "); Serial.println(interval);
-    Serial.print("    Angle:      "); Serial.println(angle);
-    Serial.print("    Flags:      "); Serial.println(flags);
+	Serial.print("    travelTime: "); Serial.println(_travelTime);
+	Serial.print("    flags:      "); Serial.println(_flags, HEX);
+
+    setLimit(limit1, limit2);
+    setIntervalTime(_travelTime, 10);
+
+    Serial.print("    tLimit1:    "); Serial.println(_tlimit1);
+    Serial.print("    tLimit2:    "); Serial.println(_tlimit2);
+
+	uint16_t tmid_ = (abs(_tlimit2 - _tlimit1) / 2) + _tlimit1;
+
+    if (isFlag(_flags, SERVO_INITL1)) {
+		Serial.println("    Initializing to limit 1");
+		Serial.print("    Limit 1 Tenths: "); Serial.println(_tlimit1);
+        _currentTenths = _tlimit1;
+        _targetTenths = _tlimit1;
+    } else if (isFlag(_flags, SERVO_INITL2)) {
+		Serial.println("    Initializing to limit 2");
+		Serial.print("    Limit 2 Tenths: "); Serial.println(_tlimit2);
+        _currentTenths = _tlimit2;
+        _targetTenths = _tlimit2;
+    } else if (isFlag(_flags, SERVO_INITMID)) {
+		Serial.println("    Initializing to mid position");
+		Serial.print("    Mid Position Tenths: "); Serial.println(tmid_);
+        _currentTenths = tmid_;
+        _targetTenths = _currentTenths;
+    } else {
+        // Default to mid position if no specific initialization flag is set
+		Serial.println("    Initializing to mid position (default)");
+		Serial.print("    Mid Position Tenths: "); Serial.println(tmid_);
+        _currentTenths = tmid_;
+        _targetTenths = _currentTenths;
+	}
+
+    _servo.setPeriodHertz(50);
+    _servo.attach(_GPIO, SERVO_MIN(), SERVO_MAX());
+	writeTenths(_currentTenths); // Initialize servo position
 }
 
 ServoControl::~ServoControl() {
-    setActive(false);
-    espservo.~ESPServo();
-    TravelTimer.~Neotimer();
+	_servo.detach();
+    _servo.~Servo();
+    _intervalTimer.~Neotimer();
 }
+
 
 void ServoControl::process() {
-    int16_t  _newangle;
-    bool _clockwise;
 
-    if (flags & SERVO_ABSOLUTE) {
-        if (TravelTimer.done()) {
-            setActive(false);
+	int16_t direction_;
+
+    if (_currentTenths != _targetTenths) {
+		direction_ = _targetTenths - _currentTenths;
+
+        if (direction_ > 0) {
+            if (_intervalSteps == 0) {
+                _currentTenths = _targetTenths;
+            } else if (_intervalTimer.repeat()) {
+			    _currentTenths += _intervalSteps;
+                if (_currentTenths > _targetTenths) {
+                    _currentTenths = _targetTenths;
+			    }
+            }
+
         }
-        return;
+        else if (direction_ < 0) {
+            if (_intervalSteps == 0) {
+                _currentTenths = _targetTenths;
+            }
+            else if (_intervalTimer.repeat()) {
+                _currentTenths -= _intervalSteps;
+                if (_currentTenths < _targetTenths) {
+                    _currentTenths = _targetTenths;
+                }
+            }
+        }
+        writeTenths(_currentTenths);
     }
 
-    if (!TravelTimer.repeat())
-        return;
+    if (_detachAfterMoving && _currentTenths == _targetTenths) {
+        _servo.detach();
+        _detachAfterMoving = false;
+	}
 
-    if (IsActive == false || moving == false) {
-        TravelTimer.start(interval);
-        return;
+}
+
+void ServoControl::on(){
+    if (!_servo.attached()) {
+		_servo.attach(_GPIO, SERVO_MIN(), SERVO_MAX());
+	}
+}
+
+void ServoControl::off() {
+    if (isFlag(_flags, SERVO_AUTO_REVERSE)) {
+        _targetTenths = _tlimit1;
+    }
+    _detachAfterMoving = true;
+}
+
+void ServoControl::setLimit(int limit1, int limit2) {
+    if (limit1 > limit2) {
+        _flags = setFlag(_flags, SERVO_REVERSE);
+    }
+    else {
+        _flags = removeFlag(_flags, SERVO_REVERSE);
     }
 
-    _clockwise = clockwise;
-    if (flags & SERVO_REVERSE)
-        _clockwise = !_clockwise;
+    _tlimit1 = min(limit1, limit2) * 10;
+    _tlimit2 = max(limit1, limit2) * 10;
+    setIntervalTime(_travelTime, 10);
+}
 
-    _newangle = angle;
-    if (bouncing) {
-        if (bclockwise && angle < blimit) {
-            _newangle = angle + 1;
-        }
-        else if (bclockwise == false && angle > bouncepoint) {
-            _newangle = angle - 1;
-        }
-        else if (angle == bouncepoint) {
-            bouncingSteps++;
-            int _bouncingAngle;
-            _bouncingAngle = 10 * (bouncingAngle >> (bouncingSteps / 2));
-            if (_bouncingAngle == 0) {
-                bouncing = false;
-                bounced = true;
-                _newangle = tlimit2;
+void ServoControl::setTenths(int tenths) {
+    Serial.println("ServoControl::setTenths");
+    Serial.print("    Tenths: "); Serial.println(tenths);
+    if (tenths < _tlimit1) {
+        tenths = _tlimit1;
+    }
+    else if (tenths > _tlimit2) {
+        tenths = _tlimit2;
+    }
+
+    _targetTenths = tenths;
+    _intervalTimer.start(_intervalTime);
+
+    Serial.print("    Target Tenths: "); Serial.println(_targetTenths);
+}
+
+void ServoControl::setPercentPosition(int percentage) {
+	Serial.println("ServoControl::setPercentPosition");
+	Serial.print("    Percent: "); Serial.println(percentage);
+    
+    if (percentage < 0)
+        percentage = 0;
+    else if (percentage > 100)
+		percentage = 100;
+    uint16_t tenths_;
+    if (!isFlag(_flags, SERVO_REVERSE)) {
+        tenths_ = map(percentage, 0, 100, _tlimit1, _tlimit2);
+    } else {
+        tenths_ = map(percentage, 100, 0, _tlimit1, _tlimit2);
+    }
+
+    setTenths(tenths_);
+}
+
+void ServoControl::setAngle(uint8_t degrees) {
+    if (degrees < 0)
+        degrees = 0;
+    else if (degrees > 180)
+		degrees = 180;
+    Serial.println("ServoControl::setAngle");
+    Serial.print("    Angle: "); Serial.println(degrees);
+    
+	setTenths(degrees * 10); // Set the target position in tenths
+}
+
+uint32_t ServoControl::getTenths() {
+    return _currentTenths; // Return current position in tenths
+}
+
+uint8_t ServoControl::getAngle() {
+	return _currentTenths / 10; // Convert tenths to degrees
+}
+
+void ServoControl::writeTenths(int tenths) {
+    _servo.writeMicroseconds(map(tenths, 0, 1800, SERVO_MIN(), SERVO_MAX()));
+}
+
+// Set the travel time in milliseconds and calculate the interval based on the limits
+void ServoControl::setTravelTime(uint16_t ms) {
+    _travelTime = ms;
+    setIntervalTime(ms, 10);
+}
+
+void ServoControl::setIntervalTime(uint16_t interval){
+    setIntervalTime(interval, 10);
+}
+
+void ServoControl::setIntervalTime(uint16_t travelTime, uint16_t minIntervalTime) {
+    if (minIntervalTime < 10) {
+        minIntervalTime = 10;
+    }
+
+    uint16_t steps_ = abs(_tlimit2 - _tlimit1);
+    if (steps_ == 0) steps_ = 1;
+
+    uint16_t interval_ = travelTime / steps_;
+    if (interval_ < minIntervalTime) interval_ = minIntervalTime;
+
+    // Calculate how many steps to move per interval
+    uint16_t stepsPerInterval_ = (steps_ * interval_) / travelTime;
+    if (stepsPerInterval_ == 0) stepsPerInterval_ = 1;
+    _intervalSteps = stepsPerInterval_;
+	_intervalTime = interval_;
+
+    _intervalTimer.start(interval_);
+
+    Serial.println("ServoControl::SetIntervalTime");
+    Serial.print("    travelTime: "); Serial.println(travelTime);
+    Serial.print("    minIntervalTime: "); Serial.println(minIntervalTime);
+    Serial.print("    steps: "); Serial.println(steps_);
+    Serial.print("    interval (ms/step): "); Serial.println(interval_);
+    Serial.print("    steps per interval: "); Serial.println(stepsPerInterval_);
+}
+
+ServoBounce::ServoBounce(int8_t ServoPort, int limit1, int limit2, int travelTime, unsigned int flags) :
+    ServoControl(ServoPort, limit1, limit2, travelTime, flags),
+    _bounceLimit(0),
+    _bounceTime(100){
+	Serial.println("ServoBounce::ServoBounce");
+
+	_bounceTimer.stop();
+}
+
+void ServoBounce::process() {
+    ServoControl::process();
+
+    if (_bounceTimer.started()) {
+		//Serial.println("ServoBounce::process - Bouncing was started.");
+
+        if (_bounceTimer.repeat()) {
+            _bounceCount++;
+
+            if (_bounceDirection) {
+                // Move _bounceLimit tenths away from the limit
+                writeTenths(_bounceLimit);
             }
             else {
-                if (blimit == tlimit2)
-                    bouncepoint = tlimit2 - (10 * _bouncingAngle);
-                else
-                    blimit = tlimit1 + (10 * _bouncingAngle);
-                bclockwise = !bclockwise;
+                // Move back to the limit
+                writeTenths(_targetTenths);
+                
             }
+            _bounceDirection = !_bounceDirection; // Toggle direction for next bounce
+        }
+
+        if (_bounceCount >= 10) {
+            _bounceTimer.stop();
+            _bounceStarted = false;
+            _bounceCount = 0; 
+			writeTenths(_targetTenths);
+		}
+
+        return;
+    }
+
+    if (isMoving() && !_shouldBounce) {
+        _shouldBounce = true;
+        if (isClockwise()) {
+            _bounceDirection = true; // Clockwise
+            _bounceLimit = _targetTenths - 50;
         }
         else {
-            bouncingSteps++;
-            int _bouncingAngle;
-            _bouncingAngle = 10 * (bouncingAngle >> (bouncingSteps / 2));
-            if (_bouncingAngle == 0) {
-                bouncing = false;
-                bounced = true;
-                _newangle = tlimit1;
-            }
-            else {
-                if (blimit == tlimit2)
-                    bouncepoint = tlimit2 - (10 * _bouncingAngle);
-                else
-                    blimit = tlimit1 + (10 * _bouncingAngle);
-                bclockwise = !bclockwise;
-            }
+            _bounceDirection = false; // Counter-clockwise
+            _bounceLimit = _targetTenths + 50;
+        }
+
+        _bounceAllowed = false;
+        if (_bounceDirection && isFlag(_flags, SERVO_BOUNCE_L1)) {
+            _bounceAllowed = true;
+        }
+        else if (!_bounceDirection && isFlag(_flags, SERVO_BOUNCE_L2)) {
+            _bounceAllowed = true;
         }
     }
-    else {
-        if (clockwise && angle < tlimit2) {
-            _newangle = angle + 1;
-            bounced = false;
-        }
-        else if (clockwise == false && angle > tlimit1) {
-            _newangle = angle - 1;
-            bounced = false;
-        }
-        else if ((flags & SERVO_BOUNCE_L1) != 0 && clockwise == false
-            && bounced == false && bouncingAngle != 0) {
-            bouncing = true;
-            bouncepoint = angle;
-            blimit = tlimit1 + (10 * bouncingAngle);
-            bclockwise = true;
-        }
-        else if ((flags & SERVO_BOUNCE_L2) != 0 && clockwise
-            && bounced == false && bouncingAngle != 0) {
-            bouncing = true;
-            blimit = angle;
-            bouncepoint = tlimit2 - (10 * bouncingAngle);
-            bclockwise = false;
-        }
-        else if (flags & SERVO_AUTO_REVERSE)
-            flags = flags ^ SERVO_REVERSE;
-        else
-            moving = false;
+
+    if (!isMoving() && _shouldBounce && _bounceAllowed) {
+        _bounceTimer.start(100);
+		_shouldBounce = false;
+		_bounceStarted = true;
     }
 
-    if (_newangle != angle) {
-        writeTenths(_newangle);
-        angle = _newangle;
-    }
-    if (angle / 10 != reported) {
-        reported = angle / 10;
-        if (notifyServoPosition)
-            notifyServoPosition(this, reported);
-    } 
-
-    if (!moving) {
-        setActive(false);
+    if (!_bounceAllowed && _shouldBounce) {
+        // If bouncing is not allowed, reset the state
+        _shouldBounce = false;
+        _bounceStarted = false;
+        _bounceCount = 0;
     }
 }
 
-void ServoControl::setActive(bool active_){
-    Serial.println("ServoControl::setActive"),
-    Serial.print("    active_: "); Serial.println(active_ ? "true" : "false");
-        
-    if ((active_ == true) && (IsActive == false)){
-        if (espservo.attach(GPIO, Channel)) {
-            Serial.println("    pin attached to channel");
-            TravelTimer.start(interval);
-        }
-    }
-    else if ((active_ == false) && (IsActive == true)) {
-
-        espservo.detach();
-        TravelTimer.stop();
-        Serial.println("    pin detattached from channel");
-    }
-    IsActive = active_;
+void ServoBounce::on(){
+    Serial.println("ServoBounce::on");
+    ServoControl::on();
 }
 
-void ServoControl::setStart(int start_){
-    if (start_ < 0)
-        start_ = 0;
-    else if (start_ > 180)
-        start_ = 180;
-    limit1 = start_;
-    tlimit1 = start_ * 10;
-    interval = travelTime / (max(tlimit1, tlimit2) - min(tlimit1, tlimit2));
-    if (interval > 0) {
-        flags &= ~SERVO_ABSOLUTE;
-    }
-    else {
-        flags |= SERVO_ABSOLUTE;
-    }
+void ServoBounce::off(){
+    Serial.println("ServoBounce::off");
+	ServoControl::off();
 }
-
-void ServoControl::setEnd(int angle_){
-    if (angle_ < 0)
-        angle_ = 0;
-    else if (angle_ > 180)
-        angle_ = 180;
-    limit2 = angle_;
-    tlimit2 = angle_ * 10;
-    interval = travelTime / (max(tlimit1, tlimit2) - min(tlimit1, tlimit2));
-    if (interval > 0) {
-        flags &= ~SERVO_ABSOLUTE;
-    }
-    else {
-        flags |= SERVO_ABSOLUTE;
-    }
-}
-
-void ServoControl::setFlags(int flags_){
-    flags = (int8_t)flags_;
-}
-
-void ServoControl::setBounceAngle(int angle_){
-    bouncingAngle = angle_;
-}
-
-void ServoControl::setBouncingSteps(int steps_){
-    bouncingSteps = steps_;
-}
-
-void ServoControl::setPosition(int percentage_) {
-    uint32_t _range = max(tlimit1, tlimit2) - min(tlimit1, tlimit2);
-    uint32_t _tenth = (percentage_ * _range) / 100;
-    
-    setActive(true);
-
-    _tenth += tlimit1;
-    if (IsActive){
-        angle = _tenth;
-        writeTenths(_tenth);
-        TravelTimer.start(2000);
-    }
-}
-
-void ServoControl::setPosition(int percentage_, bool clockwise_) {
-    Serial.println("ServoControl::setSpeed");
-    Serial.print("    Percent:   "); Serial.println(percentage_);
-    Serial.print("    clockwise: "); Serial.println(clockwise_ ? "true" : "false");
-
-    percentage = percentage_;
-    clockwise = clockwise_;
-    moving = (percentage > 0);
-
-    setActive(moving);
-}
-
-void ServoControl::setAngle(int angle_) {
-    uint16_t _tenth = angle_ * 10;
-
-    angle = _tenth;
-    if (IsActive) {
-        writeTenths(_tenth);
-    }
-}
-
-int ServoControl::getAngle() {
-    return angle / 10;
-}
-
-void ServoControl::setTravelTime(int time_) {
-    travelTime = time_ * 1000;
-    interval = travelTime / (tlimit2 - tlimit1);
-}
-
-boolean ServoControl::isAbsolute() {
-    if (flags & SERVO_ABSOLUTE)
-        return true;
-    return false;
-}
-
-void ServoControl::writeTenths(int tenth_) {
-    Serial.println("ServoControl::writeTenths");
-    Serial.print("    tenths: "); Serial.println(tenth_);
-
-    espservo.writeMicroseconds(map(tenth_, 0, 1800, SERVO_MIN(), SERVO_MAX()));
-}
-
-

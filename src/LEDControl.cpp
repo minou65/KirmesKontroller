@@ -227,20 +227,20 @@ void LEDFader::SetFadeTime(uint16_t fadeUpTime, uint16_t fadeDownTime) {
 // Time in ms, zudem kann das Intevall angepasst werden, kleinst möglicher Wert ist 10ms
 // maximale Schritte sind 255, je mehr Schritte umso flüssiger ist das fading
 // durch erhöhen von fadeIntervall können längere Zeiten erreicht werden
-void LEDFader::SetFadeTime(uint16_t fadeUpTime, uint16_t fadeDownTime, uint16_t fadeUpIntervall, uint16_t fadeDownIntervall) {
+void LEDFader::SetFadeTime(uint16_t fadeUpTime, uint16_t fadeDownTime, uint16_t fadeUpInterval, uint16_t fadeDownInterval) {
 	uint16_t  fadeAmount_;
 	Serial.println("LEDFader::SetFadeTime");
 	Serial.print("    fadeUpTime_       : "); Serial.println(fadeUpTime);
 	Serial.print("    fadeDownTime_     : "); Serial.println(fadeDownTime);
-	Serial.print("    fadeUpIntervall_  : "); Serial.println(fadeUpIntervall);
-	Serial.print("    fadeDownIntervall_: "); Serial.println(fadeDownIntervall);
+	Serial.print("    fadeUpInterval_  : "); Serial.println(fadeUpInterval);
+	Serial.print("    fadeDownInterval_: "); Serial.println(fadeDownInterval);
 
 	fadeAmount_ = 0;
-	if (fadeUpIntervall < 10) fadeUpIntervall = 10;
-	if (fadeUpIntervall < 10) fadeUpIntervall = 10;
+	if (fadeUpInterval < 10) fadeUpInterval = 10;
+	if (fadeDownInterval < 10) fadeUpInterval = 10;
 
 	if (fadeUpTime > 0) {
-		int denominator_ = fadeUpTime / fadeUpIntervall;
+		int denominator_ = fadeUpTime / fadeUpInterval;
 		if (denominator_ != 0)
 			fadeAmount_ = 255 / denominator_;
 	}
@@ -248,7 +248,7 @@ void LEDFader::SetFadeTime(uint16_t fadeUpTime, uint16_t fadeDownTime, uint16_t 
 
 	fadeAmount_ = 0;
 	if (fadeDownTime > 0) {
-		int denominator_ = fadeDownTime / fadeDownIntervall;
+		int denominator_ = fadeDownTime / fadeDownInterval;
 		if (denominator_ != 0)
 			fadeAmount_ = 255 / denominator_;
 	}

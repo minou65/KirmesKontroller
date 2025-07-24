@@ -9,7 +9,7 @@
 	#include "WProgram.h"
 #endif
 
-static uint8_t ChannelToGPIOMapping[11] = {
+static uint8_t ChannelToGPIOMapping[8] = {
 	17, // O11
 	16, // O12
 	15, // O13
@@ -17,8 +17,10 @@ static uint8_t ChannelToGPIOMapping[11] = {
 	10, // O15
 	9,  // O16
 	8,  // O17
-	4,  // O18
+	4  // O18
+};
 
+static uint8_t ServoChannelToGPIOMapping[3] = {
 	2, // O21
 	42, // O22
 	41, // O23

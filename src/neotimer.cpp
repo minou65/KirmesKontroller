@@ -25,6 +25,14 @@ void Neotimer::init() {
 	this->_waiting = false;
 }
 
+boolean Neotimer::repeatdone(int times) {
+	bool ret_ = this->repeat(times);
+	if (this->repetitions == 0) {
+		this->done();
+	}
+	return ret_;
+}
+
 /*
  * Repeats a timer x times
  * Useful to execute a task periodically.
@@ -142,6 +150,8 @@ void Neotimer::reset() {
 	this->stop();
 	this->_timer.last = millis();
 	this->_timer.done = false;
+	this->_timer.started = true;
+	this->_waiting = true;
 }
 
 /*
@@ -153,14 +163,12 @@ void Neotimer::start() {
 	this->_waiting = true;
 }
 
-/*
- * Start a timer
- */
+// start a timer with a specific interval
 void Neotimer::start(unsigned long t) {
+	this->set(t); 
 	this->reset();
 	this->_timer.started = true;
 	this->_waiting = true;
-	this->set(t);
 }
 
 /*

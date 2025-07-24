@@ -1,5 +1,8 @@
 #include "accessories.h"
+
+#if SOUND_FEATURE == 1
 #include "SoundControl.h"
+#endif
 
 accessories::accessories(uint16_t baseAddress, byte baseChannel) :
 	BaseAddress(BaseAddress),
@@ -19,7 +22,7 @@ accessories::~accessories(){
 }
 
 AccessoryType accessories::getType() const {
-	Serial.print("Accessory::getType");
+	Serial.print("accessories::getType");
 	return AccessoryType::None;
 }
 
@@ -59,13 +62,25 @@ byte accessories::ChannelMode() {
 	return Mode;
 }
 
-// Class Accessory, dir Mutter aller Klassen
+// Class Accessory, die Mutter aller Klassen
+#if SOUND_FEATURE == 1 && INPUT_PIN_FEATURE == 1
 Accessory::Accessory(uint16_t BaseAddress_, byte BaseChannel_) :
 	accessories(BaseAddress_, BaseChannel_),
 	_Input(-1),
 	_TimeActive(0),
-	_sound("", 15, 0, false) {
+	_sound("", 15, 0, false){
 }
+#elif INPUT_PIN_FEATURE == 1
+Accessory::Accessory(uint16_t BaseAddress_, byte BaseChannel_):
+	accessories(BaseAddress_, BaseChannel_),
+	_Input(-1),
+	_TimeActive(0) {
+}
+#else
+Accessory::Accessory(uint16_t BaseAddress_, byte BaseChannel_):
+	accessories(BaseAddress_, BaseChannel_) {
+}
+#endif
 
 Accessory::Accessory(uint16_t BaseAddress_, byte BaseChannel_, byte Mode_):
 	Accessory(BaseAddress_, BaseChannel_) {
@@ -80,6 +95,8 @@ void Accessory::process() {
 	//Serial.print("    Input pin: "); Serial.print(_Input);
 	//Serial.print("    Time active: "); Serial.println(_TimeActive);
 	accessories::process();
+
+#if INPUT_PIN_FEATURE == 1
 
 	if (_Input > 0 && !isOn() && (digitalRead(_Input) == LOW)) {
 		Serial.println("Accessory::process: Input is LOW, turning on");
@@ -104,16 +121,21 @@ void Accessory::process() {
 		off();
 		return;
 	}
+#endif
 }
 
 void Accessory::on() {
 	Serial.println("Accessory::on");
 	accessories::on();
+
+#if INPUT_PIN_FEATURE == 1
 	if (_TimeActive > 0) {
 		_timer.start(_TimeActive);
 		Serial.print("    accessory timer started for "); Serial.print(_TimeActive); Serial.println(" ms");
 	}
+#endif
 
+#if SOUND_FEATURE == 1
 	if (_sound.filename[0] != '\0' && !isplayingSound()) {
 		Serial.print("    Playing sound: "); Serial.println(_sound.filename);
 		setSoundVolume(_sound.volume);
@@ -121,21 +143,30 @@ void Accessory::on() {
 		setSoundMono(_sound.mono);
 		playSoundLoop(_sound.filename);
 	}
+#endif
 }
 
 void Accessory::off() {
 	Serial.println("Accessory::off");
 	accessories::off();
+
+#if INPUT_PIN_FEATURE == 1
 	if (_TimeActive > 0) {
 		_timer.stop();
 		Serial.println("    accessory timer stopped");
 	}
+#endif
+
+#if SOUND_FEATURE == 1
 	if (_sound.filename[0] != '\0' && isplayingSound()) {
 		Serial.print("    Stopping sound: "); Serial.println(_sound.filename);
 		stopSound();
 	}
+#endif
+
 }
 
+#if INPUT_PIN_FEATURE == 1
 void Accessory::setInputPin(uint8_t pin){
 	Serial.print("Accessory::setInputPin ");
 	if (pin != _Input) {
@@ -154,6 +185,7 @@ void Accessory::setTimer(uint16_t time){
 	Serial.print("	Time set to: "); Serial.print(time); Serial.println("ms");
 	_TimeActive = time;
 }
+#endif // INPUT_PIN_FEATURE
 
 // class Signal, die Mutter aller Signale
 Signal::Signal(uint16_t BaseAddress_, byte BaseChannel_, uint16_t DayLightAddress_, byte Mode_, byte Brightness1_, byte Brightness2_) :

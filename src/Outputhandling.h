@@ -1,7 +1,7 @@
-// Blinker.h
+// Outputhandling.h
 
-#ifndef _BLINKER_h
-#define _BLINKER_h
+#ifndef _OUTPUTHANDLING_h
+#define _OUTPUTHANDLING_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"
@@ -203,9 +203,9 @@ public:
 class NeonLampen : public LEDaccessories {
 private:
 	bool Chance = 0;						// Prozentuale chance auf defekte Lampe: 
-											// für 50:50 den Wert 1. für 33:66 den Wert 2, etc.
-											// wenn 0 dann gibt es keine defekte Röhre
-											// wenn 255, dann gibt es immer eine defekte Röhre
+	// für 50:50 den Wert 1. für 33:66 den Wert 2, etc.
+	// wenn 0 dann gibt es keine defekte Röhre
+	// wenn 255, dann gibt es immer eine defekte Röhre
 
 	Vector<Neon*> Lampen;
 	const uint8_t Anzahl;
@@ -229,9 +229,9 @@ public:
 class NatriumLampen :public LEDaccessories {
 private:
 	uint8_t Chance = 0;					// Prozentuale chance auf defekte Lampe: 
-											// für 50:50 den Wert 1. für 33:66 den Wert 2, etc.
-											// wenn 0 dann gibt es keine defekte Röhre
-											// wenn 255, dann gibt es immer eine defekte Röhre
+	// für 50:50 den Wert 1. für 33:66 den Wert 2, etc.
+	// wenn 0 dann gibt es keine defekte Röhre
+	// wenn 255, dann gibt es immer eine defekte Röhre
 
 	uint8_t fadeOnIntervall;
 	uint8_t fadeOffIntervall;
@@ -297,7 +297,6 @@ public:
 	void on() override;
 	void off() override;
 };
-
 
 #endif
 
