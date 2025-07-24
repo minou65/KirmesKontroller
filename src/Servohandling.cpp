@@ -53,7 +53,7 @@ void ServoAccessory::MoveServo(uint16_t percentage, bool clockwise) {
 		return;
 	}
 
-	_servoControl->setPosition(percentage);
+	_servoControl->setPercentPosition(percentage);
 }
 
 // ServoImpulseAccessory is a class that represents a servo motor accessory with an impulse feature.
