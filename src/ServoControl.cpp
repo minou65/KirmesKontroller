@@ -18,43 +18,39 @@ ServoControl::ServoControl(int8_t ServoPort, int limit1, int limit2, int travelT
     _travelTime(travelTime_),
     _flags(flags) {
 
+    Serial.println("ServoControl::ServoControl");
+    Serial.print("    tLimit1:    "); Serial.println(_tlimit1);
+    Serial.print("    tLimit2:    "); Serial.println(_tlimit2);
+	Serial.print("    travelTime: "); Serial.println(_travelTime);
+	Serial.print("    flags:      "); Serial.println(_flags, HEX);
+
     setLimit(limit1, limit2);
     setIntervalTime(_travelTime, 10);
 
 	uint16_t tmid_ = abs(_tlimit2 - _tlimit1) / 2;
 
-    switch (flags & (SERVO_INITL1 | SERVO_INITL2 | SERVO_INITMID)) {
-
-    case SERVO_INITL1:
-            _currentTenths = _tlimit1;
-            _targetTenths = _tlimit1;
-            break;
-        case SERVO_INITL2:
-            _currentTenths = _tlimit2;
-            _targetTenths = _tlimit2;
-            break;
-        case SERVO_INITMID:
-            _currentTenths = tmid_;
-            _targetTenths = _currentTenths;
-            break;
-        default:
-			// the same as SERVO_INITMID
-            _currentTenths = tmid_;
-            _targetTenths = _currentTenths;
-            break;
+    if (isFlag(_flags, SERVO_INITL1)) {
+		Serial.println("    Initializing to limit 1");
+        _currentTenths = _tlimit1;
+        _targetTenths = _tlimit1;
+    } else if (isFlag(_flags, SERVO_INITL2)) {
+		Serial.println("    Initializing to limit 2");
+        _currentTenths = _tlimit2;
+        _targetTenths = _tlimit2;
+    } else if (isFlag(_flags, SERVO_INITMID)) {
+		Serial.println("    Initializing to mid position");
+        _currentTenths = tmid_;
+        _targetTenths = _currentTenths;
+    } else {
+        // Default to mid position if no specific initialization flag is set
+		Serial.println("    Initializing to mid position (default)");
+        _currentTenths = tmid_;
+        _targetTenths = _currentTenths;
 	}
-
-
 
     _servo.setPeriodHertz(50);
     _servo.attach(_GPIO, SERVO_MIN(), SERVO_MAX());
 	writeTenths(_currentTenths); // Initialize servo position
-
-
-    Serial.println("ServoControl::ServoControl");
-    Serial.print("    tLimit1:    "); Serial.println(_tlimit1);
-    Serial.print("    tLimit2:    "); Serial.println(_tlimit2);
-
 }
 
 ServoControl::~ServoControl() {
@@ -96,14 +92,24 @@ void ServoControl::process() {
         writeTenths(_currentTenths);
     }
 
+    if (_detachAfterMoving && _currentTenths == _targetTenths) {
+        _servo.detach();
+        _detachAfterMoving = false;
+	}
+
 }
 
 void ServoControl::on(){
-
+    if (!_servo.attached()) {
+		_servo.attach(_GPIO, SERVO_MIN(), SERVO_MAX());
+	}
 }
 
-void ServoControl::off(){
-
+void ServoControl::off() {
+    if (isFlag(_flags, SERVO_AUTO_REVERSE)) {
+        _targetTenths = _tlimit1;
+    }
+    _detachAfterMoving = true;
 }
 
 void ServoControl::setLimit(int limit1, int limit2) {
@@ -256,20 +262,34 @@ void ServoBounce::process() {
     if (isMoving() && !_shouldBounce) {
         _shouldBounce = true;
         if (isClockwise()) {
-			_bounceDirection = true; // Clockwise
+            _bounceDirection = true; // Clockwise
             _bounceLimit = _targetTenths - 50;
         }
         else {
-			_bounceDirection = false; // Counter-clockwise
-			_bounceLimit = _targetTenths + 50;
+            _bounceDirection = false; // Counter-clockwise
+            _bounceLimit = _targetTenths + 50;
         }
-		Serial.println("Bounce direction set to: " + String(_bounceDirection ? "clockwise" : "conter clockwise"));
+
+        _bounceAllowed = false;
+        if (_bounceDirection && isFlag(_flags, SERVO_BOUNCE_L1)) {
+            _bounceAllowed = true;
+        }
+        else if (!_bounceDirection && isFlag(_flags, SERVO_BOUNCE_L2)) {
+            _bounceAllowed = true;
+        }
     }
 
-    if (!isMoving() && _shouldBounce) {
+    if (!isMoving() && _shouldBounce && _bounceAllowed) {
         _bounceTimer.start(100);
 		_shouldBounce = false;
 		_bounceStarted = true;
+    }
+
+    if (!_bounceAllowed && _shouldBounce) {
+        // If bouncing is not allowed, reset the state
+        _shouldBounce = false;
+        _bounceStarted = false;
+        _bounceCount = 0;
     }
 }
 
