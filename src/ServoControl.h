@@ -73,6 +73,9 @@ public:
 
 private:
 	bool _detachAfterMoving = false; // Flag to detach servo after moving
+
+    float _stepAccumulator = 0.0f;
+
 };
 
 class ServoBounce : public ServoControl {

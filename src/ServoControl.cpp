@@ -66,42 +66,40 @@ ServoControl::~ServoControl() {
 
 
 void ServoControl::process() {
-
-	int16_t direction_;
+    int16_t direction_;
 
     if (_currentTenths != _targetTenths) {
-		direction_ = _targetTenths - _currentTenths;
+        direction_ = _targetTenths - _currentTenths;
 
-        if (direction_ > 0) {
-            if (_intervalSteps == 0) {
-                _currentTenths = _targetTenths;
-            } else if (_intervalTimer.repeat()) {
-			    _currentTenths += _intervalSteps;
+        if (_intervalTimer.repeat() || true) {
+            float stepSize = (float)abs(_tlimit2 - _tlimit1) / ((float)_travelTime / (float)_intervalTime);
+            _stepAccumulator += stepSize;
+
+            int stepsToMove = (int)_stepAccumulator;
+            if (stepsToMove == 0) {
+                stepsToMove = 1; // Ensure at least one step is taken
+            }
+            _stepAccumulator -= stepsToMove;
+
+            if (direction_ > 0) {
+                _currentTenths += stepsToMove;
                 if (_currentTenths > _targetTenths) {
                     _currentTenths = _targetTenths;
-			    }
-            }
-
-        }
-        else if (direction_ < 0) {
-            if (_intervalSteps == 0) {
-                _currentTenths = _targetTenths;
-            }
-            else if (_intervalTimer.repeat()) {
-                _currentTenths -= _intervalSteps;
+                }
+            } else if (direction_ < 0) {
+                _currentTenths -= stepsToMove;
                 if (_currentTenths < _targetTenths) {
                     _currentTenths = _targetTenths;
                 }
             }
+            writeTenths(_currentTenths);
         }
-        writeTenths(_currentTenths);
     }
 
     if (_detachAfterMoving && _currentTenths == _targetTenths) {
         _servo.detach();
         _detachAfterMoving = false;
-	}
-
+    }
 }
 
 void ServoControl::on(){
@@ -205,23 +203,21 @@ void ServoControl::setIntervalTime(uint16_t travelTime, uint16_t minIntervalTime
     uint16_t steps_ = abs(_tlimit2 - _tlimit1);
     if (steps_ == 0) steps_ = 1;
 
-    uint16_t interval_ = travelTime / steps_;
+    float interval_ = (float)travelTime / (float)steps_;
     if (interval_ < minIntervalTime) interval_ = minIntervalTime;
 
-    // Calculate how many steps to move per interval
-    uint16_t stepsPerInterval_ = (steps_ * interval_) / travelTime;
-    if (stepsPerInterval_ == 0) stepsPerInterval_ = 1;
-    _intervalSteps = stepsPerInterval_;
-	_intervalTime = interval_;
+    _intervalTime = (uint16_t)interval_;
+    _intervalSteps = 1; // Immer 1 Schritt pro Intervall
+    _stepAccumulator = 0.0f;
 
-    _intervalTimer.start(interval_);
+    _intervalTimer.start(_intervalTime);
 
     Serial.println("ServoControl::SetIntervalTime");
     Serial.print("    travelTime: "); Serial.println(travelTime);
     Serial.print("    minIntervalTime: "); Serial.println(minIntervalTime);
     Serial.print("    steps: "); Serial.println(steps_);
-    Serial.print("    interval (ms/step): "); Serial.println(interval_);
-    Serial.print("    steps per interval: "); Serial.println(stepsPerInterval_);
+    Serial.print("    interval (ms/step): "); Serial.println(_intervalTime);
+    Serial.print("    steps per interval: 1 (mit Akkumulation)");
 }
 
 ServoBounce::ServoBounce(int8_t ServoPort, int limit1, int limit2, int travelTime, unsigned int flags) :
