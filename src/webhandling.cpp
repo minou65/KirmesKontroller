@@ -391,7 +391,7 @@ void handleData() {
 
     ServoGroup* servogroup_ = &ServoGroup1;
     while (servogroup_ != nullptr) {
-		Serial.print("[DEBUG] Checking servo group "); Serial.print(i_); Serial.print(" - Active: "); Serial.println(servogroup_->isActive());
+		//Serial.print("[DEBUG] Checking servo group "); Serial.print(i_); Serial.print(" - Active: "); Serial.println(servogroup_->isActive());
         if (servogroup_->isActive()) {
             json_ += ",\"servo" + String(i_ + 1) + "\":" + DecoderGroupIsEnabled(i_);
             i_ += 1;
