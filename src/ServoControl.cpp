@@ -19,31 +19,36 @@ ServoControl::ServoControl(int8_t ServoPort, int limit1, int limit2, int travelT
     _flags(flags) {
 
     Serial.println("ServoControl::ServoControl");
-    Serial.print("    tLimit1:    "); Serial.println(_tlimit1);
-    Serial.print("    tLimit2:    "); Serial.println(_tlimit2);
 	Serial.print("    travelTime: "); Serial.println(_travelTime);
 	Serial.print("    flags:      "); Serial.println(_flags, HEX);
 
     setLimit(limit1, limit2);
     setIntervalTime(_travelTime, 10);
 
-	uint16_t tmid_ = abs(_tlimit2 - _tlimit1) / 2;
+    Serial.print("    tLimit1:    "); Serial.println(_tlimit1);
+    Serial.print("    tLimit2:    "); Serial.println(_tlimit2);
+
+	uint16_t tmid_ = (abs(_tlimit2 - _tlimit1) / 2) + _tlimit1;
 
     if (isFlag(_flags, SERVO_INITL1)) {
 		Serial.println("    Initializing to limit 1");
+		Serial.print("    Limit 1 Tenths: "); Serial.println(_tlimit1);
         _currentTenths = _tlimit1;
         _targetTenths = _tlimit1;
     } else if (isFlag(_flags, SERVO_INITL2)) {
 		Serial.println("    Initializing to limit 2");
+		Serial.print("    Limit 2 Tenths: "); Serial.println(_tlimit2);
         _currentTenths = _tlimit2;
         _targetTenths = _tlimit2;
     } else if (isFlag(_flags, SERVO_INITMID)) {
 		Serial.println("    Initializing to mid position");
+		Serial.print("    Mid Position Tenths: "); Serial.println(tmid_);
         _currentTenths = tmid_;
         _targetTenths = _currentTenths;
     } else {
         // Default to mid position if no specific initialization flag is set
 		Serial.println("    Initializing to mid position (default)");
+		Serial.print("    Mid Position Tenths: "); Serial.println(tmid_);
         _currentTenths = tmid_;
         _targetTenths = _currentTenths;
 	}
