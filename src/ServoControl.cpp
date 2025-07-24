@@ -16,18 +16,39 @@ bool isFlag(uint16_t flag, uint16_t value) {
 ServoControl::ServoControl(int8_t ServoPort, int limit1, int limit2, int travelTime_, unsigned int flags) :
     _GPIO(ServoPort),
     _travelTime(travelTime_),
-    _IsActive(false),
     _flags(flags) {
 
     setLimit(limit1, limit2);
     setIntervalTime(_travelTime, 10);
 
-    _currentTenths = _tlimit1;
-    _targetTenths = _currentTenths; // Initialize target position to current position
+	uint16_t tmid_ = abs(_tlimit2 - _tlimit1) / 2;
+
+    switch (flags & (SERVO_INITL1 | SERVO_INITL2 | SERVO_INITMID)) {
+
+    case SERVO_INITL1:
+            _currentTenths = _tlimit1;
+            _targetTenths = _tlimit1;
+            break;
+        case SERVO_INITL2:
+            _currentTenths = _tlimit2;
+            _targetTenths = _tlimit2;
+            break;
+        case SERVO_INITMID:
+            _currentTenths = tmid_;
+            _targetTenths = _currentTenths;
+            break;
+        default:
+			// the same as SERVO_INITMID
+            _currentTenths = tmid_;
+            _targetTenths = _currentTenths;
+            break;
+	}
+
+
 
     _servo.setPeriodHertz(50);
     _servo.attach(_GPIO, SERVO_MIN(), SERVO_MAX());
-    _servo.write(_currentTenths / 10);
+	writeTenths(_currentTenths); // Initialize servo position
 
 
     Serial.println("ServoControl::ServoControl");
@@ -90,7 +111,7 @@ void ServoControl::setLimit(int limit1, int limit2) {
         _flags = setFlag(_flags, SERVO_REVERSE);
     }
     else {
-        _flags = removeFlag(_flags, SERVO_REVERSE)
+        _flags = removeFlag(_flags, SERVO_REVERSE);
     }
 
     _tlimit1 = min(limit1, limit2) * 10;
@@ -152,11 +173,7 @@ uint8_t ServoControl::getAngle() {
 }
 
 void ServoControl::writeTenths(int tenths) {
-
-    Serial.println("ServoControl::writeTenths");
-    Serial.print("    tenths: "); Serial.println(tenths);
-
-    _servo.writeMicroseconds(map(tenths,_tlimit1, _tlimit2, SERVO_MIN(), SERVO_MAX()));
+    _servo.writeMicroseconds(map(tenths, 0, 1800, SERVO_MIN(), SERVO_MAX()));
 }
 
 // Set the travel time in milliseconds and calculate the interval based on the limits
@@ -196,13 +213,6 @@ void ServoControl::setIntervalTime(uint16_t travelTime, uint16_t minIntervalTime
     Serial.print("    steps per interval: "); Serial.println(stepsPerInterval_);
 }
 
-void ServoControl::writeTenths(int tenths) {
-    Serial.println("ServoControl::writeTenths");
-    Serial.print("    tenths: "); Serial.println(tenths);
-
-    _servo.writeMicroseconds(map(tenths, 0, 1800, SERVO_MIN(), SERVO_MAX()));
-}
-
 ServoBounce::ServoBounce(int8_t ServoPort, int limit1, int limit2, int travelTime, unsigned int flags) :
     ServoControl(ServoPort, limit1, limit2, travelTime, flags),
     _bounceLimit(0),
@@ -225,7 +235,7 @@ void ServoBounce::process() {
             if (_bounceDirection) {
                 // Move 10 tenths away from the limit
                 Serial.print("    Moving: "); Serial.println(_bounceLimit);
-                writeTenths(_bounceLimit)
+                writeTenths(_bounceLimit);
             }
             else {
                 // Move back to the limit
@@ -240,6 +250,7 @@ void ServoBounce::process() {
             _bounceTimer.stop();
             _bounceStarted = false;
             _bounceCount = 0; 
+			writeTenths(_targetTenths);
 		}
 
         return;
