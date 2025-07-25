@@ -168,7 +168,7 @@ void Accessory::off() {
 
 #if INPUT_PIN_FEATURE == 1
 void Accessory::setInputPin(uint8_t pin){
-	Serial.print("Accessory::setInputPin ");
+	Serial.println("Accessory::setInputPin ");
 	if (pin != _Input) {
 		_Input = pin;
 		pinMode(pin, INPUT_PULLUP);
@@ -181,7 +181,7 @@ uint8_t Accessory::getInputPin(){
 }
 
 void Accessory::setTimer(uint16_t time){
-	Serial.print("Accessory::setTimer ");
+	Serial.println("Accessory::setTimer ");
 	Serial.print("	Time set to: "); Serial.print(time); Serial.println("ms");
 	_TimeActive = time;
 }
