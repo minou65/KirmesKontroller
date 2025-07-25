@@ -22,6 +22,7 @@ ServoAccessory::ServoAccessory(uint16_t Address, int8_t ServoPort, int16_t limit
 }
 
 ServoAccessory::~ServoAccessory() {
+	Accessory::~Accessory();
 	if (_servoControl) {
 		_servoControl->~ServoControl();
 		_servoControl = nullptr;
@@ -29,6 +30,7 @@ ServoAccessory::~ServoAccessory() {
 }
 
 void ServoAccessory::process() {
+	Accessory::process();
 	if (_servoControl) {
 		_servoControl->process();
 	}
@@ -141,14 +143,16 @@ ServoPendelAccessory::ServoPendelAccessory(uint16_t Address, int8_t ServoPort, i
 	_currentPosition(0) // Start at minimum position
 {
 	Serial.println(F("ServoPendelAccessory::ServoPendelAccessory()"));
-	Serial.print(F("    onTime: ")); Serial.println(_onTime);
-	Serial.print(F("    offTime: ")); Serial.println(_offTime);
+
 	if (_onTime < travelTime) {
 		_onTime = travelTime; // Ensure on time is at least as long as travel time
 	}
 	if (_offTime < travelTime) {
 		_offTime = travelTime; // Ensure off time is at least as long as travel time
 	}
+
+	Serial.print(F("    onTime: ")); Serial.println(_onTime);
+	Serial.print(F("    offTime: ")); Serial.println(_offTime);
 
 }
 
@@ -187,6 +191,7 @@ void ServoPendelAccessory::on() {
 	Serial.println(F("ServoPendelAccessory::on()"));
 	Accessory::on();
 	_timer.start(_onTime); // Start the timer for pendulum movement
+	_started = false;
 }
 
 void ServoPendelAccessory::off() {
