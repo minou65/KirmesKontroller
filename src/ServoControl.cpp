@@ -18,12 +18,12 @@ ServoControl::ServoControl(int8_t ServoPort, int limit1, int limit2, int travelT
     _travelTime(travelTime_),
     _flags(flags) {
 
+    setLimit(limit1, limit2);
+    setIntervalTime(_travelTime, 10);
+
     Serial.println("ServoControl::ServoControl");
 	Serial.print("    travelTime: "); Serial.println(_travelTime);
 	Serial.print("    flags:      "); Serial.println(_flags, HEX);
-
-    setLimit(limit1, limit2);
-    setIntervalTime(_travelTime, 10);
 
     Serial.print("    tLimit1:    "); Serial.println(_tlimit1);
     Serial.print("    tLimit2:    "); Serial.println(_tlimit2);
