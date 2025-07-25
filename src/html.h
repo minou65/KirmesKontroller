@@ -30,10 +30,17 @@ function submitForm(event) {
 }
 )=====";
 
-const char html_button_code[] PROGMEM = R"=====(
+const char html_button_toggle[] PROGMEM = R"=====(
 <form id="form-[id]" action="/post" method="post" onsubmit="submitForm(event)">
     <input type="hidden" name="group" value="[value]">
-    <button id="[id]" style="background-color: red;" type="submit">[name]</button>
+    <button id="[id]" class="btn-toggle" type="submit">[name]</button>
+</form>
+)=====";
+
+const char html_button_blue[] PROGMEM = R"=====(
+<form id="form-[id]" action="/post" method="post" onsubmit="submitForm(event)">
+    <input type="hidden" name="group" value="[value]">
+    <button id="[id]" class="btn-blue" type="submit">[name]</button>
 </form>
 )=====";
 
@@ -46,7 +53,7 @@ const char html_css_code[] PROGMEM = R"=====(
   height: 34px;
 }
 
-.switch input { 
+.switch input {
   opacity: 0;
   width: 0;
   height: 0;
@@ -55,49 +62,60 @@ const char html_css_code[] PROGMEM = R"=====(
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  transition: background-color 0.4s;
 }
 
-.slider:before {
-  position: absolute;
+.slider::before {
   content: "";
-  height: 26px;
+  position: absolute;
   width: 26px;
+  height: 26px;
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  transition: transform 0.4s;
 }
 
 input:checked + .slider {
   background-color: #2196F3;
 }
 
+input:checked + .slider::before {
+  transform: translateX(26px);
+}
+
 input:focus + .slider {
   box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
+/* Runde Ecken */
 .slider.round {
   border-radius: 34px;
 }
 
-.slider.round:before {
+.slider.round::before {
   border-radius: 50%;
 }
+
+.btn {
+    color: white;
+    border: 2px solid black;
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-toggle {
+    background-color: red;
+}
+
+.btn-blue {
+    background-color: #2196F3;
+}
+
+
 </style>
 )=====";
 
@@ -105,75 +123,75 @@ const char html_js_hideclass[] PROGMEM = R"=====(
 function hideClass(id) {
     var dropdown = document.getElementById(id + '-mode');
     var selectedValue = dropdown.options[dropdown.selectedIndex].value;
-    var numberClass = document.getElementsByClassName(id + '-number')[0];
-    var timeonClass = document.getElementsByClassName(id + '-timeon')[0];
-    var timeoffClass = document.getElementsByClassName(id + '-timeoff')[0];
-    var multiplierClass = document.getElementsByClassName(id + '-multiplier')[0];
-    var onfadeClass = document.getElementsByClassName(id + '-onfade')[0];
-    var offfadeClass = document.getElementsByClassName(id + '-offfade')[0];
+
+    // Definition aller Felder mit zugehörigen Sichtbarkeits-Arrays
+    var fields = [
+        { className: '-number', show: ["52", "53", "54", "55", "60", "61", "62"] },
+        { className: '-timeon', show: ["1", "50", "51", "52", "53", "54", "55", "60", "81", "83", "201", "202", "203", "251", "253"] },
+        { className: '-timeoff', show: ["50", "51", "52", "53", "54", "55", "60", "83", "253"] },
+        { className: '-multiplier', show: ["1", "50", "51", "52", "53", "54", "55", "60", "61", "62", "81", "83", "201", "202", "203", "251", "252", "253"] },
+        { className: '-onfade', show: ["50", "51", "62", "83", "102", "103", "104", "105", "106", "110", "70"] },
+        { className: '-offfade', show: ["50", "51", "62", "83", "102", "103", "104", "105", "106", "110", "70"] }
+    ];
+
+    // brightness ist eine Ausnahme: "nicht sichtbar" bei diesen Werten
     var brightnessClass = document.getElementsByClassName(id + '-brightness')[0];
+    var brightnessHide = ["0", "201", "202", "1"];
+    if (brightnessClass)
+        brightnessClass.style.display = brightnessHide.includes(selectedValue) ? "none" : "block";
 
-    // none is not visible, block is visible
+    // Sichtbarkeit für alle anderen Felder setzen
+    fields.forEach(function(field) {
+        var el = document.getElementsByClassName(id + field.className)[0];
+        if (el)
+            el.style.display = field.show.includes(selectedValue) ? "block" : "none";
+    });
 
-    // The array parameters contains a list of items for which numberclass should not be visible
-    var parameters = ["0", "201", "202", "1"];
-    brightnessClass.style.display = parameters.includes(selectedValue) ? "none" : "block";
+    // Label-Anpassungen
+    var labelMap = [
+        { sel: 'label[for="' + id + '-timeon"]', def: 'Time on (ms)' },
+        { sel: 'label[for="' + id + '-timeoff"]', def: 'Time off (ms)' },
+        { sel: 'label[for="' + id + '-onfade"]', def: 'Fader on (ms)' },
+        { sel: 'label[for="' + id + '-offfade"]', def: 'Fader off (ms)' },
+        { sel: 'label[for="' + id + '-multiplier"]', def: 'Multiplier' },
+        { sel: 'label[for="' + id + '-brightness"]', def: 'Brightness' }
+    ];
+    labelMap.forEach(function(l) {
+        var label = document.querySelector(l.sel);
+        if (label) label.innerHTML = l.def;
+    });
 
-    // The array parameters contains a list of items for which numberclass should be visible
-    var parameters = ["52", "53", "54", "55", "60", "61", "62"];
-    numberClass.style.display = parameters.includes(selectedValue) ? "block" : "none";
-
-    // The array parameters contains a list of items for which timeonClass should be visible
-    parameters = ["1", "50", "51", "52", "53", "54", "55", "60", "81", "83", "201", "202", "203"];
-    timeonClass.style.display = parameters.includes(selectedValue) ? "block" : "none";
-
-    // The array parameters contains a list of items for which timeoffClass should be visible
-    parameters = ["50", "51", "52", "53", "54", "55", "60", "83"];
-    timeoffClass.style.display = parameters.includes(selectedValue) ? "block" : "none";
-
-    // The array parameters contains a list of items for which multiplierClass should be visible
-    parameters = ["1", "50", "51", "52", "53", "54", "55", "60", "61", "62", "81", "83", "201", "202", "203"];
-    multiplierClass.style.display = parameters.includes(selectedValue) ? "block" : "none";
-
-    // The array parameters contains a list of items for which onfadeClass should be visible
-    parameters = ["50", "51", "62", "83", "102", "103", "104", "105", "106", "110", "70"];
-    onfadeClass.style.display = parameters.includes(selectedValue) ? "block" : "none";
-
-    // The array parameters contains a list of items for which offfadeClass should be visible
-    parameters = ["50", "51", "62", "83", "102", "103", "104", "105", "106", "110", "70"];
-    offfadeClass.style.display = parameters.includes(selectedValue) ? "block" : "none";
-
-    document.querySelector('label[for="' + id + '-timeon"]').innerHTML = 'Time on (ms)';
-    document.querySelector('label[for="' + id + '-timeoff"]').innerHTML = 'Time off (ms)';
-    document.querySelector('label[for="' + id + '-onfade"]').innerHTML = 'Fader on (ms)';
-    document.querySelector('label[for="' + id + '-offfade"]').innerHTML = 'Fader off (ms)';
-    document.querySelector('label[for="' + id + '-multiplier"]').innerHTML = 'Multiplier';
-    document.querySelector('label[for="' + id + '-brightness"]').innerHTML = 'Brightness';
-
-    parameters = ["83"];
-    if (parameters.includes(selectedValue)) {
-        document.querySelector('label[for="' + id + '-timeon"]').innerHTML = 'Minimum flash time (ms)';
-        document.querySelector('label[for="' + id + '-timeoff"]').innerHTML = 'Maximal flash time (ms)';
-        document.querySelector('label[for="' + id + '-onfade"]').innerHTML = 'Minimum pause time (s)';
-        document.querySelector('label[for="' + id + '-offfade"]').innerHTML = 'Maximal pause time (s)';
+    // Spezialfälle für Labels
+    if (["83"].includes(selectedValue)) {
+        var l;
+        l = document.querySelector('label[for="' + id + '-timeon"]');
+        if (l) l.innerHTML = 'Minimum flash time (ms)';
+        l = document.querySelector('label[for="' + id + '-timeoff"]');
+        if (l) l.innerHTML = 'Maximal flash time (ms)';
+        l = document.querySelector('label[for="' + id + '-onfade"]');
+        if (l) l.innerHTML = 'Minimum pause time (s)';
+        l = document.querySelector('label[for="' + id + '-offfade"]');
+        if (l) l.innerHTML = 'Maximal pause time (s)';
+    }
+    if (["61", "62"].includes(selectedValue)) {
+        var l = document.querySelector('label[for="' + id + '-multiplier"]');
+        if (l) l.innerHTML = 'Chance';
+    }
+    if (["62"].includes(selectedValue)) {
+        var l = document.querySelector('label[for="' + id + '-onfade"]');
+        if (l) l.innerHTML = 'minimal glowing time (ms)';
+        l = document.querySelector('label[for="' + id + '-offfade"]');
+        if (l) l.innerHTML = 'maximal glowing time (ms)';
+    }
+    if (["203"].includes(selectedValue)) {
+        var l = document.querySelector('label[for="' + id + '-timeon"]');
+        if (l) l.innerHTML = 'Start delay (ms)';
+        l = document.querySelector('label[for="' + id + '-brightness"]');
+        if (l) l.innerHTML = 'Motor Speed';
     }
 
-    parameters = ["61", "62"];
-    if (parameters.includes(selectedValue)) {
-        document.querySelector('label[for="' + id + '-multiplier"]').innerHTML = 'Chance';
-    }
-
-    parameters = ["62"];
-    if (parameters.includes(selectedValue)) {
-        document.querySelector('label[for="' + id + '-onfade"]').innerHTML = 'minimal glowing time (ms)';
-        document.querySelector('label[for="' + id + '-offfade"]').innerHTML = 'maximal glowing time (ms)';
-    }
-
-   parameters = ["203"];
-    if (parameters.includes(selectedValue)) {
-document.querySelector('label[for="' + id + '-timeon"]').innerHTML = 'Start delay (ms)';
-        document.querySelector('label[for="' + id + '-brightness"]').innerHTML = 'Motor Speed';
-    }
+    // Debug-Ausgabe
+    console.log('selectedValue:', selectedValue);
 }
 )=====";
 
@@ -182,30 +200,38 @@ const char html_form_end[] PROGMEM = R"=====(
 </br><a href='#' onclick="postReset()">Reset</a>
 <script>
 function postReset() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/post', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function() {
-        if (xhr.status >= 200 && xhr.status < 400) {
+    fetch('/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'reset=true'
+    })
+    .then(response => {
+        if (response.ok) {
             window.location.href = '/';
         }
-    };
-    xhr.send('reset=true');
+    })
+    .catch(error => {
+        console.error('Reset fehlgeschlagen:', error);
+    });
 }
 </script>
 )=====";
 
 const char html_js_updatedata[] PROGMEM = R"=====(
 function updateData(jsonData) {
-   document.getElementById('RSSIValue').innerHTML = jsonData.rssi + "dBm" 
-   for (var key in jsonData) {
-       if (jsonData.hasOwnProperty(key) && (key.startsWith('output') || key.startsWith('servo'))) {
-           var button = document.getElementById(key);
-           if (button) {
-               button.style.backgroundColor = jsonData[key] == '1' ? 'green' : 'red';
-           }
-       }
-   }
+    const rssiElem = document.getElementById('RSSIValue');
+    if (rssiElem && jsonData.rssi !== undefined) {
+        rssiElem.innerHTML = jsonData.rssi + "dBm";
+    }
+    Object.keys(jsonData).forEach(key => {
+        if (key.startsWith('output') || key.startsWith('servo')) {
+            const button = document.getElementById(key);
+            if (button) {
+                // Lockeren Vergleich verwenden, damit '1' und 1 funktionieren
+                button.style.backgroundColor = jsonData[key] == 1 ? 'green' : 'red';
+            }
+        }
+    });
 }
 )=====";
 
