@@ -298,6 +298,12 @@ void kDecoderInit(void) {
 			uint16_t timeOff_ = servogroup_->getTimeOff();
 			uint16_t Mode_ = servogroup_->getMode();
 
+			SoundSettings sound_;
+			strncpy(sound_.filename, servogroup_->getSoundFilename() ? servogroup_->getSoundFilename() : "", sizeof(sound_.filename) - 1);
+			sound_.filename[sizeof(sound_.filename) - 1] = '\0'; // Nullterminierung sicherstellen
+			sound_.volume = soundGroup.getVolume();
+			sound_.balance = soundGroup.getBalance();
+			sound_.mono = soundGroup.isMono();
 
 			Serial.print(F("Values for Servo ")); Serial.print(i_); Serial.println(F(" preserved"));
 			Serial.print(F("    Mode: ")); Serial.println(Mode_);
@@ -327,6 +333,9 @@ void kDecoderInit(void) {
 
 			if (newAccessory_ != nullptr) {
 				Accessory* accessory_ = static_cast<Accessory*>(newAccessory_);
+				accessory_->setSoundSettings(sound_);
+				accessory_->setInputPin(servogroup_->getInputPin());
+				accessory_->setTimer(servogroup_->getActiveDuration());
 
 				decoder.PushBack(newAccessory_);
 				channel_++;
