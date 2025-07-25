@@ -204,7 +204,7 @@ protected:
             HtmlRootFormatProvider::getScriptInner() +
             String(FPSTR(html_button_response)) +
             String(FPSTR(html_js_updatedata));
-        s_.replace("{millisecond}", "2000");
+        s_.replace("{millisecond}", "500");
         return s_;
     }
 };
@@ -241,7 +241,7 @@ void handleRoot() {
     OutputGroup* outputgroup_ = &OutputGroup1;
     while (outputgroup_ != nullptr) {
         if ((outputgroup_->isActive()) && (outputgroup_->getMode()) >= 10) {
-            String b_ = html_button_code;
+            String b_ = html_button_toggle;
             b_.replace("[value]", String(i_));
             b_.replace("[name]", String(outputgroup_->getDesignation()) + " (" + String(outputgroup_->getMode()) + ")");
             b_.replace("[id]", "output" + String(i_));
@@ -259,7 +259,7 @@ void handleRoot() {
     ServoGroup* servogroup_ = &ServoGroup1;
     while (servogroup_ != nullptr) {
         if (servogroup_->isActive()) {
-            String b_ = html_button_code;
+            String b_ = html_button_toggle;
             b_.replace("[value]", String(i_));
             b_.replace("[name]", String(servogroup_->getDesignation()));
             b_.replace("[id]", "servo" + String(i_));
@@ -282,22 +282,20 @@ void handleRoot() {
     content_ += fp_.getHtmlTableRow().c_str();
     content_ += fp_.getHtmlTableCol().c_str();
 
-    String on_ = html_button_code;
+    String on_ = html_button_blue;
     on_.replace("group", "all");
     on_.replace("[value]", "on");
     on_.replace("[name]", "All on");
     on_.replace("[id]", "allon");
-    on_.replace("red", "blue");
     content_ += on_.c_str();
 
     content_ += fp_.addNewLine(1).c_str();
 
-    String off_ = html_button_code;
+    String off_ = html_button_blue;
     off_.replace("group", "all");
     off_.replace("[value]", "off");
     off_.replace("[name]", "All off");
     off_.replace("[id]", "alloff");
-    off_.replace("red", "blue");
     content_ += off_.c_str();
 
     content_ += fp_.getHtmlTableColEnd().c_str();
