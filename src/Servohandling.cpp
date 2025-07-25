@@ -38,18 +38,17 @@ void ServoAccessory::process() {
 
 void ServoAccessory::on() {
 	Accessory::on();
-	MoveServo(100, true); // Move to maximum position
+	MoveServo(100); // Move to maximum position
 }
 
 void ServoAccessory::off() {
 	Accessory::off();
-	MoveServo(0, false); // Move to minimum position
+	MoveServo(0); // Move to minimum position
 }
 
-void ServoAccessory::MoveServo(uint16_t percentage, bool clockwise) {
+void ServoAccessory::MoveServo(uint16_t percentage) {
 	Serial.println(F("ServoAccessory::MoveServo()"));
 	Serial.print(F("    Percentage: ")); Serial.println(percentage);
-	Serial.print(F("    Clockwise: ")); Serial.println(clockwise ? "true" : "false");
 	if (_servoControl == nullptr) {
 		Serial.println(F("ServoControl is not initialized!"));
 		return;
@@ -123,24 +122,22 @@ void ServoFlipAccessory::off() {
 
 ServoPendelAccessory::ServoPendelAccessory(uint16_t Address, int8_t ServoPort, int16_t limit1, int16_t limit2, int16_t travelTime, uint16_t pendelTime) :
 	ServoAccessory(Address, ServoPort, limit1, limit2, travelTime),
-	_onTime(pendelTime),
-	_direction(true), // Start with clockwise direction
-	_currentPosition(0) // Start at minimum position
+	_onTime(pendelTime)
 {
 	Serial.println(F("ServoPendelAccessory::ServoPendelAccessory()"));
 	if (_onTime < travelTime) {
 		_onTime = travelTime; // Ensure pendulum time is at least as long as travel time
 	}
 	_offTime = _onTime; // Set off time to the same value initially
+	_direction = true;
+	
 
 }
 
 ServoPendelAccessory::ServoPendelAccessory(uint16_t Address, int8_t ServoPort, int16_t limit1, int16_t limit2, int16_t travelTime, uint16_t onTime, uint16_t offTime) :
 	ServoAccessory(Address, ServoPort, limit1, limit2, travelTime),
 	_onTime(onTime),
-	_offTime(offTime),
-	_direction(true), // Start with clockwise direction
-	_currentPosition(0) // Start at minimum position
+	_offTime(offTime)
 {
 	Serial.println(F("ServoPendelAccessory::ServoPendelAccessory()"));
 
@@ -150,6 +147,7 @@ ServoPendelAccessory::ServoPendelAccessory(uint16_t Address, int8_t ServoPort, i
 	if (_offTime < travelTime) {
 		_offTime = travelTime; // Ensure off time is at least as long as travel time
 	}
+	_direction = true;
 
 	Serial.print(F("    onTime: ")); Serial.println(_onTime);
 	Serial.print(F("    offTime: ")); Serial.println(_offTime);
@@ -166,38 +164,34 @@ void ServoPendelAccessory::process() {
 	ServoAccessory::process();
 
 	if (isOn()) {
-		if (_timer.done() || !_started) {
-			if (_started){
-				// Toggle direction after each cycle
-				_direction = !_direction;
-			}
-
+		if (_timerPendel.done() || !_started) {
 			_started = true; // Mark that the pendulum has started moving
 
 			// Set position: 0% for one direction, 100% for the other
 			if (_direction) {
-				MoveServo(100, true); // Move to _limit2
-				_timer.start(_onTime); // Start with _onTime
+				MoveServo(100); // Move to _limit2
+				_timerPendel.start(_onTime); // Start with _onTime
 			}
 			else {
-				MoveServo(0, false);  // Move to _limit1
-				_timer.start(_offTime); // Start with _offTime
+				MoveServo(0);  // Move to _limit1
+				_timerPendel.start(_offTime); // Start with _offTime
 			}
+			_direction = !_direction;
 		}
 	}
 }
 
 void ServoPendelAccessory::on() {
 	Serial.println(F("ServoPendelAccessory::on()"));
-	Accessory::on();
-	_timer.start(_onTime); // Start the timer for pendulum movement
+	IsActive = true; // Set the accessory to active state
+	_timerPendel.start(_onTime); // Start the timer for pendulum movement
 	_started = false;
 }
 
 void ServoPendelAccessory::off() {
 	Serial.println(F("ServoPendelAccessory::off()"));
-	Accessory::off();
-	_timer.stop(); // Stop the timer when turned off
+	IsActive = false; // Set the accessory to inactive state
+	_timerPendel.stop(); // Stop the timer when turned off
 
 }
 
