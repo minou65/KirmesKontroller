@@ -8,19 +8,20 @@
 
 
 
+
 #include <Arduino.h>
 
 #include "neotimer.h"
 #include "version.h"
-#include "MotorControl.h"
-#include "SoundControl.h"
 #include "pinmapping.h"
 #include "Vector.h"
+#include "SoundControl.h"
 #include "accessories.h"
 #include "webhandling.h"
 #include "NMRAhandling.h"
 #include "Outputhandling.h"
 #include "Servohandling.h"
+#include "Motorhandling.h"
 
 char Version[] = VERSION_STR;
 
