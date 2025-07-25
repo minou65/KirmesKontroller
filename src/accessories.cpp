@@ -98,6 +98,7 @@ void Accessory::process() {
 
 #if INPUT_PIN_FEATURE == 1
 
+
 	if (_Input > 0 && !isOn() && (digitalRead(_Input) == LOW)) {
 		Serial.println("Accessory::process: Input is LOW, turning on");
 		on();
@@ -171,7 +172,7 @@ void Accessory::setInputPin(uint8_t pin){
 	Serial.println("Accessory::setInputPin ");
 	if (pin != _Input) {
 		_Input = pin;
-		pinMode(pin, INPUT_PULLUP);
+		pinMode(pin, INPUT);
 		Serial.print("    Pin set to: "); Serial.println(_Input);
 	}
 }
