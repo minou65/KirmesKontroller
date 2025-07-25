@@ -9,7 +9,6 @@
 	#include "WProgram.h"
 #endif
 
-#include "accessories.h"
 #include "LEDControl.h"
 
 class MotorControl : public LED {
@@ -36,25 +35,7 @@ private:
     bool _isOn = false;
 };
 
-class Motor : public Accessory {
-public:
-    Motor() = default;
-    Motor(uint16_t BaseAddress, byte BaseChannel);
-    Motor(uint16_t BaseAddress, byte BaseChannel, byte Mode, uint16_t startdelay);
-	~Motor();
-    AccessoryType getType() const override;
-	virtual void SetMaxSpeed(uint8_t Speed);
 
-    void on() override;
-	void off() override;
-	void process() override;
-
-private:
-    uint16_t _startdelay;
-	MotorControl _motor;
-    Neotimer _timer;
-	bool _startdelayTriggered = false;
-};
 
 
 
