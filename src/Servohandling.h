@@ -23,7 +23,14 @@ public:
 	void on() override;
 	void off() override;
 
-	void MoveServo(uint16_t percentage, bool clockwise);
+	void MoveServo(uint16_t percentage);
+
+	uint16_t getServoTenthsPosition() const {
+		if (_servoControl) {
+			return _servoControl->getTenths();
+		}
+		return 0;
+	}
 
 private:
 	int8_t _ServoPort = -1;
@@ -72,14 +79,12 @@ public:
 	void on() override;
 	void off() override;
 private:
-	Neotimer _timer;
+	Neotimer _timerPendel;
 	uint16_t _onTime = 0; // Time in milliseconds for the pendulum to stay in one position
 	uint16_t _offTime = 0; // Time in milliseconds for the pendulum to stay in one position
 	bool _started = false; // Flag to indicate if the pendulum has started moving
 
-	bool _direction = true; // true = clockwise, false = counter-clockwise
-	uint16_t _currentPosition = 0; // Current position of the servo in percentage
-	uint16_t _stepSize = 5; // Step size for pendulum movement in percentage
+	bool _direction = false; // true = clockwise, false = counter-clockwise
 };
 
 
