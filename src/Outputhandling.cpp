@@ -20,7 +20,6 @@ Ausgang::Ausgang(uint16_t BaseAddress_, uint8_t BaseChannel_) :
 };
 
 Ausgang::~Ausgang() {
-	Output.~LED();
 }
 
 void Ausgang::notifyAddress(uint16_t Address_, uint8_t cmd_) {
@@ -127,6 +126,7 @@ void Blinker::SetMaxBrightness(uint16_t MaxBrightness) {
 
 void Blinker::process() {
 	LED1.process();
+	LEDaccessories::process();
 
 	// do nothing if not active
 	if (IsActive) {
@@ -144,7 +144,6 @@ void Blinker::process() {
 		}
 
 	}
-	Accessory::process();
 }
 
 void Blinker::on() {
@@ -154,7 +153,7 @@ void Blinker::on() {
 	IsActive = true;
 	Status = true;
 	BlinkTimer.start(0);
-	Accessory::on();
+	LEDaccessories::on();
 }
 
 void Blinker::off() {
@@ -162,7 +161,7 @@ void Blinker::off() {
 	IsActive = false;
 	BlinkTimer.stop();
 	LED1.off();
-	Accessory::off();
+	LEDaccessories::off();
 }
 
 //=======================================================
