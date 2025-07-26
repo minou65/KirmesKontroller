@@ -37,22 +37,51 @@ LED::LED(const uint8_t Channel) :
 	_PWMFrequency = 5000;
 
 	_GPIO = ChannelToGPIOMapping[_Channel];
-	Serial.print("    Channel: "); Serial.println(_Channel);
-	Serial.print("    GPIO   : "); Serial.println(_GPIO);
+	Serial.print("    GPIO: "); Serial.println(_GPIO);
 
-	ledcAttachChannel(_Channel, _GPIO, _PWMFrequency, _PWMResolution);
-
+	attach(_GPIO);
 	off();
 }
 
 LED::LED(const uint8_t Channel, uint8_t Brightness) :
-	LED(Channel) {
-	
+	LED(Channel) {	
 	SetMaxBrightness(Brightness);
 }
 
 LED::~LED() {
+	detach();
+}
+
+bool LED::attach(uint8_t pin){
+	if (_isAttached) {
+		Serial.println("LED::attach: already attached");
+		return false;
+	}
+	_isAttached = ledcAttach(_GPIO, _PWMFrequency, _PWMResolution);
+	if (_isAttached) {
+		Serial.println("LED::attach: success");
+	} else {
+		Serial.println("LED::attach: failed");
+	}
+}
+
+void LED::detach(){
+	if (!_isAttached) {
+		Serial.println("LED::detach: not attached");
+		return;
+	}
+	Serial.println("LED::detach");
 	ledcDetach(_GPIO);
+}
+
+void LED::write(uint16_t value){
+	if (!_isAttached) {
+		return;
+	}
+	if (value > _MaxBrightness) {
+		value = _MaxBrightness;
+	}
+	ledcWrite(_GPIO, value);
 }
 
 void LED::process() {}
@@ -65,12 +94,12 @@ void LED::SetMaxBrightness(uint16_t MaxBrightness) {
 
 void LED::on() {
 	_IsActive = true;
-	ledcWrite(_Channel, _MaxBrightness);
+	write(_MaxBrightness);
 }
 
 void LED::off() {
 	_IsActive = false;
-	ledcWrite(_Channel, PWM_Set_Off);
+	write(PWM_Set_Off);
 }
 
 bool LED::isOn(){
@@ -154,7 +183,7 @@ void LEDFader::process() {
 		}
 	}
 
-	ledcWrite(_Channel, _CurrentBrightness);
+	write(_CurrentBrightness);
 }
 
 void LEDFader::on() {
@@ -427,13 +456,13 @@ void Neon::process() {
 				// Einsachltverzögerung
 				_Operationtimer.set(random(300, 500));
 				// Lampe aus
-				ledcWrite(_Channel, PWM_Set_Off);
+				write(PWM_Set_Off);
 			}
 			else {
 				// Ausschaltverzögerung
 				_Operationtimer.set(random(200, 400));
 				// Lampe ein
-				ledcWrite(_Channel, _MaxBrightness);
+				write(_MaxBrightness);
 			}
 
 			// Defekte Lampe, Einschaltverzögern darf grösser sein
@@ -449,7 +478,7 @@ void Neon::process() {
 		}
 		else {
 			// Wir müssen nicht mehr blinken, Lampe ein
-			ledcWrite(_Channel, _MaxBrightness);
+			write(_MaxBrightness);
 		}
 	}
 }
