@@ -49,6 +49,7 @@ LED::LED(const uint8_t Channel, uint8_t Brightness) :
 }
 
 LED::~LED() {
+	Serial.println("LED::~LED");
 	detach();
 }
 
@@ -123,8 +124,7 @@ LEDFader::LEDFader(const uint8_t Channel_) :
 }
 
 LEDFader::~LEDFader() {
-	_fadeUpTimer.~Neotimer();
-	_fadeDownTimer.~Neotimer();
+	Serial.println("LEDFader::~LEDFader");
 }
 
 LEDFader::LEDFader(const uint8_t Channel, uint8_t Brightness, uint16_t fadeUpTime, uint16_t fadeDownTime) :
