@@ -9,7 +9,7 @@
 	#include "WProgram.h"
 #endif
 
-static uint8_t ChannelToGPIOMapping[8] = {
+static uint8_t OutputIndexToPin[8] = {
 	17, // O11
 	16, // O12
 	15, // O13
@@ -20,11 +20,15 @@ static uint8_t ChannelToGPIOMapping[8] = {
 	4  // O18
 };
 
-static uint8_t ServoChannelToGPIOMapping[3] = {
+const size_t MAX_OUTPUT_PINS = sizeof(OutputIndexToPin) / sizeof(OutputIndexToPin[0]);
+
+static uint8_t ServoIndexToPin[3] = {
 	2, // O21
 	42, // O22
 	41, // O23
 };
+
+const size_t MAX_SERVO_PINS = sizeof(ServoIndexToPin) / sizeof(ServoIndexToPin[0]);
 
 #define INPUT1        21
 #define INPUT2        38
