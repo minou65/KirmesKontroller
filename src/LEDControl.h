@@ -11,7 +11,7 @@
 
 #include "neotimer.h"
 #include "accessories.h"
-#include "PWMChannelManager.h"
+#include <ESP32PWM.h>
 
 // Values for On and Off
 // Werden die LED's direkt am ESP angeschlossen sind die 
@@ -63,8 +63,7 @@ private:
 	uint16_t _PWMFrequency;
 	uint16_t _PWMResolution;
 
-	uint8_t _pwmChannel = -1;
-
+	ESP32PWM _led;
 };
 
 // ===========================================

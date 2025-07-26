@@ -54,45 +54,30 @@ LED::~LED() {
 }
 
 bool LED::attach(uint8_t pin){
-	if (_isAttached) {
+	if (_led.attached()) {
 		Serial.println("LED::attach: already attached");
 		return false;
 	}
 	pinMode(_GPIO, OUTPUT);
-	_pwmChannel = pwmManager.allocate();
-	if (_pwmChannel == -1) {
-		Serial.println("LED::attach: no PWM channel available");
-		return false;
-	}
-	_isAttached = ledcAttachChannel(_GPIO, _PWMFrequency, _PWMResolution, _pwmChannel);
-	if (_isAttached) {
-		Serial.println("LED::attach: success");
-		Serial.print("    GPIO: "); Serial.println(_GPIO);
-		Serial.print("    PWM Channel: "); Serial.println(_pwmChannel);
-	} else {
-		Serial.println("LED::attach: failed");
-	}
+	_led.attachPin(pin, _PWMFrequency, _PWMResolution);
 }
 
 void LED::detach(){
-	if (!_isAttached) {
+	if (!_led.attached()) {
 		Serial.println("LED::detach: not attached");
 		return;
 	}
-	_isAttached = false;
-	pwmManager.free(_pwmChannel);
-	Serial.println("LED::detach");
-	ledcDetach(_GPIO);
+	_led.detachPin(_GPIO);
 }
 
 void LED::write(uint16_t value){
-	if (!_isAttached) {
+	if (!_led.attached()) {
 		return;
 	}
 	if (value > _MaxBrightness) {
 		value = _MaxBrightness;
 	}
-	ledcWrite(_GPIO, value);
+	_led.write(value);
 }
 
 void LED::process() {}
