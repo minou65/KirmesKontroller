@@ -33,12 +33,8 @@ public:
 // ===========================================
 class LED {
 protected:
-	uint8_t _Channel;						 // the number of the LED pin
 	uint8_t _GPIO;
 	bool _IsActive;
-
-	uint16_t _PWMFrequency;
-	uint16_t _PWMResolution;
 
 	uint16_t _MaxBrightness = PWM_Set_On;		// On Value
 
@@ -46,6 +42,10 @@ public:
 	LED(const uint8_t Channel);
 	LED(const uint8_t Channel, uint8_t Brightness);
 	~LED();
+
+	bool attach(uint8_t pin);
+	void detach();
+	void write(uint16_t value);
 
 	// Muss regelmässig aufgerufen werden
 	virtual void process();
@@ -55,6 +55,14 @@ public:
 	void on();
 	void off();
 	bool isOn();
+
+private:
+	bool _isAttached = false;
+
+	uint8_t _Channel;	
+	uint16_t _PWMFrequency;
+	uint16_t _PWMResolution;
+
 };
 
 // ===========================================
