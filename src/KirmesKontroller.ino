@@ -2,9 +2,9 @@
 // #define NOTIFY_DCC_ACCSTATE_MSG
 // #define NOTIFY_DCC_MSG
 // #define NOTIFY_TURNOUT_MSG
-//#define NOTIFY_DCC_CV_WRITE_MSG
-//#define NOTIFY_DCC_CV_CHANGE_MSG
-//#define DEBUG_MSG
+// #define NOTIFY_DCC_CV_WRITE_MSG
+// #define NOTIFY_DCC_CV_CHANGE_MSG
+// #define DEBUG_MSG
 
 #include <Arduino.h>
 
