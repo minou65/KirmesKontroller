@@ -105,10 +105,9 @@ void Accessory::process() {
 		return;
 	}
 	if (_Input > 0 && isOn() && (digitalRead(_Input) == LOW)) {
-		Serial.println("Accessory::process: Input is LOW, reset timer");
+		//Serial.println("Accessory::process: Input is LOW, reset timer");
 		if (_TimeActive > 0) {
 			_timer.start(_TimeActive);
-			//Serial.print("    accessory timer restarted for "); Serial.print(_TimeActive); Serial.println(" ms");
 		}
 		return;
 	}
