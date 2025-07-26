@@ -19,7 +19,7 @@ private:
 	LED Output;
 
 public:
-	Ausgang(uint16_t BaseAddress_, uint8_t BaseChannel_);
+	Ausgang(uint16_t BaseAddress_, uint8_t BasePin);
 	~Ausgang();
 
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
@@ -46,9 +46,9 @@ protected:
 	Neotimer BlinkTimer;
 
 public:
-	Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_);
-	Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_, uint8_t Mode_);
-	Blinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_, uint8_t fadeUpTime_, uint8_t fadeDownTime_, uint8_t Mode_);
+	Blinker(uint16_t BaseAddress_, uint8_t BasePin, uint16_t timeOff_, uint16_t timeOn_);
+	Blinker(uint16_t BaseAddress_, uint8_t BasePin, uint16_t timeOff_, uint16_t timeOn_, uint8_t Mode_);
+	Blinker(uint16_t BaseAddress_, uint8_t BasePin, uint16_t timeOff_, uint16_t timeOn_, uint8_t fadeUpTime_, uint8_t fadeDownTime_, uint8_t Mode_);
 	~Blinker();
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	void SetMaxBrightness(uint16_t MaxBrightness);
@@ -68,8 +68,8 @@ private:
 	LEDFader LED2;
 
 public:
-	Wechselblinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_);
-	Wechselblinker(uint16_t BaseAddress_, uint8_t BaseChannel_, uint16_t timeOff_, uint16_t timeOn_, uint8_t fadeUpTime_, uint8_t fadeDownTime_);
+	Wechselblinker(uint16_t BaseAddress_, uint8_t BasePin, uint16_t timeOff_, uint16_t timeOn_);
+	Wechselblinker(uint16_t BaseAddress_, uint8_t BasePin, uint16_t timeOff_, uint16_t timeOn_, uint8_t fadeUpTime_, uint8_t fadeDownTime_);
 	~Wechselblinker();
 	void SetMaxBrightness(uint16_t MaxBrightness);
 	void process() override;
@@ -99,8 +99,8 @@ private:
 	Neotimer OperationTimer;
 
 public:
-	Lauflicht(uint16_t BaseAddress_, uint8_t BaseChannel_, uint8_t Anzahl_, uint16_t timeOff_, uint16_t timeOn_, uint8_t Mode_);
-	Lauflicht(uint16_t BaseAddress_, uint8_t BaseChannel_, uint8_t Anzahl_, uint16_t timeOff_, uint16_t timeOn_, uint8_t fadeUpTime_, uint8_t fadeDownTime_, uint8_t Mode_);
+	Lauflicht(uint16_t BaseAddress_, uint8_t BasePin, uint8_t Anzahl_, uint16_t timeOff_, uint16_t timeOn_, uint8_t Mode_);
+	Lauflicht(uint16_t BaseAddress_, uint8_t BasePin, uint8_t Anzahl_, uint16_t timeOff_, uint16_t timeOn_, uint8_t fadeUpTime_, uint8_t fadeDownTime_, uint8_t Mode_);
 	~Lauflicht();
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	void SetMaxBrightness(uint16_t MaxBrightness);
@@ -128,7 +128,7 @@ private:
 	Neotimer OperationTimer;
 
 public:
-	Hausbeleuchtung(uint16_t BaseAddress_, uint8_t BaseChannel_, uint8_t Anzahl_, uint32_t minRandomTime_, uint32_t maxRandomTime_);
+	Hausbeleuchtung(uint16_t BaseAddress_, uint8_t BasePin, uint8_t Anzahl_, uint32_t minRandomTime_, uint32_t maxRandomTime_);
 	~Hausbeleuchtung();
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	void SetMaxBrightness(uint16_t MaxBrightness);
@@ -145,7 +145,7 @@ public:
 //=======================================================
 class Fernseher : public Blinker {
 public:
-	Fernseher(uint16_t BaseAddress_, uint8_t BaseChannel_);
+	Fernseher(uint16_t BaseAddress_, uint8_t BasePin);
 	~Fernseher();
 	void process() override;
 	void on() override;
@@ -185,7 +185,7 @@ private:
 	uint16_t pauseMax;
 
 public:
-	Schweissen(uint16_t BaseAddress_, uint8_t BaseChannel_, uint64_t minRandomPause_, uint64_t maxRandomPause_);
+	Schweissen(uint16_t BaseAddress_, uint8_t BasePin, uint64_t minRandomPause_, uint64_t maxRandomPause_);
 	~Schweissen();
 	void SetMaxBrightness(uint16_t MaxBrightness);
 	void process() override;
@@ -211,7 +211,7 @@ private:
 	const uint8_t Anzahl;
 
 public:
-	NeonLampen(uint16_t BaseAddress_, uint8_t BaseChannel_, const uint8_t Anzahl_, const uint8_t DefekteNeonChance_);
+	NeonLampen(uint16_t BaseAddress_, uint8_t BasePin, const uint8_t Anzahl_, const uint8_t DefekteNeonChance_);
 	~NeonLampen();
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	void SetMaxBrightness(uint16_t MaxBrightness);
@@ -241,7 +241,7 @@ private:
 
 public:
 
-	NatriumLampen(uint16_t BaseAddress_, uint8_t BaseChannel_, uint8_t Anzahl_, uint8_t Chance_, uint8_t fadeOnIntervall_, uint8_t fadeOffIntervall_);
+	NatriumLampen(uint16_t BaseAddress_, uint8_t BasePin, uint8_t Anzahl_, uint8_t Chance_, uint8_t fadeOnIntervall_, uint8_t fadeOffIntervall_);
 	~NatriumLampen();
 	void notifyAddress(uint16_t Address_, uint8_t cmd_);
 	void SetMaxBrightness(uint16_t MaxBrightness);
@@ -267,7 +267,7 @@ private:
 	uint8_t maxRandomTime = 125;
 
 public:
-	Feuer(uint16_t BaseAddress_, uint8_t BaseChannel_);
+	Feuer(uint16_t BaseAddress_, uint8_t BasePin);
 	~Feuer();
 	void SetMaxBrightness(uint16_t MaxBrightness);
 	void process() override;
@@ -287,8 +287,8 @@ private:
 	uint16_t blitztimeMax;
 
 public:
-	Blitzlicht(uint16_t BaseAddress_, uint8_t BaseChannel_);
-	Blitzlicht(uint16_t BaseAddress_, uint8_t BaseChannel_, uint32_t sleeptimeMin_, uint32_t sleeptimeMax_, uint16_t blitztimeMin_, uint16_t blitztimeMax_);
+	Blitzlicht(uint16_t BaseAddress_, uint8_t BasePin);
+	Blitzlicht(uint16_t BaseAddress_, uint8_t BasePin, uint32_t sleeptimeMin_, uint32_t sleeptimeMax_, uint16_t blitztimeMin_, uint16_t blitztimeMax_);
 	~Blitzlicht();
 
 	void SetMaxBrightness(uint16_t MaxBrightness);
