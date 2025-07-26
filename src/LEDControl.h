@@ -41,7 +41,7 @@ protected:
 public:
 	LED(const uint8_t Channel);
 	LED(const uint8_t Channel, uint8_t Brightness);
-	~LED();
+	virtual ~LED();
 
 	bool attach(uint8_t pin);
 	void detach();
@@ -92,7 +92,7 @@ public:
 
 	LEDFader(const uint8_t Channel);
 	LEDFader(const uint8_t Channel, uint8_t Brightness, uint16_t fadeUpTime = 1000, uint16_t fadeDownTime = 1000);
-	~LEDFader();
+	~LEDFader() override;
 
 	// Muss regelmässig aufgerufen werden
 	void process();
@@ -153,7 +153,7 @@ protected:
 
 public:
 	Natrium(const uint8_t Channel, const bool MalFunction, uint8_t fadeOnIntervall, uint8_t fadeOffIntervall);
-	~Natrium();
+	~Natrium() override;
 	void SetMaxBrightness(uint16_t MaxBrightness) override;
 	void process();
 	void on();
@@ -176,7 +176,7 @@ protected:
 
 public:
 	Neon(const uint8_t Channel, const bool MalFunction);
-	~Neon();
+	~Neon() override;
 	void SetMaxBrightness(uint16_t MaxBrightness) override;
 	void process();
 	void on();
