@@ -28,23 +28,23 @@ void LEDaccessories::SetMaxBrightness(uint16_t MaxBrightness) {
 // ===========================================
 // LED
 // ===========================================
-LED::LED(const uint8_t Channel) :
-	_Channel(Channel) {
+LED::LED(const uint8_t pin) :
+	_GPIO(pin),
+	_PWMFrequency(5000),
+	_PWMResolution(8),
+	_IsActive(false),
+	_isAttached(false) {
 
 	Serial.println("LED::LED");
 
-	_PWMResolution = 8;
-	_PWMFrequency = 5000;
-
-	_GPIO = ChannelToGPIOMapping[_Channel];
 	Serial.print("    GPIO: "); Serial.println(_GPIO);
 
 	attach(_GPIO);
 	off();
 }
 
-LED::LED(const uint8_t Channel, uint8_t Brightness) :
-	LED(Channel) {	
+LED::LED(const uint8_t pin, uint8_t Brightness) :
+	LED(pin) {	
 	SetMaxBrightness(Brightness);
 }
 
@@ -58,9 +58,17 @@ bool LED::attach(uint8_t pin){
 		Serial.println("LED::attach: already attached");
 		return false;
 	}
-	_isAttached = ledcAttach(_GPIO, _PWMFrequency, _PWMResolution);
+	pinMode(_GPIO, OUTPUT);
+	_pwmChannel = pwmManager.allocate();
+	if (_pwmChannel == -1) {
+		Serial.println("LED::attach: no PWM channel available");
+		return false;
+	}
+	_isAttached = ledcAttachChannel(_GPIO, _PWMFrequency, _PWMResolution, _pwmChannel);
 	if (_isAttached) {
 		Serial.println("LED::attach: success");
+		Serial.print("    GPIO: "); Serial.println(_GPIO);
+		Serial.print("    PWM Channel: "); Serial.println(_pwmChannel);
 	} else {
 		Serial.println("LED::attach: failed");
 	}
@@ -71,6 +79,8 @@ void LED::detach(){
 		Serial.println("LED::detach: not attached");
 		return;
 	}
+	_isAttached = false;
+	pwmManager.free(_pwmChannel);
 	Serial.println("LED::detach");
 	ledcDetach(_GPIO);
 }
@@ -110,12 +120,12 @@ bool LED::isOn(){
 // ===========================================
 // LEDFader
 // ===========================================
-LEDFader::LEDFader(const uint8_t Channel_) :
+LEDFader::LEDFader(const uint8_t pin) :
 	_fadeUpIntervall(10),
 	_fadeDownIntervall(10),
 	_CurrentBrightness(PWM_Set_Off),
 	_TargetBrightness(PWM_Set_Off),
-	LED(Channel_, PWM_Set_On) {
+	LED(pin, PWM_Set_On) {
 	
 	SetFadeMultiplikator(1);
 	SetFadeTime(500, 500, _fadeUpIntervall, _fadeDownIntervall);
@@ -127,12 +137,12 @@ LEDFader::~LEDFader() {
 	Serial.println("LEDFader::~LEDFader");
 }
 
-LEDFader::LEDFader(const uint8_t Channel, uint8_t Brightness, uint16_t fadeUpTime, uint16_t fadeDownTime) :
+LEDFader::LEDFader(const uint8_t pin, uint8_t Brightness, uint16_t fadeUpTime, uint16_t fadeDownTime) :
 	_fadeUpIntervall(10),
 	_fadeDownIntervall(10),
 	_CurrentBrightness(PWM_Set_Off),
 	_TargetBrightness(PWM_Set_Off),
-	LED(Channel, Brightness) {
+	LED(pin, Brightness) {
 
 	SetFadeMultiplikator(1);
 	SetFadeTime(fadeUpTime, fadeDownTime, _fadeUpIntervall, _fadeDownIntervall);
@@ -315,8 +325,8 @@ bool LEDFader::isDark() {
 // ===========================================
 // NatriumLamp
 // ===========================================
-Natrium::Natrium(const uint8_t Channel, const bool  IsMalFunction, uint8_t fadeOnIntervall, uint8_t fadeOffIntervall) :
-	LEDFader(Channel, PWM_Set_On, 0, 0),
+Natrium::Natrium(const uint8_t pin, const bool  IsMalFunction, uint8_t fadeOnIntervall, uint8_t fadeOffIntervall) :
+	LEDFader(pin, PWM_Set_On, 0, 0),
 	_IsMalFunction(IsMalFunction) {
 
 	SetFadeTime(fadeOnIntervall, fadeOffIntervall);

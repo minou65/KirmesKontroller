@@ -11,6 +11,7 @@
 
 #include "neotimer.h"
 #include "accessories.h"
+#include "PWMChannelManager.h"
 
 // Values for On and Off
 // Werden die LED's direkt am ESP angeschlossen sind die 
@@ -39,8 +40,8 @@ protected:
 	uint16_t _MaxBrightness = PWM_Set_On;		// On Value
 
 public:
-	LED(const uint8_t Channel);
-	LED(const uint8_t Channel, uint8_t Brightness);
+	LED(const uint8_t pin);
+	LED(const uint8_t pin, uint8_t Brightness);
 	virtual ~LED();
 
 	bool attach(uint8_t pin);
@@ -59,9 +60,10 @@ public:
 private:
 	bool _isAttached = false;
 
-	uint8_t _Channel;	
 	uint16_t _PWMFrequency;
 	uint16_t _PWMResolution;
+
+	uint8_t _pwmChannel = -1;
 
 };
 
@@ -90,8 +92,8 @@ protected:
 
 public:
 
-	LEDFader(const uint8_t Channel);
-	LEDFader(const uint8_t Channel, uint8_t Brightness, uint16_t fadeUpTime = 1000, uint16_t fadeDownTime = 1000);
+	LEDFader(const uint8_t pin);
+	LEDFader(const uint8_t pin, uint8_t Brightness, uint16_t fadeUpTime = 1000, uint16_t fadeDownTime = 1000);
 	~LEDFader() override;
 
 	// Muss regelmässig aufgerufen werden
@@ -152,7 +154,7 @@ protected:
 	Neotimer _Operationtimer;
 
 public:
-	Natrium(const uint8_t Channel, const bool MalFunction, uint8_t fadeOnIntervall, uint8_t fadeOffIntervall);
+	Natrium(const uint8_t pin, const bool MalFunction, uint8_t fadeOnIntervall, uint8_t fadeOffIntervall);
 	~Natrium() override;
 	void SetMaxBrightness(uint16_t MaxBrightness) override;
 	void process();
@@ -175,7 +177,7 @@ protected:
 	Neotimer _Operationtimer;
 
 public:
-	Neon(const uint8_t Channel, const bool MalFunction);
+	Neon(const uint8_t pin, const bool MalFunction);
 	~Neon() override;
 	void SetMaxBrightness(uint16_t MaxBrightness) override;
 	void process();
