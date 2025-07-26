@@ -6,9 +6,6 @@
 //#define NOTIFY_DCC_CV_CHANGE_MSG
 //#define DEBUG_MSG
 
-
-
-
 #include <Arduino.h>
 
 #include "neotimer.h"
@@ -177,25 +174,28 @@ void kDecoderReset() {
 }
 
 void kDecoderInit(void) {
-	uint8_t channel_ = 0;
+	
 
 	Serial.println("======== Initializing kdecoder... =========");
 
 	// Decoderobjekte in decoder l�schen
-	for (int i = 0; i < decoder.Size(); ++i) {
-		delete decoder[i];
+	for (int i_ = 0; i_ < decoder.Size(); ++i_) {
+		delete decoder[i_];
 	}
 	decoder.Erase(0, decoder.Size());
 	decoder.Clear();
 	Vector<accessories*>().Swap(decoder);
 
 	Serial.println("======== Setting up outputs... =========");
+	uint8_t OutputIndex_ = 0;
 	OutputGroup* outputgroup_ = &OutputGroup1;
 	while (outputgroup_ != nullptr) {
-		if (channel_ > 7) {
+		if (OutputIndex_ >= MAX_OUTPUT_PINS) {
 			Serial.println("no more free channels!");
 			break;
 		}
+
+		uint8_t BasePin_ = OutputIndexToPin[OutputIndex_];
 
 		if (outputgroup_->isActive()) {
 			uint8_t Mode_ = outputgroup_->getMode();
@@ -219,48 +219,49 @@ void kDecoderInit(void) {
 			sound_.balance = soundGroup.getBalance();
 			sound_.mono = soundGroup.isMono();
 
-			Serial.print(F("Values for channel ")); Serial.print(channel_); Serial.println(F(" preserved"));
-			Serial.print(F("    Channels used: ")); Serial.println(Count_);
+			Serial.print(F("Values for channel ")); Serial.print(BasePin_); Serial.println(F(" preserved"));
+			Serial.print(F("    Pins used: ")); Serial.println(Count_);
 			Serial.print(F("    Address: ")); Serial.println(Address_);
+			Serial.print(F("    Base Pin: ")); Serial.println(BasePin_);
 
 			// Einrichten des Ports
 			accessories* newAccessory = nullptr;
 			switch (Mode_) {
 			case 0:
-				newAccessory = new accessories(Address_, channel_);
-				channel_ += Count_;
+				newAccessory = new accessories(Address_, BasePin_);
+				OutputIndex_ += Count_;
 				break;
 			case 40: // einfacher Ausgang
-				newAccessory = new Ausgang(Address_, channel_);
-				channel_ += 1;
+				newAccessory = new Ausgang(Address_, BasePin_);
+				OutputIndex_ += 1;
 				break;
 			case 50: // Blinker
-				newAccessory = new Blinker(Address_, channel_, Multiplier_ * TimeOff_, Multiplier_ * TimeOn_, TimeOnFade_, TimeOffFade_, Mode_);
-				channel_ += 1;
+				newAccessory = new Blinker(Address_, BasePin_, Multiplier_ * TimeOff_, Multiplier_ * TimeOn_, TimeOnFade_, TimeOffFade_, Mode_);
+				OutputIndex_ += 1;
 				break;
 			case 51: // Wechselblinker
-				newAccessory = new Wechselblinker(Address_, channel_, Multiplier_ * TimeOff_, Multiplier_ * TimeOn_, TimeOnFade_, TimeOffFade_);
-				channel_ += 2;
+				newAccessory = new Wechselblinker(Address_, BasePin_, Multiplier_ * TimeOff_, Multiplier_ * TimeOn_, TimeOnFade_, TimeOffFade_);
+				OutputIndex_ += 2;
 				break;
 			case 80: // TV
-				newAccessory = new Fernseher(Address_, channel_);
-				channel_ += 1;
+				newAccessory = new Fernseher(Address_, BasePin_);
+				OutputIndex_ += 1;
 				break;
 			case 81: // Schweisslicht
-				newAccessory = new Schweissen(Address_, channel_, Multiplier_ * TimeOff_, Multiplier_ * TimeOn_);
-				channel_ += 3;
+				newAccessory = new Schweissen(Address_, BasePin_, Multiplier_ * TimeOff_, Multiplier_ * TimeOn_);
+				OutputIndex_ += 3;
 				break;
 			case 82: // Feuer
-				newAccessory = new Feuer(Address_, channel_);
-				channel_ += 3;
+				newAccessory = new Feuer(Address_, BasePin_);
+				OutputIndex_ += 3;
 				break;
 			case 83: // Blitzlicht
-				newAccessory = new Blitzlicht(Address_, channel_, TimeOnFade_ * 1000, TimeOffFade_ * 1000, TimeOn_ * Multiplier_, TimeOff_ * Multiplier_);
-				channel_ += 1;
+				newAccessory = new Blitzlicht(Address_, BasePin_, TimeOnFade_ * 1000, TimeOffFade_ * 1000, TimeOn_ * Multiplier_, TimeOff_ * Multiplier_);
+				OutputIndex_ += 1;
 				break;
 			case 203:// Motor
-				newAccessory = new Motor(Address_, channel_, Mode_, TimeOn_ * Multiplier_); // Create a new Motor accessory
-				channel_ += 1;
+				newAccessory = new Motor(Address_, BasePin_, Mode_, TimeOn_ * Multiplier_); // Create a new Motor accessory
+				OutputIndex_ += 1;
 				break;
 			}
 
@@ -285,17 +286,17 @@ void kDecoderInit(void) {
 	}
 
 	ServoGroup* servogroup_ = &ServoGroup1;
-	uint8_t i_ = 0;
+	uint8_t ServoIndex_ = 0;
 	Serial.println("======== Setting up servos... =========");
 	while (servogroup_ != nullptr) {
-		if (i_ > 2) {
-			Serial.println("no more free channels!");
+		if (ServoIndex_ >= MAX_SERVO_PINS) {
+			Serial.println("no more free pins!");
 			break;
 		}
 
 		if(servogroup_->isActive()) {
 			uint16_t Address_ = servogroup_->getAddress();
-			uint8_t ServoPort_ = ServoChannelToGPIOMapping[i_];
+			uint8_t ServoPort_ = ServoIndexToPin[ServoIndex_];
 			uint16_t limit1_ = servogroup_->getLimit1();
 			uint16_t limit2_ = servogroup_->getLimit2();
 			uint16_t travelTime_ = servogroup_->getTravelTime();
@@ -311,29 +312,24 @@ void kDecoderInit(void) {
 			sound_.balance = soundGroup.getBalance();
 			sound_.mono = soundGroup.isMono();
 
-			Serial.print(F("Values for Servo ")); Serial.print(i_); Serial.println(F(" preserved"));
+			Serial.print(F("Values for Servo ")); Serial.print(ServoIndex_); Serial.println(F(" preserved"));
 			Serial.print(F("    Mode: ")); Serial.println(Mode_);
 			Serial.print(F("    Address: ")); Serial.println(Address_);
-			Serial.print(F("    Servo Port: ")); Serial.println(ServoPort_);
-			Serial.print(F("    Limit 1: ")); Serial.println(limit1_);
-			Serial.print(F("    Limit 2: ")); Serial.println(limit2_);
-			Serial.print(F("    Travel Time: ")); Serial.println(travelTime_);
-			Serial.print(F("    Multiplier: ")); Serial.println(multiplier_);
 
 			// Einrichten des Ports
 			accessories* newAccessory_ = nullptr;
 			switch (Mode_) {
 			case 251: // Servo Impulse
 				newAccessory_ = new ServoImpulseAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_ * multiplier_, timeOn_);
-				channel_++;
+				ServoIndex_++;
 				break;
 			case 252: // Servo Flip
 				newAccessory_ = new ServoFlipAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_ * multiplier_);
-				channel_++;
+				ServoIndex_++;
 				break;
 			case 253: // Servo Pendel
 				newAccessory_ = new ServoPendelAccessory(Address_, ServoPort_, limit1_, limit2_, travelTime_ * multiplier_, timeOn_, timeOff_);
-				channel_++;
+				ServoIndex_++;
 				break;
 			}
 
@@ -344,9 +340,8 @@ void kDecoderInit(void) {
 				accessory_->setTimer(servogroup_->getActiveDuration());
 
 				decoder.PushBack(newAccessory_);
-				channel_++;
 				Serial.print(F("    Mode: ")); Serial.println(servogroup_->getMode());
-				Serial.print(F("    Channel: ")); Serial.println(channel_);
+				Serial.print(F("    ServoIndex: ")); Serial.println(ServoIndex_);
 			}
 			else {
 				Serial.println(F("    No valid servo mode found, skipping this group."));
@@ -355,11 +350,16 @@ void kDecoderInit(void) {
 
 		if (servogroup_->isActive()) {
 		}
-		i_++;
+		
 		servogroup_ = (ServoGroup*)servogroup_->getNext();
 	}
 
-	Serial.println("======== all done =========");
+	
+
+	Serial.println("======== kdecoder initialized =========");
+	Serial.print("Decoder size: "); Serial.println(decoder.Size());
+	Serial.print("Output pin used: "); Serial.println(OutputIndex_);
+	Serial.print("Servo pin used: "); Serial.println(ServoIndex_);
 }
 
 void setup() {
@@ -395,6 +395,24 @@ void setup() {
 	);
 
 	Serial.println("Everything has been initialized");
+
+	// LEDs/Outputs
+	Serial.println("Output-Channel zu Pin Mapping:");
+	for (size_t i = 0; i < MAX_OUTPUT_PINS; ++i) {
+		Serial.print("  Output-Channel ");
+		Serial.print(i);
+		Serial.print(" -> Pin ");
+		Serial.println(OutputIndexToPin[i]);
+	}
+
+	// Servos
+	Serial.println("Servo-Channel zu Pin Mapping:");
+	for (size_t i = 0; i < MAX_SERVO_PINS; ++i) {
+		Serial.print("  Servo-Channel ");
+		Serial.print(i);
+		Serial.print(" -> Pin ");
+		Serial.println(ServoIndexToPin[i]);
+	}
 }
 
 void loop() {
