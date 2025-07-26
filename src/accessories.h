@@ -49,7 +49,7 @@ public:
 	accessories() = default;
 	accessories(uint16_t baseAddress, byte baseChannel);
 	accessories(uint16_t baseAddress, byte baseChannel, byte mode);
-	~accessories();
+	virtual ~accessories();
 
 	virtual void process();
 	virtual void on();
