@@ -179,7 +179,12 @@ void kDecoderReset() {
 void kDecoderInit(void) {
 	uint8_t channel_ = 0;
 
+	Serial.println("======== Initializing kdecoder... =========");
+
 	// Decoderobjekte in decoder l�schen
+	for (int i = 0; i < decoder.Size(); ++i) {
+		delete decoder[i];
+	}
 	decoder.Erase(0, decoder.Size());
 	decoder.Clear();
 	Vector<accessories*>().Swap(decoder);
@@ -348,12 +353,13 @@ void kDecoderInit(void) {
 			}
 		}
 
-
 		if (servogroup_->isActive()) {
 		}
 		i_++;
 		servogroup_ = (ServoGroup*)servogroup_->getNext();
 	}
+
+	Serial.println("======== all done =========");
 }
 
 void setup() {
@@ -363,17 +369,6 @@ void setup() {
 	}
 
 	Serial.println("Starting with Firmware " + String(VERSION));
-
-	for (uint8_t _i = 0; _i < sizeof(ChannelToGPIOMapping) - 1; _i++) {
-		pinMode(ChannelToGPIOMapping[_i], OUTPUT);
-		digitalWrite(ChannelToGPIOMapping[_i], LOW);
-	}
-
-	for (uint8_t _i = 0; _i < sizeof(ServoChannelToGPIOMapping) - 1; _i++) {
-		pinMode(ServoChannelToGPIOMapping[_i], OUTPUT);
-		digitalWrite(ServoChannelToGPIOMapping[_i], LOW);
-	}
-
 
 	setupWeb(); // Set up web handling
 	setupSound(); // Set up sound system
