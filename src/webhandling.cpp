@@ -343,7 +343,7 @@ void handleSettings() {
             content_ += String("<div>Output group " + String(outputgroup_->getDesignation()) + "</div>").c_str();
             content_ += "<ul>";
             content_ += String("<li>Mode: " + String(outputgroup_->getMode()) + "</li>").c_str();
-            content_ += String("<li>Number of outputs: " + String(outputgroup_->getNumber()) + "</li>").c_str();
+            content_ += String("<li>Outputs used: " + String(outputgroup_->getNumber()) + "</li>").c_str();
             content_ += String("<li>DCC Address: " + String(outputgroup_->getAddress()) + +"</li>").c_str();
             content_ += "</ul>";
         }
