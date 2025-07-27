@@ -232,7 +232,7 @@ void kDecoderInit(void) {
 				OutputIndex_ += Count_;
 				break;
 			case 40: // einfacher Ausgang
-				newAccessory = new Ausgang(Address_, BasePin_);
+				newAccessory = new AusgangDelay(Address_, BasePin_, TimeOn_ * Multiplier_);
 				OutputIndex_ += 1;
 				break;
 			case 50: // Blinker
