@@ -226,7 +226,6 @@ Wechselblinker::Wechselblinker(uint16_t BaseAddress_, uint8_t BasePin, uint16_t 
 }
 
 Wechselblinker::~Wechselblinker() {
-	LED2.~LEDFader();
 }
 
 void Wechselblinker::SetMaxBrightness(uint16_t MaxBrightness) {
@@ -314,19 +313,11 @@ Lauflicht::Lauflicht(uint16_t BaseAddress_, uint8_t BasePin, uint8_t Anzahl_, ui
 Lauflicht::~Lauflicht() {
 	off();
 
-	for (int i = 0; i < LEDs.Size(); i++) {
-		LEDs[i]->~LEDFader();
+	for (int i = 0; i < LEDs.Size(); ++i) {
 		delete LEDs[i];
-	};
-
-	// Grösse von Decoder auf 0 setzen
+	}
 	LEDs.Clear();
-
-	// Speicher von decoder freigeben
 	Vector<LEDFader*>().Swap(LEDs);
-
-	OperationTimer.~Neotimer();
-	LEDs.~Vector();
 };
 
 void Lauflicht::notifyAddress(uint16_t Address_, uint8_t cmd_) {
@@ -525,19 +516,11 @@ Hausbeleuchtung::~Hausbeleuchtung() {
 
 	off();
 
-	for (int i = 0; i < LEDs.Size(); i++) {
-		LEDs[i]->~LED();
+	for (int i = 0; i < LEDs.Size(); ++i) {
 		delete LEDs[i];
-	};
-
-	// Grösse von Decoder auf 0 setzen
+	}
 	LEDs.Clear();
-
-	// Speicher von decoder freigeben
 	Vector<LED*>().Swap(LEDs);
-
-	OperationTimer.~Neotimer();
-	LEDs.~Vector();
 };
 
 void Hausbeleuchtung::notifyAddress(uint16_t Address_, uint8_t cmd_) {
@@ -689,8 +672,6 @@ Schweissen::Schweissen(uint16_t BaseAddress_, uint8_t BasePin, uint64_t minRando
 };
 
 Schweissen::~Schweissen() {
-	LED2.~LEDFader();
-	LED3.~LEDFader();
 }
 
 void Schweissen::SetMaxBrightness(uint16_t MaxBrightness) {
@@ -844,9 +825,9 @@ NeonLampen::NeonLampen(uint16_t BaseAddress_, uint8_t BasePin, uint8_t Anzahl_, 
 	// Anzahl Lampen erstellen
 	for (int i_ = 0; i_ < Anzahl; i_++) {
 		if (Defekt_ && (i_ == DefekteLampe_))
-			Lampen.PushBack(new Neon(BaseChannel + i_, true));
+			Lampen.PushBack(new Neon(BasePin + i_, true));
 		else
-			Lampen.PushBack(new Neon(BaseChannel + i_, false));
+			Lampen.PushBack(new Neon(BasePin + i_, false));
 	}
 
 	off();
@@ -854,17 +835,11 @@ NeonLampen::NeonLampen(uint16_t BaseAddress_, uint8_t BasePin, uint8_t Anzahl_, 
 
 NeonLampen::~NeonLampen() {
 	for (int i = 0; i < Lampen.Size(); i++) {
-		Lampen[i]->~Neon();
 		delete Lampen[i];
 	}
 
-	// Grösse von Decoder auf 0 setzen
 	Lampen.Clear();
-
-	// Speicher von decoder freigeben
 	Vector<Neon*>().Swap(Lampen);
-	Lampen.~Vector();
-
 }
 
 void NeonLampen::notifyAddress(uint16_t Address_, uint8_t cmd_) {
@@ -954,9 +929,9 @@ NatriumLampen::NatriumLampen(uint16_t BaseAddress_, uint8_t BasePin, uint8_t Anz
 	for (int _i = 0; _i < Anzahl; _i++) {
 
 		if (_Defekt && (_i == _DefekteLampe))
-			Lampen.PushBack(new Natrium(BaseChannel + _i, true, fadeOnIntervall, fadeOffIntervall));
+			Lampen.PushBack(new Natrium(BasePin + _i, true, fadeOnIntervall, fadeOffIntervall));
 		else
-			Lampen.PushBack(new Natrium(BaseChannel + _i, false, fadeOnIntervall, fadeOffIntervall));
+			Lampen.PushBack(new Natrium(BasePin + _i, false, fadeOnIntervall, fadeOffIntervall));
 
 	}
 
@@ -970,16 +945,11 @@ NatriumLampen::~NatriumLampen() {
 	off();
 
 	for (int i = 0; i < Lampen.Size(); i++) {
-		Lampen[i]->~Natrium();
 		delete Lampen[i];
 	};
 
-	// Grösse von Decoder auf 0 setzen
 	Lampen.Clear();
-
-	// Speicher von decoder freigeben
 	Vector<Natrium*>().Swap(Lampen);
-	Lampen.~Vector();
 }
 
 void NatriumLampen::notifyAddress(uint16_t Address_, uint8_t cmd_) {
