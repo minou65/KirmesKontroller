@@ -350,14 +350,20 @@ public:
         return atoi(_BrightnessValue);
     }
 
-    int getNumber() const {
-        switch (getMode()) {
-        case 52:
+    int getNumber(int8_t mode = -1) const {
+        if (mode == -1) {
+            mode = getMode();
+		}
+        switch (mode) {
+        case 0:
+			return 0;
+        case 51:
+		case 202:
             return 2;
         case 81:
         case 82:
             return 3;
-        case 51:
+        case 52:
         case 53:
         case 54:
         case 55:
@@ -409,6 +415,8 @@ public:
         return atoi(_ModeValue);
 	}
 
+    iotwebconf::TextParameter& getNumberParam() { return _NumberParam; }
+
 private:
     char _ModeId[STRING_LEN];
     char _NumberId[STRING_LEN];
@@ -443,7 +451,7 @@ private:
         );
 
     iotwebconf::NumberParameter _NumberParam =
-        iotwebconf::NumberParameter("Outputs to use", _NumberId, _NumberValue, NUMBER_LEN, "1", "1..8", "min='1' max=8' step='1'");
+        iotwebconf::NumberParameter("Outputs to use", _NumberId, _NumberValue, NUMBER_LEN, "1", "1..MAX_Outputs", "min='1' max=16' step='1'");
 
     iotwebconf::NumberParameter _TimeOnParam =
         iotwebconf::NumberParameter("Time On (ms)", _TimeOnId, _TimeOnValue, NUMBER_LEN, "10", "1..255", "min='1' max='255' step='1'");

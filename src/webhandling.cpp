@@ -18,6 +18,7 @@
 #include "common.h"
 #include "html.h"
 #include "favicon.h"
+#include "pinmapping.h"
 
 // -- Initial name of the Thing. Used e.g. as SSID of the own Access Point.
 const char thingName[] = "kDecoder";
@@ -121,14 +122,32 @@ bool hasValidExtension(const char* filename) {
 
 
 bool formValidator(iotwebconf::WebRequestWrapper* webRequestWrapper) {
-    bool allValid = true;
+    bool allValid_ = true;
+	uint8_t OutputsUsed_ = 0;
     OutputGroup* group_ = &OutputGroup1;
     while (group_ != nullptr) {
         group_->getFilenameParam().errorMessage = nullptr;
-        if (group_->isActive()) {
-            char filenameID_[STRING_LEN];
-            snprintf(filenameID_, STRING_LEN, "%s-filename", group_->getId());
-            String filename_ = webRequestWrapper->arg(filenameID_);
+        group_->getNumberParam().errorMessage = nullptr;
+
+        char filenameID_[STRING_LEN];
+        snprintf(filenameID_, STRING_LEN, "%s-filename", group_->getId());
+        String filename_ = webRequestWrapper->arg(filenameID_);
+
+        char ModeID_[STRING_LEN];
+        snprintf(ModeID_, STRING_LEN, "%s-mode", group_->getId());
+        String Mode_ = webRequestWrapper->arg(ModeID_);
+
+        char NumberID_[STRING_LEN];
+        snprintf(NumberID_, STRING_LEN, "%s-number", group_->getId());
+        String Number_ = webRequestWrapper->arg(NumberID_);
+
+		char VisibleID_[STRING_LEN];
+		snprintf(VisibleID_, STRING_LEN, "%sv", group_->getId());
+        if (webRequestWrapper->hasArg(VisibleID_) && webRequestWrapper->arg(VisibleID_) == "inactive") {
+			Serial.printf("Group %s is inactive, skipping validation.\n", VisibleID_);
+        }
+        else {
+            Serial.printf("Validating group %s...\n", group_->getId());
 
             if (filename_.length() == 0) {
                 // Leeres Feld ist erlaubt, keine weiteren Prüfungen
@@ -136,25 +155,56 @@ bool formValidator(iotwebconf::WebRequestWrapper* webRequestWrapper) {
             else {
                 if (containsSpaces(filename_.c_str())) {
                     group_->getFilenameParam().errorMessage = "Fehler: Der Dateiname darf keine Leerzeichen enthalten.";
-                    allValid = false;
+                    allValid_ = false;
                 }
                 else if (!isFirstCharacterValid(filename_.c_str())) {
                     group_->getFilenameParam().errorMessage = "Fehler: Der Dateiname muss mit '/' beginnen.";
-                    allValid = false;
+                    allValid_ = false;
                 }
                 else if (!areAllCharactersValid(filename_.c_str())) {
                     group_->getFilenameParam().errorMessage = "Fehler: Ungültiges Zeichen im Dateinamen.";
-                    allValid = false;
+                    allValid_ = false;
                 }
                 else if (!hasValidExtension(filename_.c_str())) {
                     group_->getFilenameParam().errorMessage = "Fehler: Ungültige Dateiendung. Erlaubt sind: .mp3, .aac, .aacp, .wav, .flac, .vorbis, .m4a";
-                    allValid = false;
+                    allValid_ = false;
                 }
             }
+
+            int number_;
+			int mode_ = atoi(Mode_.c_str());
+            switch (mode_) {
+                case 0: // Kein Modus
+                    number_ = 0;
+                    break;
+                case 52:
+				case 53:
+                case 54:
+                case 55:
+                case 60:
+                case 61:
+				case 62:
+                    number_= atoi(Number_.c_str());
+                    break;
+                default:
+                    number_ = group_->getNumber(mode_);
+ 			}
+
+            Serial.printf("    Mode: %d, Outputs: %d\n", mode_, number_);
+			Serial.print(F("    max outputs: ")); Serial.println(MAX_OUTPUT_PINS);
+			Serial.print(F("    Outputs used: ")); Serial.println(OutputsUsed_);
+              
+            if (number_ < 1 || number_  + OutputsUsed_ > MAX_OUTPUT_PINS) {
+                group_->getNumberParam().errorMessage = "Fehler: Anzahl der Ausgänge muss zwischen 1 und MAX_OUTPUT_PINS liegen.";
+                allValid_ = false;
+            }
+
+            OutputsUsed_ += number_;
         }
+
         group_ = (OutputGroup*)group_->getNext();
     }
-    return allValid;
+    return allValid_;
 }
 
 
