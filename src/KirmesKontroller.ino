@@ -243,6 +243,22 @@ void kDecoderInit(void) {
 				newAccessory = new Wechselblinker(Address_, BasePin_, Multiplier_ * TimeOff_, Multiplier_ * TimeOn_, TimeOnFade_, TimeOffFade_);
 				OutputIndex_ += 2;
 				break;
+			case 52: case 53: case 54: case 55: // diverse Lauflichter
+				newAccessory = new Lauflicht(Address_, BasePin_, Count_, Multiplier_ * TimeOff_, Multiplier_ * TimeOn_, Mode_);
+				OutputIndex_ += Count_;
+				break;
+			case 60: // Hausbeleuchtung
+				newAccessory = new Hausbeleuchtung(Address_, BasePin_, Count_, Multiplier_ * TimeOff_, Multiplier_ * TimeOn_);
+				OutputIndex_ += Count_;
+				break;
+			case 61: // Neonröhren
+				newAccessory = new NeonLampen(Address_, BasePin_, Count_, Multiplier_);
+				OutputIndex_ += Count_;
+				break;
+			case 62: // Natriumlampen
+				newAccessory = new NatriumLampen(Address_, BasePin_, Count_, Multiplier_, TimeOnFade_, TimeOffFade_);
+				OutputIndex_ += Count_;
+				break;
 			case 80: // TV
 				newAccessory = new Fernseher(Address_, BasePin_);
 				OutputIndex_ += 1;
@@ -395,24 +411,6 @@ void setup() {
 	);
 
 	Serial.println("Everything has been initialized");
-
-	// LEDs/Outputs
-	Serial.println("Output-Channel zu Pin Mapping:");
-	for (size_t i = 0; i < MAX_OUTPUT_PINS; ++i) {
-		Serial.print("  Output-Channel ");
-		Serial.print(i);
-		Serial.print(" -> Pin ");
-		Serial.println(OutputIndexToPin[i]);
-	}
-
-	// Servos
-	Serial.println("Servo-Channel zu Pin Mapping:");
-	for (size_t i = 0; i < MAX_SERVO_PINS; ++i) {
-		Serial.print("  Servo-Channel ");
-		Serial.print(i);
-		Serial.print(" -> Pin ");
-		Serial.println(ServoIndexToPin[i]);
-	}
 }
 
 void loop() {
