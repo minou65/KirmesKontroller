@@ -127,9 +127,9 @@ function hideClass(id) {
     // Definition aller Felder mit zugehörigen Sichtbarkeits-Arrays
     var fields = [
         { className: '-number', show: ["52", "53", "54", "55", "60", "61", "62"] },
-        { className: '-timeon', show: ["1", "50", "51", "52", "53", "54", "55", "60", "81", "83", "201", "202", "203", "251", "253"] },
+        { className: '-timeon', show: ["1", "50", "51", "52", "53", "54", "55", "60", "81", "83", "201", "202", "203", "251", "253", "40"] },
         { className: '-timeoff', show: ["50", "51", "52", "53", "54", "55", "60", "83", "253"] },
-        { className: '-multiplier', show: ["1", "50", "51", "52", "53", "54", "55", "60", "61", "62", "81", "83", "201", "202", "203", "251", "252", "253"] },
+        { className: '-multiplier', show: ["1", "50", "51", "52", "53", "54", "55", "60", "61", "62", "81", "83", "201", "202", "203", "251", "252", "253", "40"] },
         { className: '-onfade', show: ["50", "51", "62", "83", "102", "103", "104", "105", "106", "110", "70"] },
         { className: '-offfade', show: ["50", "51", "62", "83", "102", "103", "104", "105", "106", "110", "70"] }
     ];
@@ -183,9 +183,11 @@ function hideClass(id) {
         l = document.querySelector('label[for="' + id + '-offfade"]');
         if (l) l.innerHTML = 'maximal glowing time (ms)';
     }
-    if (["203"].includes(selectedValue)) {
+    if (["203", "40"].includes(selectedValue)) {
         var l = document.querySelector('label[for="' + id + '-timeon"]');
         if (l) l.innerHTML = 'Start delay (ms)';
+    }
+    if (["203"].includes(selectedValue)) {
         l = document.querySelector('label[for="' + id + '-brightness"]');
         if (l) l.innerHTML = 'Motor Speed';
     }
