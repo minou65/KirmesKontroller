@@ -29,6 +29,20 @@ public:
 	void process() override;
 };
 
+class AusgangDelay : public Ausgang {
+private:
+	Neotimer _startDelayTimer;
+	uint16_t _startdelay;
+	bool _startdelayTriggered = false;
+
+public:
+	AusgangDelay(uint16_t BaseAddress_, uint8_t BasePin, uint16_t DelayTime_);
+	~AusgangDelay();
+	void on() override;
+	void off() override;
+	void process() override;
+};
+
 //=======================================================
 //Blinker mit 1 Lampen
 //Mode 50

@@ -62,6 +62,47 @@ void Ausgang::process() {
 	Output.process();
 }
 
+AusgangDelay::AusgangDelay(uint16_t BaseAddress_, uint8_t BasePin, uint16_t DelayTime) :
+	Ausgang(BaseAddress_, BasePin),
+	_startdelay(DelayTime) {
+	off();
+	Serial.println("AusgangDelay::AusgangDelay");
+	Serial.print("    BaseAddress: "); Serial.println(BaseAddress, DEC);
+	Serial.print("    BasePin:     "); Serial.println(BasePin, DEC);
+	Serial.print("    DelayTime:  "); Serial.println(DelayTime, DEC);
+}
+
+AusgangDelay::~AusgangDelay() {
+}
+
+void AusgangDelay::on() {
+	Serial.println("AusgangDelay::on");
+	if (_startdelay > 0) {
+		Serial.print("    Delay time: "); Serial.println(_startdelay);
+		_startDelayTimer.start(_startdelay);
+		_startdelayTriggered = true;
+	}
+	else {
+		Ausgang::on();
+		_startdelayTriggered = false;
+	}	
+}
+
+void AusgangDelay::off(){
+	Serial.println("AusgangDelay::off");
+	Ausgang::off();
+	_startDelayTimer.stop();
+	_startdelayTriggered = false;
+}
+
+void AusgangDelay::process(){
+	Ausgang::process();
+	if (_startDelayTimer.done() && _startdelayTriggered) {
+		Serial.println("AusgangDelay::process: Delay timer done, turning on");
+		Ausgang::on();
+		_startdelayTriggered = false;
+	}
+}
 
 //=======================================================
 //Blinker mit 1 Lampen
@@ -1132,4 +1173,3 @@ void Blitzlicht::off() {
 	Blitztimer.stop();
 	Accessory::off();
 }
-
