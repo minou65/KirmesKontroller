@@ -26,21 +26,21 @@ static char OutputModeValues[][STRING_LEN] = {
     "1",
     "40",
     "50",
-    "51",
+    //"51",
 
-    "80",
-    "81",
-    "82",
-    "83",
+    //"80",
+    //"81",
+    //"82",
+    //"83",
 
-    "52",
-    "53",
-    "54",
-    "55",
+    //"52",
+    //"53",
+    //"54",
+    //"55",
 
-    "60",
-    "61",
-    "62",
+    //"60",
+    //"61",
+    //"62",
 
     //"102",
     //"103",
@@ -51,10 +51,10 @@ static char OutputModeValues[][STRING_LEN] = {
 
     //"70",
 
-    "201",
-    "202"
+    //"201",
+    //"202"
 
-    "203"
+    //"203"
 };
 
 static char OutputModeNames[][STRING_LEN] = {
@@ -62,21 +62,21 @@ static char OutputModeNames[][STRING_LEN] = {
     "Watchdog",             // 1
     "einfacher Ausgang (1)",// 40
     "Blinker (1)",          // 50
-    "Wechselblinker (2)",   // 51
+    //"Wechselblinker (2)",   // 51
 
-    "Fernseher (1)",        // 80
-    "Schweisslicht (3)",    // 81
-    "Feuer (3)",            // 82
-    "Blitzlicht (1)",       // 83
+    //"Fernseher (1)",        // 80
+    //"Schweisslicht (3)",    // 81
+    //"Feuer (3)",            // 82
+    //"Blitzlicht (1)",       // 83
 
-    "Lauflicht 1 (1..16)", // 52
-    "Lauflicht 2 (1..16)", // 53
-    "Lauflicht 3 (1..16)", // 54
-    "Lauflicht 4 (1..16)", // 55
+    //"Lauflicht 1 (1..16)", // 52
+    //"Lauflicht 2 (1..16)", // 53
+    //"Lauflicht 3 (1..16)", // 54
+    //"Lauflicht 4 (1..16)", // 55
 
-    "Hausbeleuchtung (1..16)", // 60
-    "Neonlampen (1..16)",      // 61
-    "Natriumlampen (1..16)",   // 62
+    //"Hausbeleuchtung (1..16)", // 60
+    //"Neonlampen (1..16)",      // 61
+    //"Natriumlampen (1..16)",   // 62
      
     //"SBB_Hauptsignal_102 (2)", // 102
     //"SBB_Hauptsignal_103 (3)", // 103
@@ -87,14 +87,14 @@ static char OutputModeNames[][STRING_LEN] = {
      
     //"Strassen_Signal_70 (3)",  // 70
      
-    "Entkuppler (1)",          // 201
-    "Weiche (2)",              // 202
+    //"Entkuppler (1)",          // 201
+    //"Weiche (2)",              // 202
 
-    "Motor (1)"              // 203
+    //"Motor (1)"              // 203
 };
 
 static char ServoModeValues[][STRING_LEN] = {
-    "250",
+    "0",
     "251",
     "252",
     "253"
